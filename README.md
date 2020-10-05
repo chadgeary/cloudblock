@@ -15,7 +15,7 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 
 **mgmt_cidr**
 
-- an IP range granted webUI and EC2 SSH access.
+- an IP range granted webUI, EC2 SSH access, and access to PiHole DNS blocking.
 - deploying from home? This should be your public IP address with a /32 suffix. 
 
 **kms_manager**
