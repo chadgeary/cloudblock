@@ -1,0 +1,94 @@
+---
+- name: cloud pihole - pi in the sky
+  hosts: localhost
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: general update
+      yum:
+        name: '*'
+        state: latest
+
+    - name: docker (amazon linux method)
+      shell: |
+        amazon-linux-extras install docker
+
+    - name: httpd mod_ssl and pip
+      yum:
+        name: 
+          - httpd
+          - mod_ssl
+          - python2-pip
+        state: latest
+
+    - name: Docker for Python via Pip
+      pip:
+        name:
+          - docker
+          - boto
+          - boto3
+          - botocore
+        executable: /bin/pip
+        state: latest
+
+    - name: Docker Service (pre-installed with Amazon Linux 2)
+      systemd:
+        name: docker
+        state: started
+        enabled: True
+
+    - name: IP Forwarding Enable/Persist
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        reload: yes
+        sysctl_set: yes
+        sysctl_file: /etc/sysctl.conf
+
+    - name: pihole Dirs
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0750
+      with_items:
+        - "{{ install_dir }}"
+        - "{{ install_dir }}/etc"
+        - "{{ install_dir }}/dnsmasq.d"
+
+    - name: Get SSM Parameter ph_password
+      set_fact:
+        ph_password: "{{ lookup('aws_ssm', 'ph_password', decrypt=True, region=aws_region) }}"
+
+    - name: Docker Container Create/Run
+      docker_container:
+        name: pihole
+        env:
+          DNS1: "{{ dns_server_1 }}"
+          DNS2: "{{ dns_server_2 }}"
+          WEBPASSWORD: "{{ ph_password }}"
+        image: pihole/pihole:latest
+        ports:
+          - "53:53/udp"
+          - "53:53/tcp"
+          - "8001:80"
+        restart_policy: "always"
+
+    - name: Proxy for secure https access
+      lineinfile:
+        path: /etc/httpd/conf.d/ssl.conf
+        insertafter: '^<VirtualHost _default_:443>'
+        line: "{{ item }}"
+      with_items:
+        - ProxyPassReverse / http://127.0.0.1:8001/
+        - ProxyPass / http://127.0.0.1:8001/
+        - ProxyPreserveHost On
+
+    - name: httpd Enabled/Restarted
+      systemd:
+        name: httpd
+        state: restarted
+        enabled: yes

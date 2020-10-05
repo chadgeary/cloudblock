@@ -1,0 +1,195 @@
+---
+- name: pihole
+  hosts: "{{ target }}"
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: Listen Check - udp 53 & 67
+      shell: |
+        # hex
+        awk -F':' 'NR>1 { print substr($3,1,4)}' /proc/net/udp* | grep --quiet '0035\|0043'
+      ignore_errors: True
+      register: udp_listen_check
+      failed_when: udp_listen_check.rc == 0
+
+    - name: Listen Check - tcp 8001
+      shell: |
+        # hex
+        awk -F':' 'NR>1 { print substr($3,1,4)}' /proc/net/tcp* | grep --quiet '1F41'
+      ignore_errors: True
+      register: tcp_listen_check
+      failed_when: tcp_listen_check.rc == 0
+
+    - name: Listen Results
+      debug:
+        msg: "Fail if 53/udp, 67/udp, and/or 80/tcp are in use."
+      failed_when: "udp_listen_check.rc == 0 or tcp_listen_check.rc == 0"
+      ignore_errors: True
+
+    - name: Cloudflared DOH Installation (EL)
+      yum:
+        name: https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.rpm
+        state: present
+      when:
+        - ansible_facts.os_family == 'RedHat'
+        - use_doh|bool == True
+
+    - name: Cloudflared DOH Installation (Ubuntu)
+      apt:
+        deb: https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb
+        state: present
+      when: 
+        - ansible_facts.os_family == 'Debian'
+        - use_doh|bool == True
+
+    - name: Cloudflared DOH User
+      user:
+        name: cloudflared
+        shell: /usr/sbin/nologin
+        state: present
+      when:
+        - use_doh|bool == True
+        
+    - name: Cloudflared DOH Environment
+      blockinfile:
+        create: yes
+        owner: cloudflared
+        group: cloudflared
+        mode: '0644'
+        path: /etc/default/cloudflared
+        block: |
+          # Environment options for Cloudflared DOH
+          CLOUDFLARED_OPTS=--port 5053 --upstream https://1.1.1.1/dns-query --upstream https://1.0.0.1/dns-query
+      when:
+        - use_doh|bool == True
+
+    - name: Cloudflared DOH Systemd Unit
+      blockinfile:
+        create: yes
+        owner: root
+        group: root
+        mode: '0644'
+        path: /etc/systemd/system/cloudflared.service
+        block: |
+          [Unit]
+          Description=cloudflared DNS over HTTPS proxy
+          After=syslog.target network-online.target
+          
+          [Service]
+          Type=simple
+          User=cloudflared
+          EnvironmentFile=/etc/default/cloudflared
+          ExecStart=/usr/local/bin/cloudflared proxy-dns $CLOUDFLARED_OPTS
+          Restart=on-failure
+          RestartSec=10
+          KillMode=process
+          
+          [Install]
+          WantedBy=multi-user.target
+      when:
+        - use_doh|bool == True
+
+    - name: CloudflareD DOH Start/Enable
+      systemd:
+        daemon_reload: yes
+        name: cloudflared
+        state: started
+        enabled: yes
+      when:
+        - use_doh|bool == True
+
+    - name: CloudflareD DOH Enable Docker Route to Localnet
+      sysctl:
+        name: net.ipv4.conf.docker0.route_localnet
+        value: '1'
+        state: present
+        sysctl_set: yes
+      when:
+        - use_doh|bool == True
+
+    - name: CloudflareD DOH Route 5053 from docker0 gateway to localhost
+      iptables:
+        table: nat
+        chain: PREROUTING
+        in_interface: docker0
+        destination: 172.17.0.1
+        protocol: "{{ item }}"
+        jump: DNAT
+        to_destination: 127.0.0.1:5053
+      with_items:
+        - tcp
+        - udp
+      when:
+        - use_doh|bool == True
+      register: iptables_for_doh
+
+    - name: Save the iptables configuration
+      shell: |
+        iptables-save
+      when:
+        - use_doh|bool == True
+        - iptables_for_doh.changed
+
+    - name: Docker Installation
+      package:
+        name: "{% if ansible_facts['os_family'] == 'RedHat' %}docker{% elif ansible_facts['os_family'] == 'Debian' %}docker.io{% endif %}"
+        state: present
+
+    - name: Docker Service
+      systemd:
+        name: docker
+        state: started
+        enabled: True
+
+    - name: IP Forwarding Enable/Persist
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        reload: yes
+        sysctl_set: yes
+        sysctl_file: /etc/sysctl.conf
+
+    - name: pihole Dirs
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0750
+      with_items:
+        - "{{ install_dir }}"
+        - "{{ install_dir }}/etc"
+        - "{{ install_dir }}/dnsmasq.d"
+
+    - name: Determine pihole Password set
+      stat:
+        path: "{{ install_dir }}/password"
+      register: pihole_password_file
+
+    - name: Generate pihole Password (once)
+      shell: |
+        head /dev/urandom | tr -dc A-Za-z0-9 | head -c 20 > {{ install_dir }}/password
+      when: pihole_password_file.stat.exists|bool == False
+
+    - name: Register pihole Password
+      shell: |
+        cat {{ install_dir }}/password
+      no_log: True
+      register: pihole_password
+
+    - name: pihole Docker Launch
+      shell: |
+        # launch
+        docker run -d --name pihole -p 53:53/udp -p 67:67/udp -p 8001:80 -v "{{ install_dir }}/etc/:/etc/pihole/:Z" -v "{{ install_dir }}/dnsmasq.d/:/etc/dnsmasq.d/:Z" --restart=unless-stopped --cap-add=NET_ADMIN --dns=127.0.0.1 --dns={{ dns_server_1 }} --dns={{ dns_server_2}} -e DNS1={{ dns_server_1 }} -e DNS2={{ dns_server_2 }} pihole/pihole:latest
+
+    - name: pihole Set Password
+      shell: |
+        # password set
+        docker exec pihole pihole -a -p {{ pihole_password.stdout }}
+
+    - name: Show Password
+      debug:
+        msg: "Password: {{ pihole_password.stdout }}"
+      when: show_password|bool == True
