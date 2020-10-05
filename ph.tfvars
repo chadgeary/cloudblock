@@ -15,7 +15,7 @@ kms_manager = "some_username"
 instance_key = "ssh-rsa AAAAB3NzaD2yc2EAAAADAQABAAABAQCNsxnMWfrG3SoLr4uJMavf43YkM5wCbdO7X5uBvRU8oh1W+A/Nd/jie2tc3UpwDZwS3w6MAfnu8B1gE9lzcgTu1FFf0us5zIWYR/mSoOFKlTiaI7Uaqkc+YzmVw/fy1iFxDDeaZfoc0vuQvPr+LsxUL5UY4ko4tynCSp7zgVpot/OppqdHl5J+DYhNubm8ess6cugTustUZoDmJdo2ANQENeBUNkBPXUnMO1iulfNb6GnwWJ0Z5TRRLGSu2gya2wMLeo1rBJ5cbZZgVLMVHiKgwBy/svUQreR8R+fpVW+Q4rx6sPAltLaOUONn0SF2BvvJUu_REPLACE_REPLACEME_REPLACEME"
 
 # size according to workloads, ARM-based, t4n.nano is sufficient.
-instance_type = "t4g.nano"
+instance_type = "t4g.small"
 
 # the root block size of the instance (in GiB), suggest minimum 30
 instance_vol_size = 30
