@@ -5,7 +5,7 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 
 # Requirements
 - Terraform installed.
-- AWS credentials (e.g. `aws configure` if awscli is installed)
+- AWS credentials (e.g. `aws configure` if awscli is installed) and a non-root AWS IAM user.
 - Customized variables (see Variables section).
 
 # Variables
@@ -27,16 +27,16 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 
 **kms_manager**
 
-- an AWS user account (not root) that will be granted access to the KMS key (to read S3 objects).
-- required to read the VPN enrollment conf from S3.
+- an AWS user account (not root) granted access to the encrypted S3 objects.
+- required to read the VPN configuration files in S3.
 
 **instance_key**
 
-- a public SSH key for SSH access to instances via user `ubuntu`.
+- a public SSH key for SSH access to the instance via user `ubuntu`.
 
 **ssm_web_password**
 
-- the password for pihole webGUI access.
+- Sets the Pihole WebUI password.
 
 # Deploy
 ```
