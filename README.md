@@ -49,6 +49,4 @@ terraform apply -var-file="ph.tfvars"
 
 # Post-Deployment
 - Wait for Ansible Playbook, watch [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager)
-- Retrieve the VPN client configuration (QR Code or config file) from S3 (see terraform output).
-- Customize PiHole as desired via WebUI (see terraform output).
-```
+- See terraform output for VPN Client configuration link and the Pihole WebUI address.
