@@ -23,6 +23,16 @@ variable "mgmt_cidr" {
   description              = "Subnet CIDR allowed to access WebUI and SSH, e.g. <home ip address>/32"
 }
 
+variable "vpn_cidr" {
+  type                     = string
+  description              = "Subnet CIDR allowed to access the VPN, e.g. 0.0.0.0/0 for world access (enrollment still required)"
+}
+
+variable "dns_novpn" {
+  type                     = number
+  description              = "1 permits mgmt_cidr access to pihole DNS without VPN."
+}
+
 variable "instance_type" {
   type                     = string
   description              = "The type of EC2 instance to deploy"
@@ -58,24 +68,9 @@ variable "vendor_ami_name_string" {
   description              = "The search string for the name of the AMI from the AMI Vendor"
 }
 
-variable "ssm_install_dir" {
-  type                     = string
-  description              = "The directory of the pihole configuration, default is /opt/pihole"
-}
-
-variable "ssm_dns_server_1" {
-  type                     = string
-  description              = "The first (of two) DNS servers the PiHole will query upstream"
-}
-
-variable "ssm_dns_server_2" {
-  type                     = string
-  description              = "The second (of two) DNS servers the PiHole will query upstream"
-}
-
 variable "ssm_web_password" {
   type                     = string
-  description              = "Password to access the web console"
+  description              = "Password to access the Pihole web console"
 }
 
 provider "aws" {

@@ -1,5 +1,7 @@
 # Reference
-A pihole in AWS. Built using an ARM EC2 instance running Amazon Linux 2 with Terraform (and Ansible).
+End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS). Built in AWS with an ARM EC2 instance using Terraform, Ansible, and Docker.
+
+![Diagram](diagram.png)
 
 # Requirements
 - Terraform installed.
@@ -15,20 +17,26 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 
 **mgmt_cidr**
 
-- an IP range granted webUI, EC2 SSH access, and access to PiHole DNS blocking.
+- an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1
 - deploying from home? This should be your public IP address with a /32 suffix. 
+
+**vpn_cidr**
+
+- an IP range granted wireguard VPN access. Client enrollment still required.
+- default is 0.0.0.0/0 (world)
 
 **kms_manager**
 
 - an AWS user account (not root) that will be granted access to the KMS key (to read S3 objects).
+- required to read the VPN enrollment conf from S3.
 
 **instance_key**
 
-- a public SSH key for SSH access to instances via user `ec2-user`.
+- a public SSH key for SSH access to instances via user `ubuntu`.
 
-**ssm_**
+**ssm_web_password**
 
-- additional pihole related variables, including the web console password.
+- the password for pihole webGUI access.
 
 # Deploy
 ```
@@ -37,10 +45,10 @@ terraform init
 
 # Apply terraform - the first apply takes a while creating an encrypted AMI.
 terraform apply -var-file="ph.tfvars"
-
-# Wait for SSM to run the Ansible Playbook (workstation/), watch:
-https://console.aws.amazon.com/systems-manager/state-manager
 ```
 
-# Typical Use
-- Set home router's DNS to IP address of PiHole (output by Terraform).
+# Post-Deployment
+- Wait for Ansible Playbook, watch [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager)
+- Retrieve the VPN client configuration (QR Code or config file) from S3 (see terraform output).
+- Customize PiHole as desired via WebUI (see terraform output).
+```

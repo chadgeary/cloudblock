@@ -66,7 +66,8 @@ resource "aws_s3_bucket" "ph-bucket" {
         "s3:PutObjectAcl"
       ],
       "Resource": [
-        "arn:aws:s3:::${var.bucket_name}/ssm/*"
+        "arn:aws:s3:::${var.bucket_name}/ssm/*",
+        "arn:aws:s3:::${var.bucket_name}/wireguard/*"
       ]
     }
   ]

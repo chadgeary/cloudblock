@@ -30,6 +30,7 @@ resource "aws_security_group_rule" "ph-pubsg-mgmt-https-in" {
 }
 
 resource "aws_security_group_rule" "ph-pubsg-mgmt-dnstcp-in" {
+  count                   = var.dns_novpn * 1
   security_group_id       = aws_security_group.ph-pubsg.id
   type                    = "ingress"
   description             = "IN FROM MGMT - DNS TCP"
@@ -40,6 +41,7 @@ resource "aws_security_group_rule" "ph-pubsg-mgmt-dnstcp-in" {
 }
 
 resource "aws_security_group_rule" "ph-pubsg-mgmt-dnsudp-in" {
+  count                   = var.dns_novpn * 1
   security_group_id       = aws_security_group.ph-pubsg.id
   type                    = "ingress"
   description             = "IN FROM MGMT - DNS UDP"
@@ -47,6 +49,16 @@ resource "aws_security_group_rule" "ph-pubsg-mgmt-dnsudp-in" {
   to_port                 = "53"
   protocol                = "udp"
   cidr_blocks             = [var.mgmt_cidr]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-mgmt-wireguard-in" {
+  security_group_id       = aws_security_group.ph-pubsg.id
+  type                    = "ingress"
+  description             = "IN FROM WORLD - WIREGUARD"
+  from_port               = "51820"
+  to_port                 = "51820"
+  protocol                = "udp"
+  cidr_blocks             = [var.vpn_cidr]
 }
 
 resource "aws_security_group_rule" "ph-pubsg-out-tcp" {

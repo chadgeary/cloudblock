@@ -1,6 +1,6 @@
 # pihole password as ssm parameter
 resource "aws_ssm_parameter" "ph-ssm-param-pass" {
-  name                    = "ph-pihole-web-password"
+  name                    = "${var.ec2_name_prefix}-pihole-web-password"
   type                    = "SecureString"
   key_id                  = aws_kms_key.ph-kmscmk-ssm.key_id
   value                   = var.ssm_web_password
@@ -20,8 +20,8 @@ resource "aws_ssm_association" "ph-ssm-assoc" {
   }
   parameters              = {
     Check                   = "False"
-    ExtraVariables          = "SSM=True install_dir=${var.ssm_install_dir} dns_server_1=${var.ssm_dns_server_1} dns_server_2=${var.ssm_dns_server_2} aws_region=${var.aws_region}"
-    InstallDependencies     = "True"
+    ExtraVariables          = "SSM=True aws_region=${var.aws_region} name_prefix=${var.ec2_name_prefix} s3_bucket=${aws_s3_bucket.ph-bucket.id} kms_key_id=${aws_kms_key.ph-kmscmk-s3.key_id}"
+    InstallDependencies     = "False"
     PlaybookFile            = "cloud_pihole.yml"
     SourceInfo              = "{\"path\":\"https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.ph-bucket.id}/pihole/\"}"
     SourceType              = "S3"

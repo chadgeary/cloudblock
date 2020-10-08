@@ -165,39 +165,17 @@ resource "aws_kms_key" "ph-kmscmk-ssm" {
       "Resource": "*"
     },
     {
-      "Sid": "Allow attachment of persistent resources",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "${aws_iam_role.ph-instance-iam-role.arn}"
-      },
-      "Action": [
-        "kms:CreateGrant",
-        "kms:ListGrants",
-        "kms:RevokeGrant"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "Bool": {
-          "kms:GrantIsForAWSResource": "true"
-        }
-      }
-    },
-    {
       "Sid": "Allow access through EC2",
       "Effect": "Allow",
       "Principal": {
         "AWS": "${aws_iam_role.ph-instance-iam-role.arn}"
       },
-      "Action": [
-        "kms:Decrypt",
-        "kms:GenerateDataKey*",
-        "kms:DescribeKey"
-      ],
+      "Action": "kms:Decrypt",
       "Resource": "*",
       "Condition": {
         "StringEquals": {
           "kms:CallerAccount": "${data.aws_caller_identity.ph-aws-account.account_id}",
-          "kms:ViaService": "ec2.${var.aws_region}.amazonaws.com"
+          "kms:ViaService": "ssm.${var.aws_region}.amazonaws.com"
         }
       }
     }

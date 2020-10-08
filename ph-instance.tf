@@ -22,8 +22,29 @@ resource "aws_instance" "ph-instance" {
   }
   user_data               = <<EOF
 #!/bin/bash
-# set hostname
-hostnamectl set-hostname ${var.ec2_name_prefix}-pihole
+# stop ssm before executing
+systemctl stop snap.amazon-ssm-agent.amazon-ssm-agent.service
+
+# replace systemd-resolved with static dns derived from dhcp
+DNS_SERVER=$(systemd-resolve --status | awk -F': ' '/DNS Servers/{print $2}')
+systemctl disable systemd-resolved
+systemctl stop systemd-resolved
+rm -f /etc/resolv.conf
+tee /etc/resolv.conf << EOM
+nameserver $DNS_SERVER
+options edns0
+search ec2.internal
+EOM
+
+# install ansible
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
+apt-add-repository -y ppa:ansible/ansible
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get -y install ansible
+
+# start ssm
+systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
 EOF
   root_block_device {
     volume_size             = var.instance_vol_size
@@ -40,8 +61,4 @@ resource "aws_eip" "ph-eip-1" {
   instance                = aws_instance.ph-instance.id
   associate_with_private_ip = var.pubnet_instance_ip
   depends_on              = [aws_internet_gateway.ph-gw]
-}
-
-output "ph-eip-1-output" {
-  value                   = "pihole WebUI will be available @ https://${aws_eip.ph-eip-1.public_ip}/admin/"
 }

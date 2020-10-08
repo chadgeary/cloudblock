@@ -16,9 +16,15 @@ resource "aws_iam_policy" "ph-instance-policy-ssmparameter" {
       "Sid": "GetSSMParameter",
       "Effect": "Allow",
       "Action": [
-        "ssm:GetParameter"
+        "ssm:GetParameters"
       ],
       "Resource": ["${aws_ssm_parameter.ph-ssm-param-pass.arn}"]
+    },
+    {
+      "Sid": "SSMCMK",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": ["${aws_kms_key.ph-kmscmk-ssm.arn}"]
     }
   ]
 }
@@ -58,7 +64,7 @@ resource "aws_iam_policy" "ph-instance-policy-s3" {
         "s3:PutObject",
         "s3:PutObjectAcl"
       ],
-      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/pihole/*","${aws_s3_bucket.ph-bucket.arn}/ssm/*"]
+      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/ssm/*","${aws_s3_bucket.ph-bucket.arn}/wireguard/*"]
     },
     {
       "Sid": "S3CMK",
