@@ -23,7 +23,7 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 # deploying from home? This should be your public IP address with a /32 suffix. 
 
 # kms_manager
-# an AWS user account (not root) granted access to encrypted S3 objects. Required to read the VPN configuration files in S3.
+# an AWS IAM username (not root) granted access to read the Wireguard VPN configuration files in S3.
 
 # instance_key
 # a public SSH key for SSH access to the instance via user `ubuntu`.
