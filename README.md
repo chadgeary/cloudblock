@@ -31,6 +31,9 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 
 # Deploy
 ```
+# Clone and change to directory
+git clone https://github.com/chadgeary/pihole && cd pihole
+
 # Initialize terraform
 terraform init
 
