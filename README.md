@@ -11,32 +11,23 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 # Variables
 Edit the vars file (ph.tfvars) to customize the deployment, especially:
 
-**bucket_name**
+```
+# pihole_password
+# password to access the pihole webui
 
-- a unique bucket name, terraform will create the bucket to store various resources.
+# bucket_name
+# a unique S3 AWS bucket name, terraform will create the bucket to store various resources.
 
-**mgmt_cidr**
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix. 
 
-- an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1
-- deploying from home? This should be your public IP address with a /32 suffix. 
+# kms_manager
+# an AWS user account (not root) granted access to encrypted S3 objects. Required to read the VPN configuration files in S3.
 
-**vpn_cidr**
-
-- an IP range granted wireguard VPN access. Client enrollment still required.
-- default is 0.0.0.0/0 (world)
-
-**kms_manager**
-
-- an AWS user account (not root) granted access to the encrypted S3 objects.
-- required to read the VPN configuration files in S3.
-
-**instance_key**
-
-- a public SSH key for SSH access to the instance via user `ubuntu`.
-
-**ssm_web_password**
-
-- Sets the Pihole WebUI password.
+# instance_key
+# a public SSH key for SSH access to the instance via user `ubuntu`.
+```
 
 # Deploy
 ```
