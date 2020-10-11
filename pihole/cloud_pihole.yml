@@ -101,6 +101,7 @@
     - name: Get SSM parameter ph_password
       set_fact:
         ph_password: "{{ lookup('aws_ssm', name_prefix + '-pihole-web-password', decrypt=True, region=aws_region) }}"
+      no_log: True
 
 # cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
 # a lower mtu fixes the problem
@@ -142,6 +143,7 @@
           - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
         purge_networks: yes
         restart_policy: "always"
+      no_log: True
 
     - name: wireguard container
       docker_container:
