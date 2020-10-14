@@ -31,7 +31,7 @@ vpn_cidr = "0.0.0.0/0"
 # a value of 1 permits mgmt_cidr access to DNS without the VPN
 dns_novpn = 1
 
-# dns over https provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended - see https://github.com/curl/curl/wiki/DNS-over-HTTPS
+# dns over https provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns pi-dns quad9-recommended - see https://github.com/curl/curl/wiki/DNS-over-HTTPS
 doh_provider = "opendns"
 
 # must be ARM-based, t4g.nano is sufficient. t4g.micro is free into Dec 31 2020.

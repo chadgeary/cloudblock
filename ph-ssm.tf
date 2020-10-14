@@ -3,7 +3,7 @@ resource "aws_ssm_parameter" "ph-ssm-param-pass" {
   name                    = "${var.ec2_name_prefix}-pihole-web-password"
   type                    = "SecureString"
   key_id                  = aws_kms_key.ph-kmscmk-ssm.key_id
-  value                   = var.ssm_web_password
+  value                   = var.pihole_password
 }
 
 # pihole playbook
