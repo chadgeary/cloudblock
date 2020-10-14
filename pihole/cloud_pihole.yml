@@ -124,7 +124,7 @@
         purge_networks: yes
         restart_policy: "always"
 
-    - name: pihole container
+    - name: pihole container - no DNS listen
       docker_container:
         name: pihole
         env:
@@ -142,6 +142,29 @@
           - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
         purge_networks: yes
         restart_policy: "always"
+      when: dns_novpn == "0"
+
+    - name: pihole container - with DNS listen
+      docker_container:
+        name: pihole
+        env:
+          DNS1: 172.18.0.2
+          DNS2: 172.18.0.2
+          WEBPASSWORD: "{{ ph_password }}"
+        image: pihole/pihole:latest
+        networks:
+          - name: piinthesky
+            ipv4_address: "{{ docker_pihole }}"
+        ports:
+          - "8001:80"
+          - "53:53"
+          - "53:53/udp"
+        volumes:
+          - /opt/pihole/etc:/etc/pihole/:rw
+          - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+        purge_networks: yes
+        restart_policy: "always"
+      when: dns_novpn == "1"
 
     - name: wireguard container
       docker_container:
