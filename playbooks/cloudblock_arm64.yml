@@ -1,5 +1,5 @@
 ---
-- name: cloud pihole - pi in the sky
+- name: cloudblock - arm64 standalone variant
   hosts: localhost
   gather_facts: true
   become: true
@@ -11,16 +11,19 @@
           - apache2
           - docker.io
           - libcap2-bin
-          - python3-pip
+          - python-pip
           - ssl-cert
         state: latest
         update_cache: yes
 
-    - name: docker python packages
+    - name: docker and boto python packages
       pip:
         name:
           - docker
-        executable: /usr/bin/pip3
+          - boto
+          - boto3
+          - botocore
+        executable: /usr/bin/pip
         state: latest
 
     - name: IP Forwarding enable/persist
@@ -76,14 +79,14 @@
         mode: '0644'
         path: /opt/cloudflared/Dockerfile
         block: |
-          FROM ubuntu:bionic
+          FROM arm64v8/ubuntu:bionic
           EXPOSE 53/tcp
           EXPOSE 53/udp
           RUN apt-get update && \
               apt-get install -y wget && \
-              wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 --directory-prefix=/usr/local/bin/ && \
-              chmod 555 /usr/local/bin/cloudflared-linux-amd64
-              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+              wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64 --directory-prefix=/usr/local/bin/ && \
+              chmod 555 /usr/local/bin/cloudflared-linux-arm64
+              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
 
     - name: Cloudflared image
@@ -136,7 +139,6 @@
         purge_networks: yes
         restart_policy: "always"
       when: dns_novpn == "0"
-      no_log: True
 
     - name: pihole container - with DNS listen
       docker_container:

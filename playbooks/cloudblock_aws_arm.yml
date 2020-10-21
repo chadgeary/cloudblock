@@ -1,5 +1,5 @@
 ---
-- name: cloud pihole - pi in the sky
+- name: cloudblock - AWS ARM variant
   hosts: localhost
   gather_facts: true
   become: true

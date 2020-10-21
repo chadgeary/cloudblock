@@ -1,5 +1,5 @@
 ---
-- name: cloudblock - customized for google cloud
+- name: cloudblock - google cloud x86_64 variant
   hosts: localhost
   gather_facts: true
   become: true
