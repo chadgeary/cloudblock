@@ -40,7 +40,7 @@
 
     - name: various container directories
       file:
-        path: /opt/cloudflared
+        path: "{{ item }}"
         state: directory
       with_items:
         - /opt/cloudflared
