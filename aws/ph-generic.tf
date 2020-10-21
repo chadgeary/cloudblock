@@ -68,7 +68,7 @@ variable "vendor_ami_name_string" {
   description              = "The search string for the name of the AMI from the AMI Vendor"
 }
 
-variable "ssm_web_password" {
+variable "pihole_password" {
   type                     = string
   description              = "Password to access the Pihole web console"
 }
