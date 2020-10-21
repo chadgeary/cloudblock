@@ -12,6 +12,9 @@ git clone https://github.com/chadgeary/cloudblock && cd cloudblock/playbooks/
 
 # Run playbook
 ansible-playbook cloudblock_amd64.yml --extra-vars 'docker_network=172.18.0.0 docker_gw=172.18.0.1 docker_doh=172.18.0.2 docker_pihole=172.18.0.3 docker_wireguard=172.18.0.4 wireguard_network=172.19.0.0 doh_provider=opendns dns_novpn=1'
+
+# Locate configurations
+ls -ltrh /opt/wireguard/peer1/
 ```
 
 # Variables
@@ -27,3 +30,6 @@ Flag to allow DNS lookups directly to the pihole service without Wireguard VPN (
 # others
 The IP address variables should be changed if they'll conflict/overlap local networks. wireguard_network must not be in the same /24 as docker_<var>s
 ```
+
+# Client Remote Wireguard Connectivity / Port Forwarding
+Port 51820 must be open/forwarded to this host.
