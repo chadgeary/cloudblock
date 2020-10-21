@@ -1,7 +1,7 @@
 # Reference
 End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS). Built in AWS with an ARM EC2 instance using Terraform, Ansible, and Docker.
 
-![Diagram](diagram.png)
+![Diagram](../diagram.png)
 
 # Requirements
 - Terraform installed.
