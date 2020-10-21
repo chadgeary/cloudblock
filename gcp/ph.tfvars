@@ -12,7 +12,7 @@ mgmt_cidr = "1.2.3.4/32"
 doh_provider = "opendns"
 
 ## UNCOMMON ##
-project_url = "https://github.com/chadgeary/pihole"
+project_url = "https://github.com/chadgeary/cloudblock"
 dns_novpn = 0
 vpn_cidr = "0.0.0.0/0"
 gcp_project_services = ["serviceusage.googleapis.com","cloudkms.googleapis.com","storage-api.googleapis.com","secretmanager.googleapis.com"]
