@@ -1,7 +1,7 @@
 # Reference
 End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS). Built in GCP with a low-cost instance using Terraform, Ansible, and Docker.
 
-![Diagram](diagram.png)
+![Diagram](../diagram.png)
 
 # Requirements
 - Terraform installed.
@@ -34,7 +34,7 @@ gcloud auth list
 # Deploy
 ```
 # Clone and change to directory
-git clone https://github.com/chadgeary/gcp_pihole && cd gcp_pihole
+git clone https://github.com/chadgeary/cloudblock && cd cloudblock/gcp/
 
 # Initialize terraform
 terraform init

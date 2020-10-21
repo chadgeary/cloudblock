@@ -32,7 +32,7 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 # Deploy
 ```
 # Clone and change to directory
-git clone https://github.com/chadgeary/pihole && cd pihole
+git clone https://github.com/chadgeary/cloudblock && cd cloudblock/aws/
 
 # Initialize terraform
 terraform init
