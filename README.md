@@ -3,8 +3,8 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 
 ![Diagram](diagram.png)
 
-# Deployment
-See README.md of aws/ or gcp/
-
-# Standalone
-Don't want to deploy in the cloud? See playbooks/ README.md
+# Instructions
+Three methods are available, see the README of each subdirectory for platform-specific guides.
+- AWS
+- GCP
+- Standalone (under playbooks/)
