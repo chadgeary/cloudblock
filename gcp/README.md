@@ -16,7 +16,7 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 # password to access the pihole webui
 
 # mgmt_cidr
-# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# an IP range granted webUI and SSH access. Also permitted PiHole DNS if dns_novpn = 1. 
 # deploying from home? This should be your public IP address with a /32 suffix. 
 
 # ssh_key
