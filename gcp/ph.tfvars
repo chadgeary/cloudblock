@@ -13,7 +13,7 @@ doh_provider = "opendns"
 
 ## UNCOMMON ##
 project_url = "https://github.com/chadgeary/cloudblock"
-dns_novpn = 0
+dns_novpn = 1
 vpn_cidr = "0.0.0.0/0"
 gcp_project_services = ["serviceusage.googleapis.com","cloudkms.googleapis.com","storage-api.googleapis.com","secretmanager.googleapis.com"]
 gcp_image_project = "ubuntu-os-cloud"
