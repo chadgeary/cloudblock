@@ -10,7 +10,7 @@
 # Clone and change to directory
 git clone https://github.com/chadgeary/cloudblock && cd cloudblock/playbooks/
 
-# Run playbook
+# Run playbook (target is the localhost)
 ansible-playbook cloudblock_amd64.yml --extra-vars 'docker_network=172.18.0.0 docker_gw=172.18.0.1 docker_doh=172.18.0.2 docker_pihole=172.18.0.3 docker_wireguard=172.18.0.4 wireguard_network=172.19.0.0 doh_provider=opendns dns_novpn=1'
 
 # Locate configurations

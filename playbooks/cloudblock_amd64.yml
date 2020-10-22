@@ -47,13 +47,7 @@
         - /opt/pihole
         - /opt/pihole/etc
         - /opt/pihole/dnsmasq.d
-
-    - name: wireguard dir gets user ubuntu
-      file:
-        path: /opt/wireguard
-        state: directory
-        owner: ubuntu
-        group: ubuntu
+        - /opt/wireguard
 
     - name: DoH Endpoints
       blockinfile:
