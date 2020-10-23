@@ -94,7 +94,7 @@
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
           Content-Type: application/json
-          x-goog-user-project: "{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}"
+          x-goog-user-project: "{{ gcp_project_prefix }}-project-{{ gcp_project_suffix }}"
       register: ph_secret
 
     - name: Cloudflared Dockerfile
