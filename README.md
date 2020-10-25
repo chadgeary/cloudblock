@@ -6,7 +6,7 @@ Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS)
 ![Diagram](diagram.png)
 
 # Instructions
-Three methods are available, see the README of each subdirectory for platform-specific guides.
+Several deployment options are available, see the README of each subdirectory for platform-specific guides.
 - AWS (Amazon)
 - GCP (Google)
 - OCI (Oracle)
