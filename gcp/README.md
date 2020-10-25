@@ -12,7 +12,7 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 Edit the vars file (ph.tfvars) to customize the deployment, especially:
 
 ```
-# pihole_password
+# ph_password
 # password to access the pihole webui
 
 # mgmt_cidr
