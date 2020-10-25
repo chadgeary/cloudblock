@@ -1,18 +1,45 @@
 resource "oci_core_vcn" "ph-vcn" {
-  compartment_id               = data.oci_identity_compartment.ph-root-compartment.id
+  compartment_id               = oci_identity_compartment.ph-compartment.id
   cidr_block                   = var.vcn_cidr
   display_name                 = "${var.ph_prefix}-network"
   dns_label                    = var.ph_prefix
 }
 
+resource "oci_core_internet_gateway" "ph-internet-gateway" {
+  compartment_id               = oci_identity_compartment.ph-compartment.id
+  vcn_id                       = oci_core_vcn.ph-vcn.id
+  display_name                 = "${var.ph_prefix}-internet-gateway"
+  enabled                      = "true"
+}
+
 resource "oci_core_subnet" "ph-subnet" {
-  compartment_id               = data.oci_identity_compartment.ph-root-compartment.id
+  compartment_id               = oci_identity_compartment.ph-compartment.id
   vcn_id                       = oci_core_vcn.ph-vcn.id
   cidr_block                   = var.vcn_cidr
   display_name                 = "${var.ph_prefix}-subnet"
 }
 
-resource "oci_core_default_security_list" "ph-security-list" {
+resource "oci_core_default_route_table" "ph-route-table" {
+  manage_default_resource_id   = oci_core_vcn.ph-vcn.default_route_table_id
+  route_rules {
+    network_entity_id            = oci_core_internet_gateway.ph-internet-gateway.id
+    destination                  = "0.0.0.0/0"
+    destination_type             = "CIDR_BLOCK"
+  }
+}
+
+resource "oci_core_route_table_attachment" "ph-route-table-attach" {
+  subnet_id                    = oci_core_subnet.ph-subnet.id
+  route_table_id               = oci_core_vcn.ph-vcn.default_route_table_id
+}
+
+resource "oci_core_network_security_group" "ph-network-security-group" {
+  compartment_id               = oci_identity_compartment.ph-compartment.id
+  vcn_id                       = oci_core_vcn.ph-vcn.id
+  display_name                 = "${var.ph_prefix}-network-security-group"
+}
+
+resource "oci_core_default_security_list" "ph-security-list-nodirectdns" {
   count                        = var.dns_novpn * 0
   manage_default_resource_id   = oci_core_vcn.ph-vcn.default_security_list_id
   display_name                 = "${var.ph_prefix}-security"
@@ -26,10 +53,6 @@ resource "oci_core_default_security_list" "ph-security-list" {
     tcp_options {
       max                          = "22"
       min                          = "22"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
   ingress_security_rules {
@@ -38,10 +61,6 @@ resource "oci_core_default_security_list" "ph-security-list" {
     tcp_options {
       max                          = "443"
       min                          = "443"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
   ingress_security_rules {
@@ -50,15 +69,11 @@ resource "oci_core_default_security_list" "ph-security-list" {
     udp_options {
       max                          = "51820"
       min                          = "51820"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
 }
 
-resource "oci_core_default_security_list" "ph-security-list-dns_novpn" {
+resource "oci_core_default_security_list" "ph-security-list-directdns" {
   count                        = var.dns_novpn * 1
   manage_default_resource_id   = oci_core_vcn.ph-vcn.default_security_list_id
   display_name                 = "${var.ph_prefix}-security"
@@ -72,10 +87,6 @@ resource "oci_core_default_security_list" "ph-security-list-dns_novpn" {
     tcp_options {
       max                          = "22"
       min                          = "22"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
   ingress_security_rules {
@@ -84,10 +95,6 @@ resource "oci_core_default_security_list" "ph-security-list-dns_novpn" {
     tcp_options {
       max                          = "443"
       min                          = "443"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
   ingress_security_rules {
@@ -96,10 +103,6 @@ resource "oci_core_default_security_list" "ph-security-list-dns_novpn" {
     udp_options {
       max                          = "51820"
       min                          = "51820"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
   ingress_security_rules {
@@ -108,10 +111,6 @@ resource "oci_core_default_security_list" "ph-security-list-dns_novpn" {
     tcp_options {
       max                          = "53"
       min                          = "53"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
   ingress_security_rules {
@@ -120,10 +119,6 @@ resource "oci_core_default_security_list" "ph-security-list-dns_novpn" {
     udp_options {
       max                          = "53"
       min                          = "53"
-      source_port_range {
-        max                          = "65535"
-        min                          = "1"
-      }
     }
   }
 }
