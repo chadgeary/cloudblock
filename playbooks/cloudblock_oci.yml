@@ -227,6 +227,20 @@
         enabled: yes
       when: apache_modules.changed or proxy_conf.changed
 
+    - name: iptables accept HTTPS
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 443
+        ctstate: 'NEW'
+        jump: ACCEPT
+        action: insert
+        rule_num: '2'
+
+    - name: iptables Persistent
+      shell: |
+        iptables-save
+
     - name: Wait for peer1 confs (Wireguard)
       wait_for:
         path: "/opt/wireguard/peer1/{{ item }}"
