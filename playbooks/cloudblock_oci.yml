@@ -237,6 +237,36 @@
         action: insert
         rule_num: '2'
 
+    - name: iptables accept DNS TCP
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 53
+        ctstate: 'NEW'
+        jump: ACCEPT
+        action: insert
+        rule_num: '3'
+
+    - name: iptables accept DNS UDP
+      iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: 53
+        ctstate: 'NEW'
+        jump: ACCEPT
+        action: insert
+        rule_num: '4'
+
+    - name: iptables accept Wireguard
+      iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: 51820
+        ctstate: 'NEW'
+        jump: ACCEPT
+        action: insert
+        rule_num: '5'
+
     - name: iptables Persistent
       shell: |
         iptables-save
