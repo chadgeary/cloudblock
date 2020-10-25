@@ -19,6 +19,11 @@ data "template_file" "ph-user-data" {
     wireguard_network = var.wireguard_network
     doh_provider = var.doh_provider
     dns_novpn = var.dns_novpn
+    ph_password_cipher = oci_kms_encrypted_data.ph-kms-ph-secret.ciphertext
+    oci_kms_endpoint = oci_kms_vault.ph-kms-vault.crypto_endpoint
+    oci_kms_keyid = oci_kms_key.ph-kms-key-storage.id
+    oci_storage_namespace = data.oci_objectstorage_namespace.ph-bucket-namespace.namespace
+    oci_storage_bucketname = "${var.ph_prefix}-bucket"
   }
 }
 

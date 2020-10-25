@@ -11,10 +11,11 @@ $DNS_SEARCH
 EOM
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git
-pip3 install --upgrade ansible
+pip3 install --upgrade ansible oci
+ansible-galaxy collection install oracle.oci
 mkdir /opt/cloudblock
 git clone ${project_url} /opt/cloudblock/
 cd /opt/cloudblock/
 git pull
 cd playbooks/
-ansible-playbook cloudblock_amd64.yml --extra-vars 'docker_network=${docker_network} docker_gw=${docker_gw} docker_doh=${docker_doh} docker_pihole=${docker_pihole} docker_wireguard=${docker_wireguard} wireguard_network=${wireguard_network} doh_provider=${doh_provider} dns_novpn=1' >> /var/log/cloudblock.log
+ansible-playbook cloudblock_oci.yml --extra-vars 'docker_network=${docker_network} docker_gw=${docker_gw} docker_doh=${docker_doh} docker_pihole=${docker_pihole} docker_wireguard=${docker_wireguard} wireguard_network=${wireguard_network} doh_provider=${doh_provider} dns_novpn=1 ph_password_cipher=${ph_password_cipher} oci_kms_endpoint=${oci_kms_endpoint} oci_kms_keyid=${oci_kms_keyid} oci_storage_namespace=${oci_storage_namespace} oci_storage_bucketname=${oci_storage_bucketname}' >> /var/log/cloudblock.log
