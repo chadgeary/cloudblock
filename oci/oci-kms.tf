@@ -20,7 +20,3 @@ resource "oci_kms_encrypted_data" "ph-kms-ph-secret" {
   key_id                  = oci_kms_key.ph-kms-key-storage.id
   plaintext               = var.ph_password
 }
-
-output "ph-kms-ph-secret-ciphertext" {
-  value                   = oci_kms_encrypted_data.ph-kms-ph-secret.ciphertext
-}
