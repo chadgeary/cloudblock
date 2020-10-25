@@ -7,19 +7,30 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 
 # Requirements
 - Terraform installed.
-- OCI credentials files (e.g. `aws configure` if awscli is installed) and a non-root AWS IAM user.
+- OCI CLI installed and an API key generated / uploaded via `oci setup config`, add via OCI web console under Identity -> Users -> User Details -> API Keys
 - Customized variables (see Variables section).
 
 # Variables
-Edit the vars file (ph.tfvars) to customize the deployment, especially:
+Edit the vars file (oci.tfvars) to customize the deployment, especially:
 
 ```
-# pihole_password
+# oci_config_profile
+# The location of the oci config file (created by `oci setup config`), e.g. /home/chad/.oci/config
+
+# oci_root_compartment
+# The OCID of the tenancy id (or root compartment), try:
+oci iam compartment list --all --compartment-id-in-subtree true --access-level AC
+CESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]"
+
+# ph_password
 # password to access the pihole webui
 
 # mgmt_cidr
 # an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
 # deploying from home? This should be your public IP address with a /32 suffix. 
+
+# ssh_key
+# A public SSH key for access to the compute instance via SSH, with user ubuntu.
 ```
 
 # Deploy
@@ -30,9 +41,9 @@ git clone https://github.com/chadgeary/cloudblock && cd cloudblock/oci/
 # Initialize terraform
 terraform init
 
-# Apply terraform - the first apply takes a while creating an encrypted AMI.
-terraform apply -var-file="ph.tfvars"
+# Apply terraform
+terraform apply -var-file="oci.tfvars"
 ```
 
 # Post-Deployment
-- See terraform output for VPN Client configuration link and the Pihole WebUI address.
+- See terraform output for VPN Client configuration files link and the Pihole WebUI address.
