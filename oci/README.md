@@ -17,8 +17,7 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 
 # oci_root_compartment
 # The OCID of the tenancy id (or root compartment), try:
-oci iam compartment list --all --compartment-id-in-subtree true --access-level AC
-CESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]"
+oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]"
 
 # ph_password
 # password to access the pihole webui
