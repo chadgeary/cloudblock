@@ -1,0 +1,266 @@
+---
+- name: cloudblock - amd64 oci (oracle) variant
+  hosts: localhost
+  collections:
+    - azure.azcollection
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: required packages
+      apt:
+        pkg:
+          - apache2
+          - docker.io
+          - libcap2-bin
+          - python3-pip
+          - ssl-cert
+        state: latest
+        update_cache: yes
+
+    - name: docker python packages
+      pip:
+        name:
+          - docker
+        executable: /usr/bin/pip3
+        state: latest
+
+    - name: IP Forwarding enable/persist
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        reload: yes
+        sysctl_set: yes
+        sysctl_file: /etc/sysctl.conf
+
+    - name: docker service started/enabled
+      systemd:
+        name: docker
+        state: started
+        enabled: True
+
+    - name: various container directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /opt/cloudflared
+        - /opt/pihole
+        - /opt/pihole/etc
+        - /opt/pihole/dnsmasq.d
+        - /opt/wireguard
+
+    - name: DoH Endpoints
+      blockinfile:
+        create: yes
+        mode: '0644'
+        path: /opt/cloudflared/endpoints
+        block: |
+          adguard https://dns.adguard.com/dns-query
+          cloudflare https://cloudflare-dns.com/dns-query
+          applied-privacy https://doh.applied-privacy.net/query
+          google https://dns.google/dns-query
+          hurricane-electric https://ordns.he.net/dns-query
+          pi-dns https://doh.pi-dns.com/dns-query
+          quad9-recommended https://dns.quad9.net/dns-query
+          libre-dns https://doh.libredns.gr/dns-query
+          opendns https://doh.opendns.com/dns-query
+
+    - name: Set DoH URL from DoH provider var
+      shell: |
+        awk '/{{ doh_provider }}/ { print $2 }' /opt/cloudflared/endpoints
+      register: doh_url
+
+    - name: Get ph_password from Azure Vault Secret
+      azure_rm_keyvaultsecret_info:
+        auth_source: msi
+        vault_uri: "https://{{ ph_prefix }}-secret-{{ ph_suffix }}.vault.azure.net"
+        name: "{{ ph_prefix }}-secret"
+        version: "current"
+      register: ph_password
+
+    - name: Cloudflared Dockerfile
+      blockinfile:
+        create: yes
+        mode: '0644'
+        path: /opt/cloudflared/Dockerfile
+        block: |
+          FROM ubuntu:bionic
+          EXPOSE 53/tcp
+          EXPOSE 53/udp
+          RUN apt-get update && \
+              apt-get install -y wget && \
+              wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 --directory-prefix=/usr/local/bin/ && \
+              chmod 555 /usr/local/bin/cloudflared-linux-amd64
+              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+      register: cloudflared_doh_dockerfile
+
+    - name: Cloudflared image
+      docker_image:
+        name: cloudflared_doh
+        build:
+          path: /opt/cloudflared
+        source: build
+        force_source: yes
+      when: cloudflared_doh_dockerfile.changed
+
+# cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
+# a lower mtu fixes the problem
+    - name: cloudflared pihole and wireguard network
+      docker_network:
+        name: piinthesky
+        driver: bridge
+        driver_options:
+          com.docker.network.driver.mtu: 1380
+        ipam_config:
+          - subnet: "{{ docker_network }}/24"
+            gateway: "{{ docker_gw }}"
+
+    - name: cloudflared_doh container
+      docker_container:
+        name: cloudflared_doh
+        image: cloudflared_doh
+        networks:
+          - name: piinthesky
+            ipv4_address: "{{ docker_doh }}"
+        purge_networks: yes
+        restart_policy: "always"
+
+    - name: pihole container - without DNS listen
+      docker_container:
+        name: pihole
+        env:
+          DNS1: 172.18.0.2
+          DNS2: 172.18.0.2
+          WEBPASSWORD: "{{ ph_password.secrets[0].secret }}"
+        image: pihole/pihole:latest
+        networks:
+          - name: piinthesky
+            ipv4_address: "{{ docker_pihole }}"
+        ports:
+          - "8001:80"
+        volumes:
+          - /opt/pihole/etc:/etc/pihole/:rw
+          - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+        purge_networks: yes
+        restart_policy: "always"
+      when: dns_novpn == "0"
+      no_log: True
+
+    - name: pihole container - with DNS listen
+      docker_container:
+        name: pihole
+        env:
+          DNS1: 172.18.0.2
+          DNS2: 172.18.0.2
+          WEBPASSWORD: "{{ ph_password.secrets[0].secret }}" 
+        image: pihole/pihole:latest
+        networks:
+          - name: piinthesky
+            ipv4_address: "{{ docker_pihole }}"
+        ports:
+          - "8001:80"
+          - "53:53"
+          - "53:53/udp"
+        volumes:
+          - /opt/pihole/etc:/etc/pihole/:rw
+          - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+        purge_networks: yes
+        restart_policy: "always"
+      when: dns_novpn == "1"
+      no_log: True
+
+    - name: wireguard container
+      docker_container:
+        name: wireguard
+        capabilities:
+          - NET_ADMIN
+          - SYS_MODULE
+        env:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "Etc/UTC"
+          SERVERURL: "auto"
+          SERVERPORT: "51820"
+          ALLOWEDIPS: "{{ docker_pihole }}"
+          PEERS: "1"
+          PEERDNS: "{{ docker_pihole }}"
+          INTERNAL_SUBNET: "{{ wireguard_network }}"
+        image: linuxserver/wireguard:latest
+        networks:
+          - name: piinthesky
+            ipv4_address: "{{ docker_wireguard }}"
+        ports:
+          - "51820:51820/udp"
+        sysctls:
+          net.ipv4.conf.all.src_valid_mark: 1
+        volumes:
+          - /opt/wireguard:/config:rw
+        restart_policy: "always"
+        purge_networks: yes
+
+    - name: Enable Apache2 modules for proxy and ssl
+      apache2_module:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - headers
+        - proxy
+        - proxy_http
+        - ssl
+      register: apache_modules
+
+    - name: Apache2 proxy configuration
+      template:
+        src: 8001-web-proxy.conf
+        dest: /etc/apache2/sites-enabled/8001-web-proxy.conf
+        owner: root
+        group: root
+        mode: 0444
+      register: proxy_conf
+
+    - name: Apache2 enabled / restarted
+      systemd:
+        name: apache2
+        state: restarted
+        enabled: yes
+      when: apache_modules.changed or proxy_conf.changed
+
+    - name: Wait for peer1 confs (Wireguard)
+      wait_for:
+        path: "/opt/wireguard/peer1/{{ item }}"
+        state: present
+        timeout: 600
+        sleep: 1
+      with_items:
+        - publickey-peer1
+        - privatekey-peer1
+        - peer1.conf
+        - peer1.png
+
+    - name: Upload peer1 confs (Wireguard) to Azure Storage
+      azure_rm_storageblob:
+        auth_source: msi
+        resource_group: "{{ ph_prefix }}-resourcegroup"
+        storage_account_name: "{{ ph_prefix }}store{{ ph_suffix }}"
+        container: "{{ ph_prefix }}-storage-container"
+        src: "/opt/wireguard/peer1/{{ item }}"
+        blob: "wireguard/{{ item }}"
+        content_type: 'text/plain'
+      with_items:
+        - publickey-peer1
+        - privatekey-peer1
+        - peer1.conf
+
+    - name: Upload peer1 QR code (Wireguard) to Azure Storage
+      azure_rm_storageblob:
+        auth_source: msi
+        resource_group: "{{ ph_prefix }}-resourcegroup"
+        storage_account_name: "{{ ph_prefix }}store{{ ph_suffix }}"
+        container: "{{ ph_prefix }}-storage-container"
+        src: "/opt/wireguard/peer1/{{ item }}"
+        blob: "wireguard/{{ item }}"
+        content_type: 'image/png'
+      with_items:
+        - peer1.png

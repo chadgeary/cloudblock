@@ -1,5 +1,21 @@
 provider "azurerm" {
-  features {}
+  features {
+    key_vault {
+      purge_soft_delete_on_destroy = true
+    }
+  }
+}
+
+data "azurerm_client_config" "ph-client-conf" {
+}
+
+data "azurerm_subscription" "ph-subscription" {
+}
+
+resource "random_string" "ph-random" {
+  length                  = 5
+  upper                   = false
+  special                 = false
 }
 
 variable "az_region" {
@@ -37,19 +53,9 @@ variable "az_subnet_cidr" {
   description              = "Network (in CIDR notation) as a sub-network of the azure virtual network"
 }
 
-variable "az_dns1" {
-  type                     = string
-  description              = "IP address in az_network_cidr assigned to DNS IP 1"
-}
-
-variable "az_dns2" {
-  type                     = string
-  description              = "IP address in az_network_cidr assigned to DNS IP 2"
-}
-
 variable "ph_prefix" {
   type                     = string
-  description              = "Friendly prefix string affixed to resource names, like storage buckets and instance(s)."
+  description              = "Friendly prefix string affixed to resource names, like storage buckets and instance(s). Can only consist of lowercase letters and numbers, and must less than 19 characters."
 }
 
 variable "ssh_user" {
@@ -60,4 +66,59 @@ variable "ssh_user" {
 variable "ssh_key" {
   type                     = string
   description              = "Public SSH key to access the virtual machine instance"
+}
+
+variable "mgmt_cidr" {
+  type                     = string
+  description              = "A subnet (in CIDR notation) granted SSH, WebUI, and (if dns_novpn = 1) DNS access to virtual machine instance. Deploying from home? This is your public ip with a /32, e.g. 1.2.3.4/32"
+}
+
+variable "ph_password" {
+  type                     = string
+  description              = "Password for Pihole WebUI access"
+}
+
+variable "dns_novpn" {
+  type                     = number
+  description              = "Flag to enable (1) or disable (0) mgmt_cidr's access to direct DNS lookups"
+}
+
+variable "project_url" {
+  type                     = string
+  description              = "URL of the git project"
+}
+
+variable "docker_network" {
+  type                     = string
+  description              = "docker network ip"
+}
+
+variable "docker_gw" {
+  type                     = string
+  description              = "docker network gateway ip"
+}
+
+variable "docker_doh" {
+  type                     = string
+  description              = "cloudflared_doh container ip"
+}
+
+variable "docker_pihole" {
+  type                     = string
+  description              = "pihole container ip"
+}
+
+variable "docker_wireguard" {
+  type                     = string
+  description              = "wireguard container ip"
+}
+
+variable "wireguard_network" {
+  type                     = string
+  description              = "wireguard vpn network ip"
+}
+
+variable "doh_provider" {
+  type                     = string
+  description              = "DNS over HTTPS provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended"
 }
