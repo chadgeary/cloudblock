@@ -52,29 +52,9 @@ resource "azurerm_linux_virtual_machine" "ph-instance" {
     version                 = var.az_image_version
   }
   identity {
-    type                    = "SystemAssigned"
+    type                    = "UserAssigned"
+    identity_ids            = [azurerm_user_assigned_identity.ph-instance-id.id]
   }
   custom_data               = base64encode(data.template_file.ph-custom-data.rendered)
-  depends_on                = [azurerm_key_vault_access_policy.ph-vault-disk-access-disk]
-}
-
-resource "azurerm_role_definition" "ph-instance-role" {
-  name                    = "${var.ph_prefix}-instance-role"
-  scope                   = data.azurerm_subscription.ph-subscription.id
-  assignable_scopes       = [data.azurerm_subscription.ph-subscription.id]
-  permissions {
-    actions                 = [
-      "Microsoft.KeyVault/vaults/secrets/read",
-      "Microsoft.Storage/storageAccounts/blobServices/containers/read"
-    ]
-    data_actions             = [
-      "Microsoft.KeyVault/vaults/secrets/getSecret/action"
-    ]
-  }
-}
-
-resource "azurerm_role_assignment" "ph-instance-role-assignment" {
-  scope                   = data.azurerm_subscription.ph-subscription.id
-  role_definition_id      = azurerm_role_definition.ph-instance-role.role_definition_resource_id
-  principal_id            = azurerm_linux_virtual_machine.ph-instance.identity[0].principal_id
+  depends_on                = [azurerm_key_vault_access_policy.ph-vault-disk-access-disk,azurerm_role_assignment.ph-instance-role-assignment]
 }

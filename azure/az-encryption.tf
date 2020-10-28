@@ -124,8 +124,8 @@ resource "azurerm_key_vault_access_policy" "ph-vault-storage-access-storage" {
 
 resource "azurerm_key_vault_access_policy" "ph-vault-secret-access-instance" {
   key_vault_id            = azurerm_key_vault.ph-vault-secret.id
-  tenant_id               = azurerm_linux_virtual_machine.ph-instance.identity[0].tenant_id
-  object_id               = azurerm_linux_virtual_machine.ph-instance.identity[0].principal_id
+  tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
+  object_id               = azurerm_user_assigned_identity.ph-instance-id.principal_id
   secret_permissions = [
     "get",
     "list"

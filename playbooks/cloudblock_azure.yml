@@ -1,5 +1,5 @@
 ---
-- name: cloudblock - amd64 oci (oracle) variant
+- name: cloudblock - amd64 azure variant
   hosts: localhost
   collections:
     - azure.azcollection
