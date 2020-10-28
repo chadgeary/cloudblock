@@ -34,7 +34,7 @@ git clone https://github.com/chadgeary/cloudblock && cd cloudblock/azure/
 terraform init
 
 # Apply terraform
-terraform apply -var-file="azure.tfvars"
+terraform apply -var-file="az.tfvars"
 ```
 
 # Post-Deployment
