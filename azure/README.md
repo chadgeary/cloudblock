@@ -11,7 +11,7 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 - Customized variables (see Variables section).
 
 # Variables
-Edit the vars file (oci.tfvars) to customize the deployment, especially:
+Edit the vars file (az.tfvars) to customize the deployment, especially:
 
 ```
 # ph_password
