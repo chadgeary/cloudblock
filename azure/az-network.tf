@@ -6,7 +6,6 @@ resource "azurerm_virtual_network" "ph-network" {
   subnet {
     name                    = "${var.ph_prefix}-subnet1"
     address_prefix          = var.az_subnet_cidr
-    security_group          = azurerm_network_security_group.ph-net-sec.id 
   }
 }
 
@@ -19,7 +18,7 @@ resource "azurerm_public_ip" "ph-public-ip" {
 }
 
 resource "azurerm_network_security_group" "ph-net-sec" {
-  name                    = "${var.ph_prefix}-app-sec"
+  name                    = "${var.ph_prefix}-net-sec"
   location                = azurerm_resource_group.ph-resourcegroup.location
   resource_group_name     = azurerm_resource_group.ph-resourcegroup.name
 }
