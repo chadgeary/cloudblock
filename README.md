@@ -16,3 +16,5 @@ Several deployment options are available, see the README of each subdirectory fo
 # Step-by-Step Video
 By yours truly, for Windows users.
 - ![Prerequisites](https://youtu.be/tU8sGNf5nFE) (all deployments should watch this first).
+- ![Oracle (OCI)](https://youtu.be/yzQ2ypcfPFk) (for oracle cloud users).
+- ![Azure](https://youtu.be/ttvvaFvvYb8) (for microsoft azure cloud users).
