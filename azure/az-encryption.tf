@@ -36,51 +36,22 @@ resource "azurerm_key_vault_access_policy" "ph-vault-disk-access-admin" {
   key_vault_id            = azurerm_key_vault.ph-vault-disk.id
   tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   object_id               = data.azurerm_client_config.ph-client-conf.object_id
-  key_permissions = [
-    "create",
-    "delete",
-    "get",
-    "list",
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey"
-  ]
+  key_permissions         = ["create","delete","get","list","decrypt","encrypt","sign","unwrapKey","verify","wrapKey"]
 }
 
 resource "azurerm_key_vault_access_policy" "ph-vault-storage-access-admin" {
   key_vault_id            = azurerm_key_vault.ph-vault-storage.id
   tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   object_id               = data.azurerm_client_config.ph-client-conf.object_id
-  key_permissions = [
-    "create",
-    "delete",
-    "get",
-    "list",
-    "restore",
-    "recover",
-    "purge",
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey"
-  ]
+  key_permissions = ["get", "create", "delete", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
+  secret_permissions = ["get"]
 }
 
 resource "azurerm_key_vault_access_policy" "ph-vault-secret-access-admin" {
   key_vault_id            = azurerm_key_vault.ph-vault-secret.id
   tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   object_id               = data.azurerm_client_config.ph-client-conf.object_id
-  secret_permissions = [
-    "set",
-    "get",
-    "delete",
-    "list"
-  ]
+  secret_permissions      = ["set","get","delete","list"]
 }
 
 resource "azurerm_disk_encryption_set" "ph-disk-encrypt" {
@@ -97,42 +68,22 @@ resource "azurerm_key_vault_access_policy" "ph-vault-disk-access-disk" {
   key_vault_id            = azurerm_key_vault.ph-vault-disk.id
   tenant_id               = azurerm_disk_encryption_set.ph-disk-encrypt.identity.0.tenant_id
   object_id               = azurerm_disk_encryption_set.ph-disk-encrypt.identity.0.principal_id
-  key_permissions = [
-    "get",
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey",
-    "unwrapKey"
-  ]
+  key_permissions         = ["get","decrypt","encrypt","sign","unwrapKey","verify","wrapKey","unwrapKey"]
 }
 
 resource "azurerm_key_vault_access_policy" "ph-vault-storage-access-storage" {
   key_vault_id            = azurerm_key_vault.ph-vault-storage.id
-  tenant_id               = azurerm_storage_account.ph-storage-account.identity.0.tenant_id
+  tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   object_id               = azurerm_storage_account.ph-storage-account.identity.0.principal_id
-  key_permissions = [
-    "get",
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey",
-    "unwrapKey"
-  ]
+  key_permissions         = ["get", "create", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
+  secret_permissions      = ["get"]
 }
 
 resource "azurerm_key_vault_access_policy" "ph-vault-secret-access-instance" {
   key_vault_id            = azurerm_key_vault.ph-vault-secret.id
   tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   object_id               = azurerm_user_assigned_identity.ph-instance-id.principal_id
-  secret_permissions = [
-    "get",
-    "list"
-  ]
+  secret_permissions      = ["get","list"]
 }
 
 resource "azurerm_key_vault_key" "ph-disk-key" {
@@ -140,14 +91,7 @@ resource "azurerm_key_vault_key" "ph-disk-key" {
   key_vault_id            = azurerm_key_vault.ph-vault-disk.id
   key_type                = "RSA"
   key_size                = 2048
-  key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey"
-  ]
+  key_opts                = ["decrypt","encrypt","sign","unwrapKey","verify","wrapKey"]
   depends_on              = [azurerm_key_vault_access_policy.ph-vault-disk-access-admin]
 }
 
@@ -156,15 +100,8 @@ resource "azurerm_key_vault_key" "ph-storage-key" {
   key_vault_id            = azurerm_key_vault.ph-vault-storage.id
   key_type                = "RSA"
   key_size                = 2048
-  key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey"
-  ]
-  depends_on              = [azurerm_key_vault_access_policy.ph-vault-storage-access-admin]
+  key_opts                = ["decrypt","encrypt","sign","unwrapKey","verify","wrapKey"]
+  depends_on              = [azurerm_key_vault_access_policy.ph-vault-storage-access-admin,azurerm_key_vault_access_policy.ph-vault-storage-access-storage]
 }
 
 resource "azurerm_key_vault_secret" "ph-secret" {
