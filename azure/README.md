@@ -9,7 +9,7 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 - An Azure account
 - Follow Step-by-Step (compatible with Windows and Ubuntu)
 
-# Step-by-Step for Windows Users
+# Step-by-Step 
 Windows Users install WSL (Windows Subsystem Linux)
 ```
 #############################
