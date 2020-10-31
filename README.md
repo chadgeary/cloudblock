@@ -12,3 +12,7 @@ Several deployment options are available, see the README of each subdirectory fo
 - GCP (Google)
 - OCI (Oracle)
 - Standalone (under playbooks/)
+
+# Step-by-Step Video
+By yours truly, for Windows users.
+- ![Prerequisites](https://youtu.be/tU8sGNf5nFE) (all deployments should watch this first).
