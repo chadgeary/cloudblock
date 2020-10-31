@@ -4,13 +4,109 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 ![Diagram](../diagram.png)
 
 # Requirements
-- Terraform installed.
-- AWS credentials (e.g. `aws configure` if awscli is installed) and a non-root AWS IAM user.
-- Customized variables (see Variables section).
+- An AWS account
+- Follow Step-by-Step (compatible with Windows and Ubuntu)
+
+# Step-by-Step for Windows Users
+Windows Users install WSL (Windows Subsystem Linux)
+```
+#############################
+## Windows Subsystem Linux ##
+#############################
+# Launch elevated Powershell prompt (right click -> Run as Administrator)
+ 
+# Enable Windows Subsystem Linux
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+ 
+# Reboot
+shutdown /r /t 5
+ 
+# Launch a regular Powershell prompt
+ 
+# Download the Ubuntu 1804 package from Microsoft
+curl.exe -L -o ubuntu-1804.appx https://aka.ms/wsl-ubuntu-1804
+ 
+# Rename the package
+Rename-Item ubuntu-1804.appx ubuntu-1804.zip
+ 
+# Expand the zip
+Expand-Archive ubuntu-1804.zip ubuntu-1804
+ 
+# Change to the zip directory
+cd ubuntu-1804
+ 
+# Execute the ubuntu 1804 installer
+.\ubuntu1804.exe
+ 
+# Create a username and password when prompted
+```
+Install Terraform, Git, and create an SSH key pair
+```
+#############################
+##  Terraform + Git + SSH  ##
+#############################
+# Add terraform's apt key (enter previously created password at prompt)
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+ 
+# Add terraform's apt repository
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+ 
+# Install terraform and git
+sudo apt-get update && sudo apt-get -y install terraform git
+ 
+# Clone the cloudblock project
+git clone https://github.com/chadgeary/cloudblock
+
+# Create SSH key pair (RETURN for defaults)
+ssh-keygen
+```
+
+Install the AWS cli and create non-root AWS user
+```
+#############################
+##          AWS            ##
+#############################
+# Install python3 pip
+sudo apt-get update && sudo apt-get -y install python3-pip
+
+# Install awscli via pip
+pip3 install --user --upgrade awscli
+
+# Create a non-root AWS user in the AWS web console with admin permissions
+# IAM -> Users -> Add user -> Check programmatic access and AWS Management console -> Attach existing policies -> AdministratorAccess -> copy Access key ID and Secret Access key
+
+# Set admin user credentials
+aws configure
+```
+
+Customize the deployment - See variables section below
+```
+# Change to the project's aws directory in powershell
+cd ~/cloudblock/aws/
+
+# Open File Explorer in a separate window
+# Navigate to aws project directory - change \chad\ to your WSL username
+%HOMEPATH%\ubuntu-1804\rootfs\home\chad\cloudblock\aws
+
+# Edit the aws.tfvars file using notepad and save
+```
+
+Deploy
+```
+# Change to the project's aws directory in powershell
+cd ~/cloudblock/aws/
+
+# Move back to powershell WSL window and perform the terraform steps
+terraform init
+terraform apply -var-file="aws.tfvars"
+
+# Note the outputs from terraform after the apply completes
+
+# Wait for the virtual machine to become ready (Ansible will setup the services for us)
+```
 
 # Variables
 Edit the vars file (ph.tfvars) to customize the deployment, especially:
-
 ```
 # pihole_password
 # password to access the pihole webui
@@ -23,22 +119,10 @@ Edit the vars file (ph.tfvars) to customize the deployment, especially:
 # deploying from home? This should be your public IP address with a /32 suffix. 
 
 # kms_manager
-# an AWS IAM username (not root) granted access to read the Wireguard VPN configuration files in S3.
+# The AWS username (not root) granted access to read the Wireguard VPN configuration files in S3.
 
 # instance_key
 # a public SSH key for SSH access to the instance via user `ubuntu`.
-```
-
-# Deploy
-```
-# Clone and change to directory
-git clone https://github.com/chadgeary/cloudblock && cd cloudblock/aws/
-
-# Initialize terraform
-terraform init
-
-# Apply terraform - the first apply takes a while creating an encrypted AMI.
-terraform apply -var-file="ph.tfvars"
 ```
 
 # Post-Deployment
