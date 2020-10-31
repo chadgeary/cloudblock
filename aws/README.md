@@ -93,10 +93,10 @@ cd ~/cloudblock/aws/
 
 Deploy
 ```
-# Change to the project's aws directory in powershell
+# In powershell's WSL window, change to the project's aws directory
 cd ~/cloudblock/aws/
 
-# Move back to powershell WSL window and perform the terraform steps
+# Initialize terraform and apply the terraform state
 terraform init
 terraform apply -var-file="aws.tfvars"
 
