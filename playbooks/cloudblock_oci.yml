@@ -133,7 +133,7 @@
         env:
           DNS1: 172.18.0.2
           DNS2: 172.18.0.2
-          WEBPASSWORD: "{{ ph_password_decrypt.decrypted_data.plaintext }}"
+          WEBPASSWORD: "{{ ph_password_decrypt.decrypted_data.plaintext | b64decode }}"
         image: pihole/pihole:latest
         networks:
           - name: piinthesky
@@ -154,7 +154,7 @@
         env:
           DNS1: 172.18.0.2
           DNS2: 172.18.0.2
-          WEBPASSWORD: "{{ ph_password_decrypt.decrypted_data.plaintext }}" 
+          WEBPASSWORD: "{{ ph_password_decrypt.decrypted_data.plaintext | b64decode }}" 
         image: pihole/pihole:latest
         networks:
           - name: piinthesky
