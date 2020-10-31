@@ -5,7 +5,7 @@ resource "azurerm_user_assigned_identity" "ph-instance-id" {
 }
 
 resource "azurerm_role_definition" "ph-instance-role" {
-  name                    = "${var.ph_prefix}-instance-role"
+  name                    = "${var.ph_prefix}-instance-role-${random_string.ph-random.result}"
   scope                   = data.azurerm_subscription.ph-subscription.id
   assignable_scopes       = [data.azurerm_subscription.ph-subscription.id]
   permissions {
