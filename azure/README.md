@@ -69,6 +69,12 @@ Install the Azure cli and authenticate
 #############################
 ##          Azure          ##
 #############################
+# Open powershell and start WSL
+wsl
+
+# Change to home directory
+cd ~
+
 # Install the azure CLI
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 

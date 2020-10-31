@@ -66,6 +66,12 @@ Install the AWS cli and create non-root AWS user
 #############################
 ##          AWS            ##
 #############################
+# Open powershell and start WSL
+wsl
+
+# Change to home directory
+cd ~
+
 # Install python3 pip
 sudo apt-get update && sudo apt-get -y install python3-pip
 

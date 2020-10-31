@@ -64,6 +64,15 @@ ssh-keygen
 
 Install the GCP CLI and authenticate
 ```
+#############################
+##           GCP           ##
+#############################
+# Open powershell and start WSL
+wsl
+
+# Change to home directory
+cd ~
+
 # Add the google cloud sdk repository
 echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
 

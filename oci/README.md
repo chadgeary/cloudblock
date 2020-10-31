@@ -64,8 +64,14 @@ ssh-keygen
 
 Install the Oracle CLI and authenticate
 ```
-# In powershell's WSL window navigate to home directory
-cd ~/
+#############################
+##         Oracle          ##
+#############################
+# Open powershell and start WSL
+wsl
+
+# Change to home directory
+cd ~
 
 # Download the oracle CLI installer
 curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -o oci_install.sh
