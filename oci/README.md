@@ -82,8 +82,14 @@ bash oci_install.sh --accept-all-defaults
 # Refresh environment
 source ~/.bashrc
 
-# Authenticate
-oci setup keys
+# Copy user OCID from Oracle Web Console
+# Navigate to Identity -> Users
+
+# Copy tenancy OCID from Oracle Web Console
+# Navigate to profile (top right) -> Tenancy: <some name>
+
+# Setup oci CLI with user and tenancy OCID and a default region
+oci setup config
 
 # Copy contents of public key to clipboard
 cat ~/.oci/oci_api_key_public.pem
