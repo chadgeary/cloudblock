@@ -124,6 +124,15 @@ terraform apply -var-file="oci.tfvars"
 # Wait for the virtual machine to become ready (Ansible will setup the services for us)
 ```
 
+Want to watch Ansible setup the virtual machine? SSH to the cloud instance - see the terraform output.
+```
+# Connect to the virtual machine via ssh
+ssh ubuntu@<some ip address terraform told us about>
+
+# Tail the cloudblock log file
+sudo tail -F /var/log/cloudblock.log
+```
+
 # Variables
 Edit the vars file (oci.tfvars) to customize the deployment, especially:
 
