@@ -143,6 +143,10 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 # oci_root_compartment
 # The OCID of the tenancy id (a.k.a. root compartment)
 
+# OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
+# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
+# Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
+
 # ph_password
 # password to access the pihole webui
 

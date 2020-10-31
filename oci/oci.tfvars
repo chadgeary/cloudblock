@@ -5,15 +5,16 @@ ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNCHANGE_ME_CHANGE_ME_CHANGE_ME
 mgmt_cidr = "1.2.3.4/32"
 ph_password = "changeme"
 
+# OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
+# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
+# Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
+oci_imageid = "ocid1.image.oc1.iad.aaaaaaaaqftrznq64odd4jr3i6bqhccmhs24trdlpmcayg3xnovia3mqspea"
+
 # Pick a DoH provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended
 doh_provider = "opendns"
 
 # Allow mgmt_cidr to perform DNS queries directly the instance public IP address, without wireguard (1 = true)
 dns_novpn = 1
-
-# OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
-# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
-oci_imageid = "ocid1.image.oc1.iad.aaaaaaaaqftrznq64odd4jr3i6bqhccmhs24trdlpmcayg3xnovia3mqspea"
 
 ## UNCOMMON - Free Tier Compatible ##
 oci_region = "us-ashburn-1"
