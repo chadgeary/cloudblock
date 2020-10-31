@@ -3,10 +3,13 @@ resource "azurerm_virtual_network" "ph-network" {
   location                = azurerm_resource_group.ph-resourcegroup.location
   resource_group_name     = azurerm_resource_group.ph-resourcegroup.name
   address_space           = [var.az_network_cidr]
-  subnet {
-    name                    = "${var.ph_prefix}-subnet1"
-    address_prefix          = var.az_subnet_cidr
-  }
+}
+
+resource "azurerm_subnet" "ph-subnet" {
+  name                    = "${var.ph_prefix}-subnet"
+  resource_group_name     = azurerm_resource_group.ph-resourcegroup.name
+  virtual_network_name    = azurerm_virtual_network.ph-network.name
+  address_prefixes        = [var.az_subnet_cidr]
 }
 
 resource "azurerm_public_ip" "ph-public-ip" {
@@ -24,7 +27,7 @@ resource "azurerm_network_security_group" "ph-net-sec" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "ph-net-sec-assoc" {
-  subnet_id                   = element(azurerm_virtual_network.ph-network.subnet[*].id,0)
+  subnet_id                   = azurerm_subnet.ph-subnet.id
   network_security_group_id   = azurerm_network_security_group.ph-net-sec.id
 }
 

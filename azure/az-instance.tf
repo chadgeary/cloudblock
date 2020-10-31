@@ -4,7 +4,7 @@ resource "azurerm_network_interface" "ph-net-interface" {
   resource_group_name     = azurerm_resource_group.ph-resourcegroup.name
   ip_configuration {
     name                    = "${var.ph_prefix}-ipconf"
-    subnet_id               = element(azurerm_virtual_network.ph-network.subnet[*].id,0)
+    subnet_id               = azurerm_subnet.ph-subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id    = azurerm_public_ip.ph-public-ip.id
     primary                 = true

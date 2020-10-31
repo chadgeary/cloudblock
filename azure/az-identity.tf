@@ -1,5 +1,5 @@
 resource "azurerm_user_assigned_identity" "ph-instance-id" {
-  name                    = "${var.ph_prefix}-instance-id"
+  name                    = "${var.ph_prefix}-instance-id=${random_string.ph-random.result}"
   location                = azurerm_resource_group.ph-resourcegroup.location
   resource_group_name     = azurerm_resource_group.ph-resourcegroup.name
 }
