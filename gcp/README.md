@@ -76,13 +76,13 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyr
 # Install the google cloud sdk package
 sudo apt-get update && sudo apt-get -y install google-cloud-sdk
 
-# Authenticate
+# Authenticate - copy link to browser, auth, and paste response. If prompted for a project, create new with name: default
 gcloud init
 
 # Note the billing ID for the vars file
 gcloud beta billing accounts list | grep True
 
-# Note the gcp user for the vars file
+# Note the gcp user (account) for the vars file
 gcloud auth list
 ```
 
