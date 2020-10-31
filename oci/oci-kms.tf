@@ -18,5 +18,5 @@ resource "oci_kms_key" "ph-kms-key-storage" {
 resource "oci_kms_encrypted_data" "ph-kms-ph-secret" {
   crypto_endpoint         = oci_kms_vault.ph-kms-vault.crypto_endpoint
   key_id                  = oci_kms_key.ph-kms-key-storage.id
-  plaintext               = var.ph_password
+  plaintext               = base64encode(var.ph_password)
 }
