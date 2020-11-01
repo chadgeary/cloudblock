@@ -1,5 +1,5 @@
 output "ph-pihole-ssh" {
-  value                   = "SSH via: ubuntu@${aws_eip.ph-eip-1.public_ip}"
+  value                   = "SSH via: ssh ubuntu@${aws_eip.ph-eip-1.public_ip}"
 }
 
 output "ph-pihole-web" {

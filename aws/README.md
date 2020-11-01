@@ -117,30 +117,30 @@ Want to watch Ansible setup the virtual machine? SSH to the cloud instance - see
 # Connect to the virtual machine via ssh
 ssh ubuntu@<some ip address terraform told us about>
 
-# Check the docker containers are created
-sudo docker ps
+# Check the Ansible output (from AWS SSM)
+sudo bash -c 'tail -F /var/lib/amazon/ssm/i-*/document/orchestration/*-*/awsrunShellScript/runShellScript/stdout'
 ```
 
 Alternatively, check ![AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager) though you'll need to be logged into AWS as the user created in the previous AWS steps.
 
 # Variables
-Edit the vars file (ph.tfvars) to customize the deployment, especially:
+Edit the vars file (aws.tfvars) to customize the deployment, especially:
 ```
 # pihole_password
 # password to access the pihole webui
 
-# bucket_name
-# a unique S3 AWS bucket name, terraform will create the bucket to store various resources.
-
-# mgmt_cidr
-# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
-# deploying from home? This should be your public IP address with a /32 suffix. 
-
 # kms_manager
 # The AWS username (not root) granted access to read the Wireguard VPN configuration files in S3.
 
+# aws_region
+# The AWS region to deploy resources in, must have ARM instances (see vars file).
+
 # instance_key
 # a public SSH key for SSH access to the instance via user `ubuntu`.
+
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix.
 ```
 
 # Post-Deployment
