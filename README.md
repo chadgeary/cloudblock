@@ -15,7 +15,7 @@ Several deployment options are available, see the README of each subdirectory fo
 
 # Step-by-Step Video
 By yours truly, for Windows users.
-- ![Prerequisites](https://youtu.be/tU8sGNf5nFE) (all deployments should watch this first).
+- [Prerequisites](https://youtu.be/tU8sGNf5nFE) (all deployments should watch this first).
 
 After watching the above, follow a guide specific to your cloud provider.
 - [AWS](https://youtu.be/6fhE6ZOGxKY) (for amazon web services)
