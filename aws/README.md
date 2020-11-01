@@ -72,8 +72,11 @@ wsl
 # Change to home directory
 cd ~
 
+# Set updates to non-interactive
+export DEBIAN_FRONTEND=noninteractive
+
 # Install python3 pip
-sudo apt-get update && sudo apt-get -y install python3-pip
+sudo apt update && sudo apt -y install python3-pip
 
 # Install awscli via pip
 pip3 install --user --upgrade awscli
@@ -83,7 +86,10 @@ pip3 install --user --upgrade awscli
 # Create the user at the AWS Web Console under IAM -> Users -> Add user -> Check programmatic access and AWS Management console -> Attach existing policies -> AdministratorAccess -> copy Access key ID and Secret Access key
 
 # Set admin user credentials
-aws configure
+~/.local/bin/aws configure
+
+# Validate configuration
+~/.local/bin/aws sts get-caller-identity 
 ```
 
 Customize the deployment - See variables section below
@@ -121,10 +127,7 @@ ssh ubuntu@<some ip address terraform told us about>
 watch -n 5 "sudo bash -c 'cat /var/lib/amazon/ssm/i-*/document/orchestration/*-*/awsrunShellScript/runShellScript/stdout'"
 ```
 
-Alternatively, check [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager) though you'll need to be logged into AWS as the user created in the previous AWS steps. Need your account number?
-```
-aws sts get-caller-identity --query [Account] --output text
-```
+Alternatively, check [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager) though you'll need to be logged into AWS as the user created in the previous AWS steps. 
 
 # Variables
 Edit the vars file (aws.tfvars) to customize the deployment, especially:
