@@ -72,11 +72,8 @@ wsl
 # Change to home directory
 cd ~
 
-# Set updates to non-interactive
-export DEBIAN_FRONTEND=noninteractive
-
 # Install python3 pip
-sudo apt update && sudo apt-get -q -y install python3-pip
+sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt-get -q -y install python3-pip
 
 # Install awscli via pip
 pip3 install --user --upgrade awscli
