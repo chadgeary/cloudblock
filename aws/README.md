@@ -121,7 +121,10 @@ ssh ubuntu@<some ip address terraform told us about>
 sudo bash -c 'tail -F /var/lib/amazon/ssm/i-*/document/orchestration/*-*/awsrunShellScript/runShellScript/stdout'
 ```
 
-Alternatively, check ![AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager) though you'll need to be logged into AWS as the user created in the previous AWS steps.
+Alternatively, check [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager) though you'll need to be logged into AWS as the user created in the previous AWS steps. Need your account number?
+```
+aws sts get-caller-identity --query [Account] --output text
+```
 
 # Variables
 Edit the vars file (aws.tfvars) to customize the deployment, especially:
