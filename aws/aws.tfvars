@@ -1,8 +1,8 @@
 ## COMMON ##
 pihole_password = "changeme"
 kms_manager = "some_username"
-instance_key = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
 aws_region = "us-east-1"
+instance_key = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
 
 # ip range permitted access to instance SSH and pihole webUI. Also granted DNS access if dns_novpn = 1.
 # Deploying for home use? This should be your public IP address/32.
@@ -13,7 +13,7 @@ doh_provider = "opendns"
 
 # Must be ARM-based, but not all regions support ARM. Replace us-east-1 with your region, then run the command.
 # AWS_REGION=us-east-1
-# aws ec2 describe-instance-type-offerings --query "InstanceTypeOfferings[?Location=='$AWS_REGION'] [InstanceType] | sort_by(@, &[0])" --filter Name="instance-type",Values="t4g.*,a1.*" --region $AWS_REGION --output text
+# ~/.local/bin/aws ec2 describe-instance-type-offerings --query "InstanceTypeOfferings[?Location=='$AWS_REGION'] [InstanceType] | sort_by(@, &[0])" --filter Name="instance-type",Values="t4g.*,a1.*" --region $AWS_REGION --output text
 instance_type = "t4g.micro"
 
 ## UNCOMMON ##
