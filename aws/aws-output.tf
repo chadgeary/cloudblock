@@ -1,3 +1,7 @@
+output "ph-pihole-ssh" {
+  value                   = "SSH via: ubuntu@${aws_eip.ph-eip-1.public_ip}"
+}
+
 output "ph-pihole-web" {
   value                   = "pihole WebUI will be available @ https://${aws_eip.ph-eip-1.public_ip}/admin/"
 }

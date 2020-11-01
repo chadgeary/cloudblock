@@ -117,9 +117,11 @@ Want to watch Ansible setup the virtual machine? SSH to the cloud instance - see
 # Connect to the virtual machine via ssh
 ssh ubuntu@<some ip address terraform told us about>
 
-# Tail the cloudblock log file
-tail -F /var/log/cloudblock.log
+# Check the docker containers are created
+sudo docker ps
 ```
+
+Alternatively, check ![AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager) though you'll need to be logged into AWS as the user created in the previous AWS steps.
 
 # Variables
 Edit the vars file (ph.tfvars) to customize the deployment, especially:
