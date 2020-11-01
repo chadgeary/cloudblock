@@ -118,7 +118,7 @@ Want to watch Ansible setup the virtual machine? SSH to the cloud instance - see
 ssh ubuntu@<some ip address terraform told us about>
 
 # Check the Ansible output (from AWS SSM)
-sudo bash -c 'tail -F /var/lib/amazon/ssm/i-*/document/orchestration/*-*/awsrunShellScript/runShellScript/stdout'
+watch -n 5 "sudo bash -c 'cat /var/lib/amazon/ssm/i-*/document/orchestration/*-*/awsrunShellScript/runShellScript/stdout'"
 ```
 
 Alternatively, check [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager) though you'll need to be logged into AWS as the user created in the previous AWS steps. Need your account number?
