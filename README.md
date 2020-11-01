@@ -18,7 +18,7 @@ By yours truly, for Windows users.
 - ![Prerequisites](https://youtu.be/tU8sGNf5nFE) (all deployments should watch this first).
 
 After watching the above, follow a guide specific to your cloud provider.
-- ![AWS](https://youtu.be/6fhE6ZOGxKY) (for amazon web services)
-- ![Azure](https://youtu.be/ttvvaFvvYb8) (for microsoft azure cloud)
-- ![Oracle (OCI)](https://youtu.be/yzQ2ypcfPFk) (for oracle cloud)
-- ![GCP](https://youtu.be/LQhRCFQbk_c) (for google cloud)
+- [AWS](https://youtu.be/6fhE6ZOGxKY) (for amazon web services)
+- [Azure](https://youtu.be/ttvvaFvvYb8) (for microsoft azure cloud)
+- [Oracle (OCI)](https://youtu.be/yzQ2ypcfPFk) (for oracle cloud)
+- [GCP](https://youtu.be/LQhRCFQbk_c) (for google cloud)
