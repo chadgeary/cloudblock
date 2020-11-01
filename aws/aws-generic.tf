@@ -1,3 +1,9 @@
+resource "random_string" "ph-random" {
+  length                  = 5
+  upper                   = false
+  special                 = false
+}
+
 variable "aws_region" {
   type                     = string
 }
@@ -48,12 +54,7 @@ variable "instance_vol_size" {
   description              = "The volume size of the instances' root block device"
 }
 
-variable "bucket_name" {
-  type                     = string
-  description              = "A unique bucket name to store playbooks and output of SSM"
-}
-
-variable "ec2_name_prefix" {
+variable "name_prefix" {
   type                     = string
   description              = "A friendly name prefix for the AMI and EC2 instances, e.g. 'ph' or 'dev'"
 }

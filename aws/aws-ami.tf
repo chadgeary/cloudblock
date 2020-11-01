@@ -22,13 +22,13 @@ data "aws_ami" "ph-vendor-ami-latest" {
 
 # Create AMI with KMS CMK from latest Vendor AMI
 resource "aws_ami_copy" "ph-latest-vendor-ami-with-cmk" {
-  name                    = "${var.ec2_name_prefix}-encrypted-ami"
+  name                    = "${var.name_prefix}-encrypted-ami"
   description             = "KMS CMK-encrypted AMI of latest official vendor AMI"
   source_ami_id           = data.aws_ami.ph-vendor-ami-latest.id
   source_ami_region       = var.aws_region
   encrypted               = true
   kms_key_id              = aws_kms_key.ph-kmscmk-ec2.arn
   tags                    = {
-    Name                    = "${var.ec2_name_prefix}-encrypted-ami"
+    Name                    = "${var.name_prefix}-encrypted-ami"
   }
 }

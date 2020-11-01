@@ -79,7 +79,8 @@ sudo apt-get update && sudo apt-get -y install python3-pip
 pip3 install --user --upgrade awscli
 
 # Create a non-root AWS user in the AWS web console with admin permissions
-# IAM -> Users -> Add user -> Check programmatic access and AWS Management console -> Attach existing policies -> AdministratorAccess -> copy Access key ID and Secret Access key
+# This user must be the same user running terraform apply
+# Create the user at the AWS Web Console under IAM -> Users -> Add user -> Check programmatic access and AWS Management console -> Attach existing policies -> AdministratorAccess -> copy Access key ID and Secret Access key
 
 # Set admin user credentials
 aws configure

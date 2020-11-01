@@ -17,7 +17,7 @@ resource "aws_instance" "ph-instance" {
   private_ip              = var.pubnet_instance_ip
   vpc_security_group_ids  = [aws_security_group.ph-pubsg.id]
   tags                    = {
-    Name                    = "${var.ec2_name_prefix}-pihole",
+    Name                    = "${var.name_prefix}-pihole",
     ph                      = "True"
   }
   user_data               = <<EOF
