@@ -8,6 +8,9 @@ instance_key = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
 # Deploying for home use? This should be your public IP address/32.
 mgmt_cidr = "a.b.c.d/32"
 
+# The number of wireguard peer configurations to generate / store - 1 per device
+wireguard_peers = 20
+
 # dns over https provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns pi-dns quad9-recommended - see https://github.com/curl/curl/wiki/DNS-over-HTTPS
 doh_provider = "opendns"
 
@@ -19,7 +22,6 @@ instance_type = "t4g.micro"
 ## UNCOMMON ##
 # a value of 1 permits mgmt_cidr access to DNS without the VPN
 dns_novpn = 1
-instance_vol_size = 30
 name_prefix = "pihole"
 
 # The Ubuntu ARM AMI name string, these are occasionally updated with a new date.
@@ -31,6 +33,7 @@ vendor_ami_name_string = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server
 ## VERY UNCOMMON ##
 # aws profile (e.g. from aws configure, usually "default")
 aws_profile = "default"
+instance_vol_size = 30
 # Change if ip settings would interfere with existing networks, wireguard network must not be in same /24 as docker_<var>s
 vpn_cidr = "0.0.0.0/0"
 vpc_cidr = "10.10.12.0/24"

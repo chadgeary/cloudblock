@@ -1,9 +1,9 @@
 # Instance Key
 resource "aws_key_pair" "ph-instance-key" {
-  key_name                = "ph-instance-key"
+  key_name                = "ph-ssh-key${random_string.ph-random.result}"
   public_key              = var.instance_key
   tags                    = {
-    Name                    = "ph-instance-key"
+    Name                    = "ph-ssh-key"
   }
 }
 

@@ -84,7 +84,7 @@ EOF
 
 # Instance Role
 resource "aws_iam_role" "ph-instance-iam-role" {
-  name                    = "ph-instance-profile"
+  name                    = "ph-instance-profile-${random_string.ph-random.result}-role"
   path                    = "/"
   assume_role_policy      = <<EOF
 {
@@ -121,6 +121,6 @@ resource "aws_iam_role_policy_attachment" "ph-iam-attach-s3" {
 
 # Instance Profile
 resource "aws_iam_instance_profile" "ph-instance-profile" {
-  name                    = "ph-instance-profile"
+  name                    = "ph-instance-profile-${random_string.ph-random.result}"
   role                    = aws_iam_role.ph-instance-iam-role.name
 }

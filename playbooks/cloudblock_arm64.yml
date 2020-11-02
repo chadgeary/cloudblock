@@ -176,7 +176,7 @@
           SERVERURL: "auto"
           SERVERPORT: "51820"
           ALLOWEDIPS: "{{ docker_pihole }}"
-          PEERS: "1"
+          PEERS: "{{ wireguard_peers }}"
           PEERDNS: "{{ docker_pihole }}"
           INTERNAL_SUBNET: "{{ wireguard_network }}"
         image: linuxserver/wireguard:latest

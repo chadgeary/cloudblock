@@ -8,6 +8,10 @@ ph_prefix = "pihole"
 ph_password = "changeme"
 ssh_key = "ssh-rsa AAAAB3DaaC1yc2EAAAADAQABAAABAQCNreplace_me_replace_me_replace_meoOFKlTiaI7Uaqkc+YzmVw/fy1iFxDDeaZfoc0vuQvPr+LsxUL5UY4ko4tynCSp7zgVpot/OppqdHl5J+DYhNubm8ess6cugTustUZoDmJdo2ANQENeBUNkBPXUnMO1iulfNb6GnwWJ0Z5TRRLGSu1gya2wMLeo1rBJFcb6ZgVLMVHiKgwBy/svUQreR8R+fpVW+Q4rx6RSAltLROUONn0SF2BvvJUueqxpAIaA2rU4UUU69P"
 mgmt_cidr = "1.2.3.4/32"
+
+# The number of wireguard peer configurations to generate / store - 1 per device
+wireguard_peers = 20
+
 # Pick a DoH provider, one of: adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended
 doh_provider = "opendns"
 
@@ -15,6 +19,7 @@ doh_provider = "opendns"
 project_url = "https://github.com/chadgeary/cloudblock"
 dns_novpn = 1
 vpn_cidr = "0.0.0.0/0"
+wireguard_peers = 20
 gcp_project_services = ["serviceusage.googleapis.com","cloudkms.googleapis.com","storage-api.googleapis.com","secretmanager.googleapis.com"]
 gcp_image_project = "ubuntu-os-cloud"
 gcp_image_name = "ubuntu-1804-bionic-v20200923"

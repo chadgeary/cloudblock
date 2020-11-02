@@ -7,5 +7,5 @@ output "ph-pihole-web" {
 }
 
 output "ph-wireguard-s3" {
-  value                   = "Wireguard configuration will be available @ https://s3.console.aws.amazon.com/s3/buckets/${aws_s3_bucket.ph-bucket.id}/wireguard/?region=${var.aws_region}&tab=overview"
+  value                   = "Wireguard confs (one per device!) will be vailable @ https://s3.console.aws.amazon.com/s3/buckets/${aws_s3_bucket.ph-bucket.id}/wireguard/?region=${var.aws_region}&tab=overview"
 }

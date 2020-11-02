@@ -201,7 +201,7 @@
           SERVERURL: "auto"
           SERVERPORT: "51820"
           ALLOWEDIPS: "{{ docker_pihole }}"
-          PEERS: "1"
+          PEERS: "{{ wireguard_peers }}"
           PEERDNS: "{{ docker_pihole }}"
           INTERNAL_SUBNET: "{{ wireguard_network }}"
         image: linuxserver/wireguard:latest
@@ -244,44 +244,74 @@
         enabled: yes
       when: apache_modules.changed or proxy_conf.changed
 
-    - name: Wait for peer1 confs (Wireguard)
+    - name: Set peer count list
+      set_fact:
+        peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
+
+    - name: Wait for final peer conf (Wireguard)
       wait_for:
-        path: "/opt/wireguard/peer1/{{ item }}"
+        path: "/opt/wireguard/peer{{ wireguard_peers }}/{{ item }}"
         state: present
         timeout: 600
         sleep: 1
       with_items:
-        - publickey-peer1
-        - privatekey-peer1
-        - peer1.conf
-        - peer1.png
+        - "publickey-peer{{ wireguard_peers }}"
+        - "privatekey-peer{{ wireguard_peers }}"
+        - "peer{{ wireguard_peers }}.conf"
+        - "peer{{ wireguard_peers }}.png"
 
-    - name: Upload wireguard txt to google bucket
+    - name: Upload wireguard to google bucket - publickey
       uri:
-        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=wireguard/{{ item }}
+        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=wireguard/peer{{ item }}/publickey-peer{{ item }}
         timeout: 720
         method: POST
-        src: /opt/wireguard/peer1/{{ item }}
+        src: /opt/wireguard/peer{{ item }}/publickey-peer{{ item }}
         remote_src: yes
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
           Content-Type: text/plain
       with_items:
-        - publickey-peer1
-        - privatekey-peer1
-        - peer1.conf
+        - "{{ peer_count }}"
 
-    - name: Upload wireguard png to google bucket
+    - name: Upload wireguard to google bucket - privatekey
       uri:
-        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=wireguard/{{ item }}
+        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=wireguard/peer{{ item }}/privatekey-peer{{ item }}
         timeout: 720
         method: POST
-        src: /opt/wireguard/peer1/{{ item }}
+        src: /opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}
+        remote_src: yes
+        return_content: yes
+        headers:
+          Authorization: Bearer {{ gcs_token_resp.json.access_token }}
+          Content-Type: text/plain
+      with_items:
+        - "{{ peer_count }}"
+
+    - name: Upload wireguard to google bucket - conf
+      uri:
+        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=wireguard/peer{{ item }}/peer{{ item }}.conf
+        timeout: 720
+        method: POST
+        src: /opt/wireguard/peer{{ item }}/peer{{ item }}.conf
+        remote_src: yes
+        return_content: yes
+        headers:
+          Authorization: Bearer {{ gcs_token_resp.json.access_token }}
+          Content-Type: text/plain
+      with_items:
+        - "{{ peer_count }}"
+
+    - name: Upload wireguard to google bucket - png
+      uri:
+        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=wireguard/peer{{ item }}/peer{{ item }}.png
+        timeout: 720
+        method: POST
+        src: /opt/wireguard/peer{{ item }}/peer{{ item }}.png
         remote_src: yes
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
           Content-Type: image/png
       with_items:
-        - peer1.png
+        - "{{ peer_count }}"

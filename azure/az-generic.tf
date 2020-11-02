@@ -118,6 +118,11 @@ variable "wireguard_network" {
   description              = "wireguard vpn network ip"
 }
 
+variable "wireguard_peers" {
+  type                     = number
+  description              = "number of peers to generate for wireguard"
+}
+
 variable "doh_provider" {
   type                     = string
   description              = "DNS over HTTPS provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended"

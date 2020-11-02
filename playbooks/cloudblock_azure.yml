@@ -184,7 +184,7 @@
           SERVERURL: "auto"
           SERVERPORT: "51820"
           ALLOWEDIPS: "{{ docker_pihole }}"
-          PEERS: "1"
+          PEERS: "{{ wireguard_peers }}"
           PEERDNS: "{{ docker_pihole }}"
           INTERNAL_SUBNET: "{{ wireguard_network }}"
         image: linuxserver/wireguard:latest
@@ -227,40 +227,66 @@
         enabled: yes
       when: apache_modules.changed or proxy_conf.changed
 
-    - name: Wait for peer1 confs (Wireguard)
+    - name: Set peer count list
+      set_fact:
+        peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
+
+    - name: Wait for final peer conf (Wireguard)
       wait_for:
-        path: "/opt/wireguard/peer1/{{ item }}"
+        path: "/opt/wireguard/peer{{ wireguard_peers }}/{{ item }}"
         state: present
         timeout: 600
         sleep: 1
       with_items:
-        - publickey-peer1
-        - privatekey-peer1
-        - peer1.conf
-        - peer1.png
+        - "publickey-peer{{ wireguard_peers }}"
+        - "privatekey-peer{{ wireguard_peers }}"
+        - "peer{{ wireguard_peers }}.conf"
+        - "peer{{ wireguard_peers }}.png"
 
-    - name: Upload peer1 confs (Wireguard) to Azure Storage
+    - name: Upload peer confs (Wireguard) to Azure Storage - publickey
       azure_rm_storageblob:
         auth_source: msi
         resource_group: "{{ ph_prefix }}-resourcegroup"
         storage_account_name: "{{ ph_prefix }}store{{ ph_suffix }}"
         container: "{{ ph_prefix }}-storage-container"
-        src: "/opt/wireguard/peer1/{{ item }}"
-        blob: "wireguard/{{ item }}"
+        src: "/opt/wireguard/peer{{ item }}/publickey-peer{{ item }}"
+        blob: "wireguard/peer{{ item }}/publickey-peer{{ item }}"
         content_type: 'text/plain'
       with_items:
-        - publickey-peer1
-        - privatekey-peer1
-        - peer1.conf
+        - "{{ peer_count }}"
 
-    - name: Upload peer1 QR code (Wireguard) to Azure Storage
+    - name: Upload peer confs (Wireguard) to Azure Storage - privatekey
       azure_rm_storageblob:
         auth_source: msi
         resource_group: "{{ ph_prefix }}-resourcegroup"
         storage_account_name: "{{ ph_prefix }}store{{ ph_suffix }}"
         container: "{{ ph_prefix }}-storage-container"
-        src: "/opt/wireguard/peer1/{{ item }}"
-        blob: "wireguard/{{ item }}"
+        src: "/opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}"
+        blob: "wireguard/peer{{ item }}/privatekey-peer{{ item }}"
+        content_type: 'text/plain'
+      with_items:
+        - "{{ peer_count }}"
+
+    - name: Upload peer confs (Wireguard) to Azure Storage - conf
+      azure_rm_storageblob:
+        auth_source: msi
+        resource_group: "{{ ph_prefix }}-resourcegroup"
+        storage_account_name: "{{ ph_prefix }}store{{ ph_suffix }}"
+        container: "{{ ph_prefix }}-storage-container"
+        src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.conf"
+        blob: "wireguard/peer{{ item }}/peer{{ item }}.conf"
+        content_type: 'text/plain'
+      with_items:
+        - "{{ peer_count }}"
+
+    - name: Upload peer confs (Wireguard) to Azure Storage - conf
+      azure_rm_storageblob:
+        auth_source: msi
+        resource_group: "{{ ph_prefix }}-resourcegroup"
+        storage_account_name: "{{ ph_prefix }}store{{ ph_suffix }}"
+        container: "{{ ph_prefix }}-storage-container"
+        src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
+        blob: "wireguard/peer{{ item }}/peer{{ item }}.png"
         content_type: 'image/png'
       with_items:
-        - peer1.png
+        - "{{ peer_count }}"

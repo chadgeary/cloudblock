@@ -5,6 +5,9 @@ ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNCHANGE_ME_CHANGE_ME_CHANGE_ME
 mgmt_cidr = "1.2.3.4/32"
 ph_password = "changeme"
 
+# The number of wireguard peer configurations to generate / store - 1 per device
+wireguard_peers = 20
+
 # OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
 # See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
 # Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region

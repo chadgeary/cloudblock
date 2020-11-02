@@ -24,6 +24,7 @@ data "template_file" "ph-user-data" {
     oci_kms_keyid = oci_kms_key.ph-kms-key-storage.id
     oci_storage_namespace = data.oci_objectstorage_namespace.ph-bucket-namespace.namespace
     oci_storage_bucketname = "${var.ph_prefix}-bucket"
+    wireguard_peers = var.wireguard_peers
   }
 }
 
