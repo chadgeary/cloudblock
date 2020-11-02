@@ -7,3 +7,9 @@ resource "oci_identity_compartment" "ph-compartment" {
   description             = "Cloudblock compartment"
   name                    = "${var.ph_prefix}-compartment"
 }
+
+resource "random_string" "ph-random" {
+  length                            = 5
+  upper                             = false
+  special                           = false
+}

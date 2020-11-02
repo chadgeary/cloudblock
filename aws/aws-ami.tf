@@ -1,10 +1,10 @@
 # Vendor AMI
 data "aws_ami" "ph-vendor-ami-latest" {
   most_recent             = true
-  owners                  = ["${var.vendor_ami_account_number}"]
+  owners                  = [var.vendor_ami_account_number]
   filter {
     name                    = "name"
-    values                  = ["${var.vendor_ami_name_string}"]
+    values                  = [var.vendor_ami_name_string]
   }
   filter {
     name                    = "virtualization-type"
