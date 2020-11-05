@@ -3,7 +3,7 @@
 
 # Requirements
 - Ubuntu 18.04+
-- Ansible installed
+- Ansible 2.9+ (python3-based) installed
 
 # Deploy
 ```
