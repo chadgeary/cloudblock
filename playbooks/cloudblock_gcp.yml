@@ -126,7 +126,7 @@
 # a lower mtu fixes the problem
     - name: cloudflared pihole and wireguard network
       docker_network:
-        name: piinthesky
+        name: cloudblock
         driver: bridge
         driver_options:
           com.docker.network.driver.mtu: 1380
@@ -139,7 +139,7 @@
         name: cloudflared_doh
         image: cloudflared_doh
         networks:
-          - name: piinthesky
+          - name: cloudblock
             ipv4_address: "{{ docker_doh }}"
         purge_networks: yes
         restart_policy: "always"
@@ -153,7 +153,7 @@
           WEBPASSWORD: "{{ ph_secret.json.payload.data | b64decode }}"
         image: pihole/pihole:latest
         networks:
-          - name: piinthesky
+          - name: cloudblock
             ipv4_address: "{{ docker_pihole }}"
         ports:
           - "8001:80"
@@ -174,7 +174,7 @@
           WEBPASSWORD: "{{ ph_secret.json.payload.data | b64decode }}"
         image: pihole/pihole:latest
         networks:
-          - name: piinthesky
+          - name: cloudblock
             ipv4_address: "{{ docker_pihole }}"
         ports:
           - "8001:80"
@@ -206,7 +206,7 @@
           INTERNAL_SUBNET: "{{ wireguard_network }}"
         image: linuxserver/wireguard:latest
         networks:
-          - name: piinthesky
+          - name: cloudblock
             ipv4_address: "{{ docker_wireguard }}"
         ports:
           - "51820:51820/udp"
