@@ -183,7 +183,7 @@
           TZ: "Etc/UTC"
           SERVERURL: "auto"
           SERVERPORT: "51820"
-          ALLOWEDIPS: "{{ docker_pihole }}"
+          ALLOWEDIPS: "{% if vpn_traffic is not defined %}{{ docker_pihole }}{% elif vpn_traffic == 'dns' %}{{ docker_pihole }}{% elif vpn_traffic == 'all' %}0.0.0.0/0{% else %}{{ docker_pihole }}{% endif %}"
           PEERS: "{{ wireguard_peers }}"
           PEERDNS: "{{ docker_pihole }}"
           INTERNAL_SUBNET: "{{ wireguard_network }}"

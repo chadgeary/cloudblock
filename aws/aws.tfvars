@@ -13,6 +13,14 @@ wireguard_peers = 20
 # dns over https provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns pi-dns quad9-recommended - see https://github.com/curl/curl/wiki/DNS-over-HTTPS
 doh_provider = "opendns"
 
+# Generate wireguard client configurations to route only DNS traffic through VPN, or all traffic.
+# The wireguard server container does NOT restrict clients, clients can change their AllowedIPs as desired.
+# either "dns" or "all"
+vpn_traffic = "dns"
+
+# a value of 1 permits mgmt_cidr access to DNS without the VPN
+dns_novpn = 1
+
 ## UNCOMMON ##
 aws_region = "us-east-1"
 
@@ -24,9 +32,6 @@ instance_type = "t4g.micro"
 # AWS_REGION=us-east-1 && ~/.local/bin/aws ec2 describe-images --region $AWS_REGION --owners 099720109477 --filters 'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-*' 'Name=state,Values=available' --query 'sort_by(Images, &CreationDate)[-1].Name'
 vendor_ami_name_string = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-20200922"
 vendor_ami_account_number = "099720109477"
-
-# a value of 1 permits mgmt_cidr access to DNS without the VPN
-dns_novpn = 1
 
 ## VERY UNCOMMON ##
 # aws profile (e.g. from aws configure, usually "default")

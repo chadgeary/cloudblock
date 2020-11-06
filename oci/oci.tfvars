@@ -9,12 +9,18 @@ oci_root_compartment = "ocid1.tenancy.oc1..aaaaaaaaCHANGE_ME_CHANGE_ME_CHANGE_ME
 # The number of wireguard peer configurations to generate / store - 1 per device
 wireguard_peers = 20
 
-# Pick a DoH provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended
+# dns over https provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns pi-dns quad9-recommended - see https://github.com/curl/curl/wiki/DNS-over-HTTPS
 doh_provider = "opendns"
 
-## UNCOMMON ##
-# Allow mgmt_cidr to perform DNS queries directly the instance public IP address, without wireguard (1 = true)
+# Generate wireguard client configurations to route only DNS traffic through VPN, or all traffic.
+# The wireguard server container does NOT restrict clients, clients can change their AllowedIPs as desired.
+# either "dns" or "all"
+vpn_traffic = "dns"
+
+# a value of 1 permits mgmt_cidr access to DNS without the VPN
 dns_novpn = 1
+
+## UNCOMMON ##
 # If you're using the free-tier, see which region/ad is free-tier compatible run the following two commands and look for value: 2
 # OCI_TENANCY_OCID=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
 # oci limits value list --compartment-id $OCI_TENANCY_OCID --service-name compute --query "data [?contains(\"name\",'standard-e2-micro-core-count')]" --all

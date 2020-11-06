@@ -9,11 +9,18 @@ gcp_user = "me@example.com"
 # The number of wireguard peer configurations to generate / store - 1 per device
 wireguard_peers = 20
 
-# Pick a DoH provider, one of: adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended
+# dns over https provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns pi-dns quad9-recommended - see https://github.com/curl/curl/wiki/DNS-over-HTTPS
 doh_provider = "opendns"
 
-## UNCOMMON ##
+# Generate wireguard client configurations to route only DNS traffic through VPN, or all traffic.
+# The wireguard server container does NOT restrict clients, clients can change their AllowedIPs as desired.
+# either "dns" or "all"
+vpn_traffic = "dns"
+
+# a value of 1 permits mgmt_cidr access to DNS without the VPN
 dns_novpn = 1
+
+## UNCOMMON ##
 gcp_region = "us-east1"
 gcp_zone = "b"
 

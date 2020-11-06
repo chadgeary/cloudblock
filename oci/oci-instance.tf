@@ -25,6 +25,7 @@ data "template_file" "ph-user-data" {
     oci_storage_namespace = data.oci_objectstorage_namespace.ph-bucket-namespace.namespace
     oci_storage_bucketname = "${var.ph_prefix}-bucket"
     wireguard_peers = var.wireguard_peers
+    vpn_traffic = var.vpn_traffic
   }
 }
 

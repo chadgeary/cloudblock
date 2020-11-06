@@ -26,6 +26,7 @@ data "template_file" "ph-custom-data" {
     doh_provider = var.doh_provider
     dns_novpn = var.dns_novpn
     wireguard_peers = var.wireguard_peers
+    vpn_traffic = var.vpn_traffic
   }
 }
 

@@ -137,3 +137,8 @@ variable "doh_provider" {
   type                     = string
   description              = "DNS over HTTPS provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended"
 }
+
+variable "vpn_traffic" {
+  type                     = string
+  description              = "dns or all, sets the Wireguard VPN client configuration to route only dns traffic or all traffic through the VPN."
+}
