@@ -8,7 +8,6 @@
     - name: required packages
       apt:
         pkg:
-          - apache2
           - docker.io
           - libcap2-bin
           - python-pip
@@ -50,6 +49,7 @@
         - /opt/pihole
         - /opt/pihole/etc
         - /opt/pihole/dnsmasq.d
+        - /opt/webproxy
 
     - name: wireguard dir gets user ubuntu
       file:
@@ -57,6 +57,17 @@
         state: directory
         owner: ubuntu
         group: ubuntu
+
+    - name: secure proxy to pihole confs
+      template:
+        src: "{{ item }}"
+        dest: "/opt/webproxy/{{ item }}"
+        owner: root
+        group: root
+        mode: 0444
+      with_items:
+        - httpd-ssl.conf
+        - httpd.conf
 
     - name: DoH Endpoints
       blockinfile:
@@ -142,8 +153,6 @@
         networks:
           - name: cloudblock
             ipv4_address: "{{ docker_pihole }}"
-        ports:
-          - "8001:80"
         volumes:
           - /opt/pihole/etc:/etc/pihole/:rw
           - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
@@ -163,7 +172,6 @@
           - name: cloudblock
             ipv4_address: "{{ docker_pihole }}"
         ports:
-          - "8001:80"
           - "53:53"
           - "53:53/udp"
         volumes:
@@ -203,32 +211,22 @@
         restart_policy: "always"
         purge_networks: yes
 
-    - name: Enable Apache2 modules for proxy and ssl
-      apache2_module:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - headers
-        - proxy
-        - proxy_http
-        - ssl
-      register: apache_modules
-
-    - name: Apache2 proxy configuration
-      template:
-        src: 8001-web-proxy.conf
-        dest: /etc/apache2/sites-enabled/8001-web-proxy.conf
-        owner: root
-        group: root
-        mode: 0444
-      register: proxy_conf
-
-    - name: Apache2 enabled / restarted
-      systemd:
-        name: apache2
-        state: restarted
-        enabled: yes
-      when: apache_modules.changed or proxy_conf.changed
+    - name: web proxy container for pihole
+      docker_container:
+        name: web_proxy
+        image: httpd:2.4
+        networks:
+          - name: cloudblock
+            ipv4_address: "{{ docker_webproxy }}"
+        ports:
+          - "443:443"
+        volumes:
+          - /opt/webproxy/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf:ro
+          - /opt/webproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+          - /etc/ssl/certs/ssl-cert-snakeoil.pem:/usr/local/apache2/conf/server.crt:ro
+          - /etc/ssl/private/ssl-cert-snakeoil.key:/usr/local/apache2/conf/server.key:ro
+        purge_networks: yes
+        restart_policy: "always"
 
     - name: Set peer count list
       set_fact:

@@ -45,10 +45,10 @@
         state: directory
       with_items:
         - /opt/cloudflared
-        - /opt/webproxy
         - /opt/pihole
         - /opt/pihole/etc
         - /opt/pihole/dnsmasq.d
+        - /opt/webproxy
         - /opt/wireguard
 
     - name: secure proxy to pihole confs

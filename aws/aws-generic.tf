@@ -123,6 +123,11 @@ variable "docker_wireguard" {
   description              = "wireguard container ip"
 }
 
+variable "docker_webproxy" {
+  type                     = string
+  description              = "https web proxy container ip"
+}
+
 variable "wireguard_network" {
   type                     = string
   description              = "wireguard vpn network ip"

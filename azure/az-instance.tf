@@ -22,6 +22,7 @@ data "template_file" "ph-custom-data" {
     docker_doh = var.docker_doh
     docker_pihole = var.docker_pihole
     docker_wireguard = var.docker_wireguard
+    docker_webproxy = var.docker_webproxy
     wireguard_network = var.wireguard_network
     doh_provider = var.doh_provider
     dns_novpn = var.dns_novpn
