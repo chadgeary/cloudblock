@@ -218,8 +218,8 @@
         ports:
           - "443:443"
         volumes:
-          - /opt/web_proxy/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf:ro
-          - /opt/web_proxy/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+          - /opt/webproxy/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf:ro
+          - /opt/webproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
           - /etc/ssl/certs/ssl-cert-snakeoil.pem:/usr/local/apache2/conf/server.crt:ro
           - /etc/ssl/private/ssl-cert-snakeoil.key:/usr/local/apache2/conf/server.key:ro
         purge_networks: yes
