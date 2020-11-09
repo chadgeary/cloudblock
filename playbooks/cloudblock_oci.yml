@@ -214,7 +214,7 @@
         image: httpd:2.4
         networks:
           - name: cloudblock
-            ipv4_address: "{{ cloudblock_webproxy }}"
+            ipv4_address: "{{ docker_webproxy }}"
         ports:
           - "443:443"
         volumes:
