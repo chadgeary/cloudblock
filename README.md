@@ -19,6 +19,6 @@ By yours truly, for Windows users.
 
 After watching the above, follow a guide specific to your cloud provider.
 - [AWS](https://youtu.be/zNElF0iS2bM) (for amazon web services)
-- [Azure](https://youtu.be/3-TN9gvwOJ8) (for microsoft azure cloud)
+- [Azure](https://youtu.be/eZKptCWW-RI) (for microsoft azure cloud)
 - [GCP](https://youtu.be/7MsYvZIXeAE) (for google cloud)
 - [OCI](https://youtu.be/UIUHfDnLZr4) (for oracle cloud)
