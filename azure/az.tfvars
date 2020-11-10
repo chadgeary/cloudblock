@@ -30,8 +30,8 @@ az_image_version = "18.04.202010140"
 # free tier
 az_vm_size = "Standard_B1s"
 az_disk_gb = 64
-# ph_prefix can only consist of lowercase letters and numbers, and should be <10 characters
-ph_prefix = "pihole"
+# ph_prefix can only consist of lowercase letters and numbers, and should be <=10 characters
+ph_prefix = "cloudblock"
 az_network_cidr = "10.10.10.0/24"
 az_subnet_cidr = "10.10.10.0/26"
 ssh_user = "ubuntu"

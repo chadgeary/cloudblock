@@ -35,7 +35,7 @@ oci_imageid = "ocid1.image.oc1.iad.aaaaaaaascyqvxuxse7kgqtu4go2fazlxqjhq4p4p2rro
 
 ## VERY UNCOMMON - Change if git project is cloned or deploying into an existing OCI environment where IP schema might overlap ##
 vcn_cidr = "10.10.12.0/24"
-ph_prefix = "pihole"
+ph_prefix = "cloudblock"
 project_url = "https://github.com/chadgeary/cloudblock"
 docker_network = "172.18.0.0"
 docker_gw = "172.18.0.1"

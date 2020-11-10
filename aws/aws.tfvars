@@ -37,7 +37,7 @@ vendor_ami_account_number = "099720109477"
 # aws profile (e.g. from aws configure, usually "default")
 aws_profile = "default"
 instance_vol_size = 30
-name_prefix = "pihole"
+name_prefix = "cloudblock"
 # Change if ip settings would interfere with existing networks, wireguard network must not be in same /24 as docker_<var>s
 vpn_cidr = "0.0.0.0/0"
 vpc_cidr = "10.10.12.0/24"

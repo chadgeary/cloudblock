@@ -30,7 +30,7 @@ gcp_image_name = "ubuntu-1804-bionic-v20201014"
 gcp_image_project = "ubuntu-os-cloud"
 
 ## VERY UNCOMMON ##
-ph_prefix = "pihole"
+ph_prefix = "cloudblock"
 gcp_machine_type = "f1-micro"
 project_url = "https://github.com/chadgeary/cloudblock"
 gcp_project_services = ["serviceusage.googleapis.com","cloudkms.googleapis.com","storage-api.googleapis.com","secretmanager.googleapis.com"]
