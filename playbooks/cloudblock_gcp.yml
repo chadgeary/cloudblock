@@ -158,6 +158,7 @@
     - name: pihole container - without DNS listen
       docker_container:
         name: pihole
+        hostname: cloudblockpihole
         env:
           DNS1: 172.18.0.2
           DNS2: 172.18.0.2
@@ -177,6 +178,7 @@
     - name: pihole container - with DNS listen
       docker_container:
         name: pihole
+        hostname: cloudblockpihole
         env:
           DNS1: 172.18.0.2
           DNS2: 172.18.0.2
