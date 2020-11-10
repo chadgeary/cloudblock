@@ -130,7 +130,7 @@ Want to watch Ansible setup the virtual machine? SSH to the cloud instance - see
 ssh ubuntu@<some ip address terraform told us about>
 
 # Tail the cloudblock log file
-tail -F /var/log/cloudblock*.log
+tail -F /var/log/cloudblock.log
 ```
 
 # Variables
