@@ -1,11 +1,12 @@
 ## COMMON ##
 pihole_password = "changeme"
-kms_manager = "some_username"
 instance_key = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
 
 # ip range permitted access to instance SSH and pihole webUI. Also granted DNS access if dns_novpn = 1.
 # Deploying for home use? This should be your public IP address/32.
 mgmt_cidr = "a.b.c.d/32"
+
+kms_manager = "some_username"
 
 # The number of wireguard peer configurations to generate / store - 1 per device
 wireguard_peers = 20

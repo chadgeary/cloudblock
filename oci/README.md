@@ -143,6 +143,17 @@ tail -F /var/log/cloudblock.log
 Edit the vars file (oci.tfvars) to customize the deployment, especially:
 
 ```
+# ph_password
+# password to access the pihole webui
+
+# ssh_key
+# A public SSH key for access to the compute instance via SSH, with user ubuntu.
+# cat ~/.ssh/id_rsa.pub
+
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix.
+
 # oci_config_profile
 # The location of the oci config file (created by `oci setup config`)
 
@@ -152,16 +163,6 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 # OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
 # See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
 # Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
-
-# ph_password
-# password to access the pihole webui
-
-# mgmt_cidr
-# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
-# deploying from home? This should be your public IP address with a /32 suffix. 
-
-# ssh_key
-# A public SSH key for access to the compute instance via SSH, with user ubuntu.
 ```
 
 # Post-Deployment

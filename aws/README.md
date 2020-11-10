@@ -132,18 +132,16 @@ Edit the vars file (aws.tfvars) to customize the deployment, especially:
 # pihole_password
 # password to access the pihole webui
 
-# kms_manager
-# The AWS username (not root) granted access to read the Wireguard VPN configuration files in S3.
-
-# aws_region
-# The AWS region to deploy resources in, must have ARM instances (see vars file).
-
 # instance_key
 # a public SSH key for SSH access to the instance via user `ubuntu`.
+# cat ~/.ssh/id_rsa.pub
 
 # mgmt_cidr
 # an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
 # deploying from home? This should be your public IP address with a /32 suffix.
+
+# kms_manager
+# The AWS username (not root) granted access to read the Wireguard VPN configuration files in S3.
 ```
 
 # Post-Deployment

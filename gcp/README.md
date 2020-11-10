@@ -140,12 +140,13 @@ Edit the vars file (gcp.tfvars) to customize the deployment, especially:
 # ph_password
 # password to access the pihole webui
 
+# ssh_key
+# a public SSH key for SSH access to the instance via user `ubuntu`.
+# cat ~/.ssh/id_rsa.pub
+
 # mgmt_cidr
 # an IP range granted webUI and SSH access. Also permitted PiHole DNS if dns_novpn = 1. 
 # deploying from home? This should be your public IP address with a /32 suffix. 
-
-# ssh_key
-# a public SSH key for SSH access to the instance via user `ubuntu`.
 
 # gcp_billing_account
 # The billing ID for the google cloud account

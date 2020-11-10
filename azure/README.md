@@ -127,6 +127,7 @@ Edit the vars file (az.tfvars) to customize the deployment, especially:
 
 # ssh_key
 # A public SSH key for access to the compute instance via SSH, with user ubuntu.
+# cat ~/.ssh/id_rsa.pub
 
 # mgmt_cidr
 # an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
