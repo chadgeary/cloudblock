@@ -18,13 +18,10 @@ resource "aws_instance" "ph-instance" {
   vpc_security_group_ids  = [aws_security_group.ph-pubsg.id]
   tags                    = {
     Name                    = "${var.name_prefix}-pihole",
-    ph                      = "True"
+    cloudblock              = "True"
   }
   user_data               = <<EOF
 #!/bin/bash
-# stop ssm before executing
-systemctl stop snap.amazon-ssm-agent.amazon-ssm-agent.service
-
 # replace systemd-resolved with static dns derived from dhcp
 DNS_SERVER=$(systemd-resolve --status | awk -F': ' '/DNS Servers/{print $2}')
 systemctl disable systemd-resolved
@@ -35,16 +32,6 @@ nameserver $DNS_SERVER
 options edns0
 search ec2.internal
 EOM
-
-# install ansible
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
-apt-add-repository -y ppa:ansible/ansible
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get -y install ansible
-
-# start ssm
-systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
 EOF
   root_block_device {
     volume_size             = var.instance_vol_size

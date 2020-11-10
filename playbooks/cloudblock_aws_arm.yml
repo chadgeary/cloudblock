@@ -10,7 +10,7 @@
         pkg:
           - docker.io
           - libcap2-bin
-          - python-pip
+          - python3-pip
           - ssl-cert
         state: latest
         update_cache: yes
@@ -22,7 +22,7 @@
           - boto
           - boto3
           - botocore
-        executable: /usr/bin/pip
+        executable: /usr/bin/pip3
         state: latest
 
     - name: IP Forwarding enable/persist
