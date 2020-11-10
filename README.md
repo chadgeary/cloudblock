@@ -15,10 +15,10 @@ Several deployment options are available, see the README of each subdirectory fo
 
 # Step-by-Step Video
 By yours truly, for Windows users.
-- [Prerequisites](https://youtu.be/6fhE6ZOGxKY) (all deployments should watch this first).
+- [Prerequisites](https://youtu.be/9VFexErMlvo) (all deployments should watch this first).
 
 After watching the above, follow a guide specific to your cloud provider.
-- [AWS](https://youtu.be/_-kX6xSXuNs) (for amazon web services)
+- [AWS](https://youtu.be/zNElF0iS2bM) (for amazon web services)
 - [Azure](https://youtu.be/3-TN9gvwOJ8) (for microsoft azure cloud)
 - [GCP](https://youtu.be/7MsYvZIXeAE) (for google cloud)
 - [OCI](https://youtu.be/UIUHfDnLZr4) (for oracle cloud)
