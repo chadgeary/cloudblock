@@ -156,5 +156,23 @@ Edit the vars file (gcp.tfvars) to customize the deployment, especially:
 ```
 
 # Post-Deployment
-- See terraform output for VPN Client configuration link and the Pihole WebUI address.
-- Using an ISP with DHCP and unable to reach the PiHole webUI from home? Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output.
+- See terraform output for VPN Client configuration files link and the Pihole WebUI address.
+
+# FAQs
+Want to reach the PiHole webUI while away?
+ - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.3/admin/ ).
+
+Using an ISP with a dynamic IP (DHCP) and the IP address changed? Pihole webUI and SSH access will be blocked until the mgmt_cidr is updated. Here's a quick way to update it.
+```
+# Open Powershell and start WSL
+wsl
+
+# Change to the project directory
+cd ~/cloudblock/gcp/
+
+# Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
+sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" gcp.tfvars
+
+# Rerun terraform apply, terraform will update the cloud firewall rules.
+terraform apply -var-file="gcp.tfvars"
+```
