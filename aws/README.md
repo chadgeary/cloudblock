@@ -147,3 +147,4 @@ Edit the vars file (aws.tfvars) to customize the deployment, especially:
 # Post-Deployment
 - Wait for Ansible Playbook, watch [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager)
 - See terraform output for VPN Client configuration link and the Pihole WebUI address.
+- Using an ISP with DHCP and unable to reach the PiHole webUI from home? Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output.

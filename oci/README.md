@@ -167,3 +167,4 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 
 # Post-Deployment
 - See terraform output for VPN Client configuration files link and the Pihole WebUI address.
+- Using an ISP with DHCP and unable to reach the PiHole webUI from home? Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output.
