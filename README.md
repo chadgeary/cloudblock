@@ -22,3 +22,6 @@ After watching the above, follow a guide specific to your cloud provider.
 - [Azure](https://youtu.be/eZKptCWW-RI) (for microsoft azure cloud)
 - [GCP](https://youtu.be/EZyn6dEdqe0) (for google cloud)
 - [OCI](https://youtu.be/bVoO6XRNhJs) (for oracle cloud)
+
+# Discussion
+[Discord Room](https://discord.gg/zmu6GVnPnj)
