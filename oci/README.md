@@ -169,10 +169,12 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 - See terraform output for VPN Client configuration files link and the Pihole WebUI address.
 
 # FAQs
-Want to reach the PiHole webUI while away?
- - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.3/admin/ ).
+- Want to reach the PiHole webUI while away?
+  - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.3/admin/ ).
 
-Using an ISP with a dynamic IP (DHCP) and the IP address changed? Pihole webUI and SSH access will be blocked until the mgmt_cidr is updated. Here's a quick way to update it.
+- Using an ISP with a dynamic IP (DHCP) and the IP address changed? Pihole webUI and SSH access will be blocked until the mgmt_cidr is updated.
+  - Follow the steps below to quickly update the cloud firewall using terraform.
+
 ```
 # Open Powershell and start WSL
 wsl
