@@ -150,7 +150,7 @@ Edit the vars file (aws.tfvars) to customize the deployment, especially:
 
 # FAQs
 - Want to reach the PiHole webUI while away?
-  - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.3/admin/ ).
+  - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.5/admin/ ).
 
 - Using an ISP with a dynamic IP (DHCP) and the IP address changed? Pihole webUI and SSH access will be blocked until the mgmt_cidr is updated.
   - Follow the steps below to quickly update the cloud firewall using terraform.
