@@ -38,3 +38,7 @@ The IP address variables should be changed if they'll conflict/overlap local net
 
 # Client Remote Wireguard Connectivity / Port Forwarding
 Port 51820 must be open/forwarded to this host.
+
+# FAQs
+- Want to reach the PiHole webUI while away?
+  - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.5/admin/ - for older installations its http://172.18.0.3/admin/ ).
