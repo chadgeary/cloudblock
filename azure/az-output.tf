@@ -7,7 +7,8 @@ output "wireguard-msg" {
 }
 
 output "pihole-web-vpn-msg" {
-  value                   = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_pihole}/admin/" }
+  value                   = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_pihole}/admin/"
+}
 
 output "pihole-web-msg" {
   value                   = "pihole webUI @ https://${azurerm_public_ip.ph-public-ip.ip_address}/admin/"

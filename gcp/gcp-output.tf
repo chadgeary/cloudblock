@@ -3,7 +3,8 @@ output "pihole-web-msg" {
 }
 
 output "pihole-web-vpn-msg" {
-  value                             = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_pihole}/admin/" }
+  value                             = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_pihole}/admin/"
+}
 
 output "wireguard-msg" {
   value                             = "Wireguard confs (one per device!) @ https://console.cloud.google.com/storage/browser/${var.ph_prefix}-bucket-${random_string.ph-random.result}/wireguard?project=${var.ph_prefix}-project-${random_string.ph-random.result}"
