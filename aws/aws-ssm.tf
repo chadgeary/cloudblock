@@ -70,7 +70,7 @@ resource "aws_ssm_document" "ph-ssm-doc" {
       "runCommand": [
         "#!/bin/bash",
         "# Ensure ansible is installed",
-        "sudo apt update",
+        "sudo apt-get update",
         "sudo DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git",
         "sudo pip3 install ansible",
         "echo \"Running Ansible in `pwd`\"",
