@@ -27,10 +27,12 @@ One of: adguard applied-privacy cloudflare google hurricane-electric libre-dns o
 Flag to allow DNS lookups directly to the pihole service without Wireguard VPN (exposes Pihole 53/tcp and 53/udp). Useful for local deployments where a traditional DNS service is required.
 1 for true, 0 for false
 
-# vpn_traffic
-# Generate wireguard client configurations to route only DNS traffic through VPN, or all traffic.
+# Generate wireguard client configurations to route only "dns" traffic through VPN, or:
+# "peers" - dns + other connected peers
+# "all" - all traffic
 # The wireguard server container does NOT restrict clients, clients can change their AllowedIPs as desired.
-One of: dns all
+# either "dns" "peers" or "all"
+vpn_traffic = "dns"
 
 # others
 The IP address variables should be changed if they'll conflict/overlap local networks. wireguard_network must not be in the same /24 as docker_<var>s
