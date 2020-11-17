@@ -19,8 +19,12 @@ doh_provider = "opendns"
 # either "dns" "peers" or "all"
 vpn_traffic = "dns"
 
-# a value of 1 permits mgmt_cidr access to DNS without the VPN
+# a value of 1 permits mgmt_cidr and client_cidrs access to DNS without the VPN
 dns_novpn = 1
+
+# additional client networks granted access pihole DNS without the VPN, example format:
+# client_cidrs = ["127.0.0.1/32","8.8.8.8/32"]
+client_cidrs = []
 
 ## UNCOMMON ##
 # If you're using the free-tier, see which region/ad is free-tier compatible run the following two commands and look for value: 2

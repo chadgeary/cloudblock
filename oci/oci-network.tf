@@ -121,4 +121,26 @@ resource "oci_core_default_security_list" "ph-security-list-directdns" {
       min                          = "53"
     }
   }
+  dynamic ingress_security_rules {
+    for_each                     = var.client_cidrs
+    content {
+      protocol                     = 6
+      source                       = ingress_security_rules.value
+      tcp_options {
+        max                          = "53"
+        min                          = "53"
+      }
+    }
+  }
+  dynamic ingress_security_rules {
+    for_each                     = var.client_cidrs
+    content {
+      protocol                     = 17
+      source                       = ingress_security_rules.value
+      udp_options {
+        max                          = "53"
+        min                          = "53"
+      }
+    }
+  }
 }
