@@ -22,6 +22,10 @@ vpn_traffic = "dns"
 # a value of 1 permits mgmt_cidr access to DNS without the VPN
 dns_novpn = 1
 
+# additional client networks granted access pihole DNS without the VPN, example format:
+# client_cidrs = ["127.0.0.1/32","8.8.8.8/32"]
+client_cidrs = []
+
 ## UNCOMMON ##
 gcp_region = "us-east1"
 gcp_zone = "b"

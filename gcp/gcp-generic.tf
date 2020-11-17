@@ -30,6 +30,11 @@ variable "mgmt_cidr" {
   description              = "The subnet in CIDR notation able to reach the instance via SSH, HTTPS, and (if dns_novpn = 1) DNS."
 }
 
+variable "client_cidrs" {
+  type                     = list
+  description              = "List of subnets (in CIDR notation) granted access to DNS without VPN"
+}
+
 variable "vpn_cidr" {
   type                     = string
   description              = "The subnet in CIDR notation able to reach the instance via Wireguard VPN."

@@ -11,5 +11,5 @@ output "pihole-web-msg" {
 }
 
 output "pihole-web-vpn-msg" {
-  value                   = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_pihole}/admin/" 
+  value                   = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_webproxy}/admin/" 
 }

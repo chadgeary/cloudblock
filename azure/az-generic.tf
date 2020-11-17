@@ -73,6 +73,11 @@ variable "mgmt_cidr" {
   description              = "A subnet (in CIDR notation) granted SSH, WebUI, and (if dns_novpn = 1) DNS access to virtual machine instance. Deploying from home? This is your public ip with a /32, e.g. 1.2.3.4/32"
 }
 
+variable "client_cidrs" {
+  type                     = list
+  description              = "List of subnets (in CIDR notation) granted access to DNS without VPN"
+}
+
 variable "ph_password" {
   type                     = string
   description              = "Password for Pihole WebUI access"

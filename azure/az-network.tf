@@ -103,3 +103,33 @@ resource "azurerm_network_security_rule" "ph-net-rule-dnsudp" {
   source_address_prefix        = var.mgmt_cidr
   destination_address_prefixes = [var.az_subnet_cidr]
 }
+
+resource "azurerm_network_security_rule" "ph-net-rule-clients-dnstcp" {
+  count                        = length(var.client_cidrs) == 0 ? 0 : 1
+  name                         = "${var.ph_prefix}-net-rule-clients-dnstcp"
+  resource_group_name          = azurerm_resource_group.ph-resourcegroup.name
+  network_security_group_name  = azurerm_network_security_group.ph-net-sec.name
+  priority                     = 202
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Tcp"
+  source_port_range            = "*"
+  destination_port_range       = "53"
+  source_address_prefixes      = var.client_cidrs
+  destination_address_prefixes = [var.az_subnet_cidr]
+}
+
+resource "azurerm_network_security_rule" "ph-net-rule-clients-dnsudp" {
+  count                        = length(var.client_cidrs) == 0 ? 0 : 1
+  name                         = "${var.ph_prefix}-net-rule-clients-dnsudp"
+  resource_group_name          = azurerm_resource_group.ph-resourcegroup.name
+  network_security_group_name  = azurerm_network_security_group.ph-net-sec.name
+  priority                     = 203
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_port_range            = "*"
+  destination_port_range       = "53"
+  source_address_prefixes      = var.client_cidrs
+  destination_address_prefixes = [var.az_subnet_cidr]
+}
