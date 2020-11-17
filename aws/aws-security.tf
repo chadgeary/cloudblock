@@ -40,6 +40,17 @@ resource "aws_security_group_rule" "ph-pubsg-mgmt-dnstcp-in" {
   cidr_blocks             = [var.mgmt_cidr]
 }
 
+resource "aws_security_group_rule" "ph-pubsg-client-dnstcp-in" {
+  count                   = length(var.client_cidrs) == 0 ? 0 : 1
+  security_group_id       = aws_security_group.ph-pubsg.id
+  type                    = "ingress"
+  description             = "IN FROM CLIENT - DNS TCP"
+  from_port               = "53"
+  to_port                 = "53"
+  protocol                = "tcp"
+  cidr_blocks             = var.client_cidrs
+}
+
 resource "aws_security_group_rule" "ph-pubsg-mgmt-dnsudp-in" {
   count                   = var.dns_novpn * 1
   security_group_id       = aws_security_group.ph-pubsg.id
@@ -49,6 +60,17 @@ resource "aws_security_group_rule" "ph-pubsg-mgmt-dnsudp-in" {
   to_port                 = "53"
   protocol                = "udp"
   cidr_blocks             = [var.mgmt_cidr]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-client-dnsudp-in" {
+  count                   = length(var.client_cidrs) == 0 ? 0 : 1
+  security_group_id       = aws_security_group.ph-pubsg.id
+  type                    = "ingress"
+  description             = "IN FROM CLIENT - DNS TCP"
+  from_port               = "53"
+  to_port                 = "53"
+  protocol                = "udp"
+  cidr_blocks             = var.client_cidrs
 }
 
 resource "aws_security_group_rule" "ph-pubsg-mgmt-wireguard-in" {

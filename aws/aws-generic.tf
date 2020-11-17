@@ -29,6 +29,11 @@ variable "mgmt_cidr" {
   description              = "Subnet CIDR allowed to access WebUI and SSH, e.g. <home ip address>/32"
 }
 
+variable "client_cidrs" {
+  type                     = list
+  description              = "List of subnets (in CIDR notation) granted access to DNS without VPN"
+}
+
 variable "vpn_cidr" {
   type                     = string
   description              = "Subnet CIDR allowed to access the VPN, e.g. 0.0.0.0/0 for world access (enrollment still required)"
