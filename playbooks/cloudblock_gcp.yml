@@ -98,7 +98,7 @@
 
     - name: Get pihole secret from google secret manager
       uri:
-        url: https://secretmanager.googleapis.com/v1/projects/{{ gcp_project_prefix }}-project-{{ gcp_project_suffix }}/secrets/cloudblock-web-password/versions/latest:access
+        url: https://secretmanager.googleapis.com/v1/projects/{{ gcp_project_prefix }}-project-{{ gcp_project_suffix }}/secrets/{{ gcp_project_prefix }}-web-password/versions/latest:access
         method: GET
         remote_src: yes
         return_content: yes
