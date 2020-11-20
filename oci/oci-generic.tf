@@ -46,6 +46,11 @@ variable "mgmt_cidr" {
   description              = "Subnet (in CIDR notation) granted access to Pihole WebUI and SSH running on the compute instance. Also granted DNS access if dns_novpn = 1"
 }
 
+variable "client_cidrs" {
+  type                     = list
+  description              = "An (optional) list of additional CIDR networks able to use the DNS service with VPN"
+}
+
 variable "ph_prefix" {
   type                     = string
   description              = "A friendly prefix (like 'pihole') affixed to many resources, like the bucket name."
