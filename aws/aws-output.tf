@@ -1,15 +1,19 @@
-output "ssh-msg" {
-  value                   = "SSH via: ssh ubuntu@${aws_eip.ph-eip-1.public_ip}"
-}
+output "cloudblock-output" {
+  value = <<OUTPUT
 
-output "pihole-web-msg" {
-  value                   = "pihole WebUI will be available @ https://${aws_eip.ph-eip-1.public_ip}/admin/"
-}
+  #############
+  ## OUTPUTS ##
+  #############
 
-output "pihole-web-vpn-msg" {
-  value                   = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_webproxy}/admin/"
-}
+  ## SSH (VPN) ##
+  ssh ubuntu@${aws_eip.ph-eip-1.public_ip}
+  (ssh ubuntu@${var.docker_gw})
 
-output "ph-wireguard-msg" {
-  value                   = "Wireguard confs (one per device!) will be available @ https://s3.console.aws.amazon.com/s3/buckets/${aws_s3_bucket.ph-bucket.id}/wireguard/?region=${var.aws_region}&tab=overview"
+  ## WebUI (VPN) ##
+  https://${aws_eip.ph-eip-1.public_ip}/admin/
+  (https://${var.docker_webproxy}/admin/)
+
+  ## Wireguard Configurations ##
+  https://s3.console.aws.amazon.com/s3/buckets/${aws_s3_bucket.ph-bucket.id}/wireguard/?region=${var.aws_region}&tab=overview
+  OUTPUT
 }

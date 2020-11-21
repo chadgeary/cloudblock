@@ -1,15 +1,19 @@
-output "ssh-msg" {
-  value                   = "ssh via: ssh ubuntu@${oci_core_instance.ph-instance.public_ip}"
-}
+output "cloudblock-output" {
+  value = <<OUTPUT
 
-output "wireguard-msg" {
-  value                   = "wireguard configuration files @ https://console.${var.oci_region}.oraclecloud.com/object-storage/buckets/${data.oci_objectstorage_namespace.ph-bucket-namespace.namespace}/${var.ph_prefix}-bucket/objects"
-}
+  #############
+  ## OUTPUTS ##
+  #############
 
-output "pihole-web-msg" {
-  value                   = "pihole webUI @ https://${oci_core_instance.ph-instance.public_ip}/admin/"
-}
+  ## SSH (VPN) ##
+  ssh ubuntu@${oci_core_instance.ph-instance.public_ip}
+  (ssh ubuntu@${var.docker_gw})
 
-output "pihole-web-vpn-msg" {
-  value                   = "pihole webUI also available (when on Wireguard VPN) @ https://${var.docker_webproxy}/admin/" 
+  ## WebUI (VPN) ##
+  https://${oci_core_instance.ph-instance.public_ip}/admin/
+  (https://${var.docker_webproxy}/admin/)
+
+  ## Wireguard Configurations ##
+  https://console.${var.oci_region}.oraclecloud.com/object-storage/buckets/${data.oci_objectstorage_namespace.ph-bucket-namespace.namespace}/${var.ph_prefix}-bucket/objects
+  OUTPUT
 }
