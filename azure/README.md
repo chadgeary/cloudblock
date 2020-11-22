@@ -169,3 +169,23 @@ sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" az.tfvars
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="az.tfvars"
 ```
+
+- How do I update Pihole / Wireguard docker containers?
+  - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
+  - Cloudblock follows these instructions and provides steps in the terraform output. Be sure cloudblock is locally up-to-date to display the instructions:
+```
+# Be in the azure subdirectory
+cd ~/cloudblock/azure/
+
+# Move vars file to be untracked by git
+mv az.tfvars pvars.tfvars
+
+# Pull cloudblock updates
+git pull
+
+# Note any new variables in the az.tfvars file compared to your original (pvars.tfvars), add any new variables to pvars.tfvars
+diff pvars.tfvars az.tfvars
+
+# Re-run terraform apply with your pvars file, see the update instructions in terraform's output
+terraform apply -var-file="pvars.tfvars"
+```

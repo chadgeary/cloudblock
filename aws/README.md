@@ -181,4 +181,4 @@ sudo docker rm -f wireguard
 ```
   - Re-apply the AWS SSM association to re-run the Ansible playbook. Ansible will re-install Pihole / Wireguard.
   - Newer versions of cloudblock display an AWS CLI command to re-apply the AWS SSM association, otherwise:
-  - Visit https://console.aws.amazon.com/systems-manager/state-manager/ -> select the association -> click 'Apply association now'
+  - Visit https://console.aws.amazon.com/systems-manager/state-manager/ (be in the proper AWS region) -> select the association -> click 'Apply association now'
