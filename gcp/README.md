@@ -145,7 +145,7 @@ Edit the vars file (gcp.tfvars) to customize the deployment, especially:
 # cat ~/.ssh/id_rsa.pub
 
 # mgmt_cidr
-# an IP range granted webUI and SSH access. Also permitted PiHole DNS if dns_novpn = 1. 
+# an IP range granted webUI and SSH access (without VPN). Also permitted PiHole DNS if dns_novpn = 1. 
 # deploying from home? This should be your public IP address with a /32 suffix. 
 
 # gcp_billing_account

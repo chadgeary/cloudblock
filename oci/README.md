@@ -151,7 +151,7 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 # cat ~/.ssh/id_rsa.pub
 
 # mgmt_cidr
-# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# an IP range granted webUI, instance SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
 # deploying from home? This should be your public IP address with a /32 suffix.
 
 # oci_config_profile
