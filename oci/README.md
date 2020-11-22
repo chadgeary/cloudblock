@@ -196,8 +196,8 @@ terraform apply -var-file="oci.tfvars"
 # Be in the oci subdirectory
 cd ~/cloudblock/oci/
 
-# Move vars file to be untracked by git
-mv oci.tfvars pvars.tfvars
+# Move vars file to be untracked by git, if not already done.
+if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv oci.tfvars pvars.tfvars; fi
 
 # Pull cloudblock updates
 git pull

@@ -177,8 +177,8 @@ terraform apply -var-file="az.tfvars"
 # Be in the azure subdirectory
 cd ~/cloudblock/azure/
 
-# Move vars file to be untracked by git
-mv az.tfvars pvars.tfvars
+# Move vars file to be untracked by git, if not already done. 
+if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv az.tfvars pvars.tfvars; fi
 
 # Pull cloudblock updates
 git pull

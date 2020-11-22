@@ -186,8 +186,8 @@ terraform apply -var-file="gcp.tfvars"
 # Be in the gcp subdirectory
 cd ~/cloudblock/gcp/
 
-# Move vars file to be untracked by git
-mv gcp.tfvars pvars.tfvars
+# Move vars file to be untracked by git, if not already done.
+if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv gcp.tfvars pvars.tfvars; fi
 
 # Pull cloudblock updates
 git pull
