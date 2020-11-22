@@ -168,3 +168,17 @@ sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" aws.tfvars
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="aws.tfvars"
 ```
+
+- How do I update Pihole / Wireguard docker containers?
+  - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
+  - Cloudblock follows these instructions, but containers must be removed manually first:
+  - SSH to the cloudblock instance.
+  - Remove the pihole or wireguard container (local data is kept), e.g.:
+```
+sudo docker rm -f pihole
+# and/or
+sudo docker rm -f wireguard
+```
+  - Re-apply the AWS SSM association to re-run the Ansible playbook. Ansible will re-install Pihole / Wireguard.
+  - Newer versions of cloudblock display an AWS CLI command to re-apply the AWS SSM association, otherwise:
+  - Visit https://console.aws.amazon.com/systems-manager/state-manager/ -> select the association -> click 'Apply association now'
