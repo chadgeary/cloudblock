@@ -81,6 +81,7 @@ pip3 install --user --upgrade awscli
 # Create a non-root AWS user in the AWS web console with admin permissions
 # This user must be the same user running terraform apply
 # Create the user at the AWS Web Console under IAM -> Users -> Add user -> Check programmatic access and AWS Management console -> Attach existing policies -> AdministratorAccess -> copy Access key ID and Secret Access key
+# See for more information: https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html#getting-started_create-admin-group-console
 
 # Set admin user credentials
 ~/.local/bin/aws configure
