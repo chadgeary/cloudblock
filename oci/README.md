@@ -13,15 +13,16 @@ Windows users install WSL (Windows Subsystem Linux)
 #############################
 ## Windows Subsystem Linux ##
 #############################
-# Launch elevated Powershell prompt (right click -> Run as Administrator)
+# Launch an ELEVATED Powershell prompt (right click -> Run as Administrator)
 
 # Enable Windows Subsystem Linux
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 
-# Reboot
+# Reboot your Windows PC
 shutdown /r /t 5
 
-# Launch a regular Powershell prompt
+# After reboot, launch a REGULAR Powershell prompt (left click).
+# Do NOT proceed with an ELEVATED Powershell prompt.
 
 # Download the Ubuntu 1804 package from Microsoft
 curl.exe -L -o ubuntu-1804.appx https://aka.ms/wsl-ubuntu-1804
