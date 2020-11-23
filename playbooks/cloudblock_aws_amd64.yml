@@ -1,0 +1,295 @@
+---
+- name: cloudblock - AWS ARM variant
+  hosts: localhost
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: required packages
+      apt:
+        pkg:
+          - docker.io
+          - libcap2-bin
+          - python3-pip
+          - ssl-cert
+        state: latest
+        update_cache: yes
+
+    - name: docker and boto python packages
+      pip:
+        name:
+          - docker
+          - boto
+          - boto3
+          - botocore
+        executable: /usr/bin/pip3
+        state: latest
+
+    - name: IP Forwarding enable/persist
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        reload: yes
+        sysctl_set: yes
+        sysctl_file: /etc/sysctl.conf
+
+    - name: docker service started/enabled
+      systemd:
+        name: docker
+        state: started
+        enabled: True
+
+    - name: various container directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /opt/cloudflared
+        - /opt/pihole
+        - /opt/pihole/etc
+        - /opt/pihole/dnsmasq.d
+        - /opt/webproxy
+
+    - name: wireguard dir gets user ubuntu
+      file:
+        path: /opt/wireguard
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+
+    - name: secure proxy to pihole confs
+      template:
+        src: "{{ item }}"
+        dest: "/opt/webproxy/{{ item }}"
+        owner: root
+        group: root
+        mode: 0444
+      with_items:
+        - httpd-ssl.conf
+        - httpd.conf
+
+    - name: DoH Endpoints
+      blockinfile:
+        create: yes
+        mode: '0644'
+        path: /opt/cloudflared/endpoints
+        block: |
+          adguard https://dns.adguard.com/dns-query
+          cloudflare https://cloudflare-dns.com/dns-query
+          applied-privacy https://doh.applied-privacy.net/query
+          google https://dns.google/dns-query
+          hurricane-electric https://ordns.he.net/dns-query
+          pi-dns https://doh.pi-dns.com/dns-query
+          quad9-recommended https://dns.quad9.net/dns-query
+          libre-dns https://doh.libredns.gr/dns-query
+          opendns https://doh.opendns.com/dns-query
+
+    - name: Set DoH URL from DoH provider var
+      shell: |
+        awk '/{{ doh_provider }}/ { print $2 }' /opt/cloudflared/endpoints
+      register: doh_url
+
+    - name: Cloudflared Dockerfile
+      blockinfile:
+        create: yes
+        mode: '0644'
+        path: /opt/cloudflared/Dockerfile
+        block: |
+          FROM ubuntu:bionic
+          EXPOSE 53/tcp
+          EXPOSE 53/udp
+          RUN apt-get update && \
+              apt-get install -y wget && \
+              wget https://github.com/cloudflare/cloudflared/releases/download/2020.10.2/cloudflared-linux-amd64 --directory-prefix=/usr/local/bin/ && \
+              chmod 555 /usr/local/bin/cloudflared-linux-amd64
+              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+      register: cloudflared_doh_dockerfile
+
+    - name: Cloudflared image
+      docker_image:
+        name: cloudflared_doh
+        build:
+          path: /opt/cloudflared
+        source: build
+        force_source: yes
+      when: cloudflared_doh_dockerfile.changed
+
+    - name: Get SSM parameter ph_password
+      set_fact:
+        ph_password: "{{ lookup('aws_ssm', name_prefix + '-pihole-web-password', decrypt=True, region=aws_region) }}"
+      no_log: True
+
+# cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
+# a lower mtu fixes the problem
+    - name: cloudflared pihole and wireguard network
+      docker_network:
+        name: cloudblock
+        driver: bridge
+        driver_options:
+          com.docker.network.driver.mtu: 1380
+        ipam_config:
+          - subnet: "{{ docker_network }}/24"
+            gateway: "{{ docker_gw }}"
+
+    - name: cloudflared_doh container
+      docker_container:
+        name: cloudflared_doh
+        image: cloudflared_doh
+        networks:
+          - name: cloudblock
+            ipv4_address: "{{ docker_doh }}"
+        purge_networks: yes
+        restart_policy: "always"
+
+    - name: pihole container - without DNS listen
+      docker_container:
+        name: pihole
+        hostname: cloudblockpihole
+        env:
+          DNS1: 172.18.0.2
+          DNS2: 172.18.0.2
+          WEBPASSWORD: "{{ ph_password }}"
+        image: pihole/pihole:latest
+        networks:
+          - name: cloudblock
+            ipv4_address: "{{ docker_pihole }}"
+        volumes:
+          - /opt/pihole/etc:/etc/pihole/:rw
+          - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+        purge_networks: yes
+        restart_policy: "always"
+      when: dns_novpn == "0"
+
+    - name: pihole container - with DNS listen
+      docker_container:
+        name: pihole
+        hostname: cloudblockpihole
+        env:
+          DNS1: 172.18.0.2
+          DNS2: 172.18.0.2
+          WEBPASSWORD: "{{ ph_password }}"
+        image: pihole/pihole:latest
+        networks:
+          - name: cloudblock
+            ipv4_address: "{{ docker_pihole }}"
+        ports:
+          - "53:53"
+          - "53:53/udp"
+        volumes:
+          - /opt/pihole/etc:/etc/pihole/:rw
+          - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+        purge_networks: yes
+        restart_policy: "always"
+      when: dns_novpn == "1"
+      no_log: True
+
+    - name: wireguard container
+      docker_container:
+        name: wireguard
+        capabilities:
+          - NET_ADMIN
+          - SYS_MODULE
+        env:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "Etc/UTC"
+          SERVERURL: "auto"
+          SERVERPORT: "51820"
+          ALLOWEDIPS: "{% if vpn_traffic is not defined %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32{% elif vpn_traffic == 'dns' %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32{% elif vpn_traffic == 'peers' %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32,{{ wireguard_network }}/24{% elif vpn_traffic == 'all' %}0.0.0.0/0{% else %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32{% endif %}"
+          PEERS: "{{ wireguard_peers }}"
+          PEERDNS: "{{ docker_pihole }}"
+          INTERNAL_SUBNET: "{{ wireguard_network }}"
+        image: linuxserver/wireguard:latest
+        networks:
+          - name: cloudblock
+            ipv4_address: "{{ docker_wireguard }}"
+        ports:
+          - "51820:51820/udp"
+        sysctls:
+          net.ipv4.conf.all.src_valid_mark: 1
+        volumes:
+          - /opt/wireguard:/config:rw
+        restart_policy: "always"
+        purge_networks: yes
+
+    - name: web proxy container for pihole
+      docker_container:
+        name: web_proxy
+        image: httpd:2.4
+        networks:
+          - name: cloudblock
+            ipv4_address: "{{ docker_webproxy }}"
+        ports:
+          - "443:443"
+        volumes:
+          - /opt/webproxy/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf:ro
+          - /opt/webproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+          - /etc/ssl/certs/ssl-cert-snakeoil.pem:/usr/local/apache2/conf/server.crt:ro
+          - /etc/ssl/private/ssl-cert-snakeoil.key:/usr/local/apache2/conf/server.key:ro
+        purge_networks: yes
+        restart_policy: "always"
+
+    - name: Set peer count list
+      set_fact:
+        peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
+
+    - name: Wait for final peer conf (Wireguard)
+      wait_for:
+        path: "/opt/wireguard/peer{{ wireguard_peers }}/{{ item }}"
+        state: present
+        timeout: 600
+        sleep: 1
+      with_items:
+        - "publickey-peer{{ wireguard_peers }}"
+        - "privatekey-peer{{ wireguard_peers }}"
+        - "peer{{ wireguard_peers }}.conf"
+        - "peer{{ wireguard_peers }}.png"
+
+    - name: Upload peer confs to s3 (Wireguard) - publickey
+      aws_s3:
+        mode: put
+        bucket: "{{ s3_bucket }}"
+        object: "wireguard/peer{{ item }}/publickey-peer{{ item }}"
+        src: "/opt/wireguard/peer{{ item }}/publickey-peer{{ item }}"
+        encrypt: yes
+        encryption_mode: "aws:kms"
+        encryption_kms_key_id: "{{ kms_key_id }}"
+      with_items:
+        - "{{ peer_count }}"
+
+    - name: Upload peer confs to s3 (Wireguard) - privatekey
+      aws_s3:
+        mode: put
+        bucket: "{{ s3_bucket }}"
+        object: "wireguard/peer{{ item }}/privatekey-peer{{ item }}"
+        src: "/opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}"
+        encrypt: yes
+        encryption_mode: "aws:kms"
+        encryption_kms_key_id: "{{ kms_key_id }}"
+      with_items:
+        - "{{ peer_count }}"
+
+    - name: Upload peer confs to s3 (Wireguard) - conf
+      aws_s3:
+        mode: put
+        bucket: "{{ s3_bucket }}"
+        object: "wireguard/peer{{ item }}/peer{{ item }}.conf"
+        src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.conf"
+        encrypt: yes
+        encryption_mode: "aws:kms"
+        encryption_kms_key_id: "{{ kms_key_id }}"
+      with_items:
+        - "{{ peer_count }}"
+
+    - name: Upload peer confs to s3 (Wireguard) - png
+      aws_s3:
+        mode: put
+        bucket: "{{ s3_bucket }}"
+        object: "wireguard/peer{{ item }}/peer{{ item }}.png"
+        src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
+        encrypt: yes
+        encryption_mode: "aws:kms"
+        encryption_kms_key_id: "{{ kms_key_id }}"
+      with_items:
+        - "{{ peer_count }}"
