@@ -92,7 +92,6 @@ resource "aws_ssm_document" "ph-ssm-doc" {
 DOC
 }
 
-# ansible playbook association for tag:ph:True ec2 instance(s)
 resource "aws_ssm_association" "ph-ssm-assoc" {
   association_name        = "${var.name_prefix}-ssm-assoc"
   name                    = aws_ssm_document.ph-ssm-doc.name

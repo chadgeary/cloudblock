@@ -9,7 +9,7 @@ resource "aws_instance" "ph-instance2" {
   vpc_security_group_ids  = [aws_security_group.ph-pubsg.id]
   tags                    = {
     Name                    = "${var.name_prefix}-cloudblock",
-    cloudblock2             = "True"
+    cloudblock             = "True"
   }
   user_data               = <<EOF
 #!/bin/bash
