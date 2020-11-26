@@ -7,10 +7,12 @@ output "cloudblock-output" {
   
   ## SSH (VPN) ##
   ssh ubuntu@${aws_eip.ph-eip-1.public_ip}
+  ssh ubuntu@${aws_eip.ph-eip-2.public_ip}
   (ssh ubuntu@${var.docker_gw})
   
   ## WebUI (VPN) ##
   https://${aws_eip.ph-eip-1.public_ip}/admin/
+  https://${aws_eip.ph-eip-2.public_ip}/admin/
   (https://${var.docker_webproxy}/admin/)
   
   ## Wireguard Configurations ##
