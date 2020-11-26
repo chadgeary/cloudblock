@@ -2,7 +2,5 @@
 *.terraform
 *.terraform*.tfstate*.lock*.
 *pvars.*
-../*.log
-../../*.log
-../*.svg
-../../*.svg
+*.log
+*.svg
