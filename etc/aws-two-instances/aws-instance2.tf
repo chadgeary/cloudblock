@@ -5,7 +5,7 @@ resource "aws_instance" "ph-instance2" {
   iam_instance_profile    = aws_iam_instance_profile.ph-instance-profile.name
   key_name                = aws_key_pair.ph-instance-key.key_name
   subnet_id               = aws_subnet.ph-pubnet.id
-  private_ip              = var.pubnet_instance_ip
+  private_ip              = var.pubnet_instance_ip2
   vpc_security_group_ids  = [aws_security_group.ph-pubsg.id]
   tags                    = {
     Name                    = "${var.name_prefix}-cloudblock",
