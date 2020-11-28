@@ -27,6 +27,7 @@ dns_novpn = 1
 client_cidrs = []
 
 ## UNCOMMON ##
+# At the time of this guide, only us-west1, us-central1, and us-east1 are always-free compatible
 gcp_region = "us-east1"
 gcp_zone = "b"
 
