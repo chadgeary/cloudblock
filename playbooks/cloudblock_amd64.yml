@@ -142,6 +142,7 @@
         volumes:
           - /opt/pihole/etc:/etc/pihole/:rw
           - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+        pull: yes
         purge_networks: yes
         restart_policy: "always"
       when: dns_novpn == "0"
@@ -164,6 +165,7 @@
         volumes:
           - /opt/pihole/etc:/etc/pihole/:rw
           - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+        pull: yes
         purge_networks: yes
         restart_policy: "always"
       when: dns_novpn == "1"
@@ -195,6 +197,7 @@
           net.ipv4.conf.all.src_valid_mark: 1
         volumes:
           - /opt/wireguard:/config:rw
+        pull: yes
         restart_policy: "always"
         purge_networks: yes
 
@@ -212,5 +215,6 @@
           - /opt/webproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
           - /etc/ssl/certs/ssl-cert-snakeoil.pem:/usr/local/apache2/conf/server.crt:ro
           - /etc/ssl/private/ssl-cert-snakeoil.key:/usr/local/apache2/conf/server.key:ro
+        pull: yes
         purge_networks: yes
         restart_policy: "always"
