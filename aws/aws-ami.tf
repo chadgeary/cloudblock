@@ -31,4 +31,8 @@ resource "aws_ami_copy" "ph-latest-vendor-ami-with-cmk" {
   tags                    = {
     Name                    = "${var.name_prefix}-encrypted-ami"
   }
+  timeouts {
+    create                  = "120m"
+    delete                  = "5m"
+  }
 }
