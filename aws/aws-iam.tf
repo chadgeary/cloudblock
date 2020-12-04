@@ -55,7 +55,7 @@ resource "aws_iam_policy" "ph-instance-policy-s3" {
         "s3:GetObject",
         "s3:GetObjectVersion"
       ],
-      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/*"]
+      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/playbooks/*","${aws_s3_bucket.ph-bucket.arn}/pihole/*","${aws_s3_bucket.ph-bucket.arn}/wireguard/*"]
     },
     {
       "Sid": "PutObjectsinBucketPrefix",
@@ -64,7 +64,7 @@ resource "aws_iam_policy" "ph-instance-policy-s3" {
         "s3:PutObject",
         "s3:PutObjectAcl"
       ],
-      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/ssm/*","${aws_s3_bucket.ph-bucket.arn}/wireguard/*"]
+      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/ssm/*","${aws_s3_bucket.ph-bucket.arn}/pihole/*","${aws_s3_bucket.ph-bucket.arn}/wireguard/*"]
     },
     {
       "Sid": "S3CMK",
