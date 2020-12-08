@@ -108,6 +108,56 @@
           x-goog-user-project: "{{ gcp_project_prefix }}-project-{{ gcp_project_suffix }}"
       register: ph_secret
 
+    - name: Get wireguard backup from storage if exists
+      uri:
+        url: https://storage.googleapis.com/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/wireguard/wireguard_backup.tar.gz
+        timeout: 120
+        method: GET
+        dest: /opt/wireguard_backup.tar.gz
+        remote_src: yes
+        return_content: yes
+        headers:
+          Authorization: Bearer {{ gcs_token_resp.json.access_token }}
+      ignore_errors: True
+
+    - name: Determine wireguard directory state
+      stat:
+        path: /opt/wireguard
+      register: wireguard_state
+
+    - name: Unarchive wireguard backup if local not exists
+      unarchive:
+        src: /opt/wireguard_backup.tar.gz
+        dest: /opt/
+        remote_src: yes
+        owner: 1000
+      when: wireguard_state.stat.exists|bool == False
+
+    - name: Get pihole backup from storage if exists
+      uri:
+        url: https://storage.googleapis.com/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/pihole/pihole_backup.tar.gz
+        timeout: 120
+        method: GET
+        dest: /opt/pihole_backup.tar.gz
+        remote_src: yes
+        return_content: yes
+        headers:
+          Authorization: Bearer {{ gcs_token_resp.json.access_token }}
+      ignore_errors: True
+
+    - name: Determine pihole directory state
+      stat:
+        path: /opt/pihole
+      register: pihole_state
+
+    - name: Unarchive pihole backup if local not exists
+      unarchive:
+        src: /opt/pihole_backup.tar.gz
+        dest: /opt/
+        remote_src: yes
+        owner: 1000
+      when: pihole_state.stat.exists|bool == False
+
     - name: Cloudflared Dockerfile
       blockinfile:
         create: yes
@@ -319,3 +369,122 @@
           Content-Type: image/png
       with_items:
         - "{{ peer_count }}"
+
+    - name: archive wireguard
+      archive:
+        path: /opt/wireguard
+        dest: /opt/wireguard_backup.tar.gz
+        format: gz
+        owner: root
+        group: root
+        mode: '0640'
+
+    - name: Upload wireguard backup archive
+      uri:
+        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=wireguard/wireguard_backup.tar.gz
+        timeout: 720
+        method: POST
+        src: /opt/wireguard_backup.tar.gz
+        remote_src: yes
+        return_content: yes
+        headers:
+          Authorization: Bearer {{ gcs_token_resp.json.access_token }}
+          Content-Type: application/gzip
+
+    - name: pihole to backup playbook clear
+      file:
+        path: /opt/pihole-to-backup.yml
+        state: absent
+
+    - name: pihole to backup playbook set
+      lineinfile:
+        path: /opt/pihole-to-backup.yml
+        create: yes
+        owner: root
+        group: root
+        mode: '0640'
+        line: "{{ item }}"
+      with_items:
+        - "---"
+        - "- name: pihole-backup.yml"
+        - "  hosts: localhost"
+        - "  gather_facts: false"
+        - "  tasks:"
+        - "  "
+        - "    - name: archive pihole locally"
+        - "      archive:"
+        - "        path: /opt/pihole"
+        - "        dest: /opt/pihole_backup.tar.gz"
+        - "        format: gz"
+        - "        owner: root"
+        - "        group: root"
+        - "        mode: '0640'"
+        - "   "
+        - "    - name: Retrieve GCS Token"
+        - "      uri:"
+        - "        url: http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
+        - "        method: GET"
+        - "        headers:"
+        - "          Metadata-Flavor: Google"
+        - "        return_content: yes"
+        - "      register: gcs_token_response"
+        - "    "
+        - "    - name: Upload pihole backup archive"
+        - "      uri: "
+        - "        url: https://storage.googleapis.com/upload/storage/v1/b/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/o?uploadType=media&name=pihole/pihole_backup.tar.gz"
+        - "        timeout: 720"
+        - "        method: POST"
+        - "        src: /opt/pihole_backup.tar.gz"
+        - "        remote_src: yes"
+        - "        return_content: yes "
+        - "        headers: "
+        - "          Authorization: Bearer {{ '{{' }} gcs_token_response.json.access_token {{ '}}' }}"
+        - "          Content-Type: application/gzip"
+
+    - name: pihole to backup timer
+      blockinfile:
+        path: /etc/systemd/system/pihole-to-backup.timer
+        create: yes
+        owner: root
+        group: root
+        mode: '0644'
+        block: |
+          [Unit]
+          Description=Archives and copies pihole to cloud storage
+
+          [Timer]
+          OnUnitActiveSec=12h
+          Unit=pihole-to-backup.service
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: pihole to s3 backup service
+      blockinfile:
+        path: /etc/systemd/system/pihole-to-backup.service
+        create: yes
+        owner: root
+        group: root
+        mode: '0644'
+        block: |
+          [Unit]
+          Description=Archives and copies pihole to backup
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/local/bin/ansible-playbook /opt/pihole-to-backup.yml
+          Type=simple
+          Restart=no
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: pihole to backup systemd start/enable
+      systemd:
+        name: "pihole-to-backup.{{ item }}"
+        daemon_reload: yes
+        state: started
+        enabled: yes
+      with_items:
+        - service
+        - timer
