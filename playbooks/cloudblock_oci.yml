@@ -91,6 +91,52 @@
         key_id: "{{ oci_kms_keyid }}"
       register: ph_password_decrypt
 
+    - name: Download Wireguard backup from OCI Storage if exists
+      oci_object_storage_object:
+        auth_type: "instance_principal"
+        namespace_name: "{{ oci_storage_namespace }}"
+        bucket_name: "{{ oci_storage_bucketname }}"
+        object_name: "wireguard/wireguard_backup.tar.gz"
+        dest: "/opt/wireguard_backup.tar.gz"
+      ignore_errors: True
+
+    - name: Determine wireguard state
+      stat:
+        path: /opt/wireguard/server
+      register: wireguard_state
+
+    - name: Unarchive wireguard backup if local not exists
+      unarchive:
+        src: /opt/wireguard_backup.tar.gz
+        dest: /opt/
+        remote_src: yes
+        owner: '1000'
+      when: wireguard_state.stat.exists|bool == False
+      ignore_errors: True
+
+    - name: Download Pihole backup from OCI Storage if exists
+      oci_object_storage_object:
+        auth_type: "instance_principal"
+        namespace_name: "{{ oci_storage_namespace }}"
+        bucket_name: "{{ oci_storage_bucketname }}"
+        object_name: "pihole/pihole_backup.tar.gz"
+        dest: "/opt/pihole_backup.tar.gz"
+      ignore_errors: True
+
+    - name: Determine pihole directory state
+      stat:
+        path: /opt/pihole/etc/pihole-FTL.db
+      register: pihole_state
+
+    - name: Unarchive pihole backup if local not exists
+      unarchive:
+        src: /opt/pihole_backup.tar.gz
+        dest: /opt/
+        remote_src: yes
+        owner: '1000'
+      when: pihole_state.stat.exists|bool == False
+      ignore_errors: True
+
     - name: Cloudflared Dockerfile
       blockinfile:
         create: yes
@@ -235,7 +281,7 @@
       iptables:
         chain: INPUT
         protocol: tcp
-        destination_port: 443
+        destination_port: '443'
         ctstate: 'NEW'
         jump: ACCEPT
         action: insert
@@ -245,7 +291,7 @@
       iptables:
         chain: INPUT
         protocol: tcp
-        destination_port: 53
+        destination_port: '53'
         ctstate: 'NEW'
         jump: ACCEPT
         action: insert
@@ -255,7 +301,7 @@
       iptables:
         chain: INPUT
         protocol: udp
-        destination_port: 53
+        destination_port: '53'
         ctstate: 'NEW'
         jump: ACCEPT
         action: insert
@@ -265,7 +311,7 @@
       iptables:
         chain: INPUT
         protocol: udp
-        destination_port: 51820
+        destination_port: '51820'
         ctstate: 'NEW'
         jump: ACCEPT
         action: insert
@@ -330,3 +376,103 @@
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
       with_items:
         - "{{ peer_count }}"
+
+    - name: Archive Wireguard
+      archive:
+        path: /opt/wireguard
+        dest: /opt/wireguard_backup.tar.gz
+        format: gz
+        owner: root
+        group: root
+        mode: '0640'
+
+    - name: Upload Wireguard archive to OCI Storage
+      oci_object_storage_object:
+        auth_type: "instance_principal"
+        namespace_name: "{{ oci_storage_namespace }}"
+        bucket_name: "{{ oci_storage_bucketname }}"
+        object_name: "wireguard/wireguard_backup.tar.gz"
+        src: "/opt/wireguard_backup.tar.gz"
+
+    - name: Pihole to Backup Playbook Clear
+      file:
+        path: /opt/pihole-to-backup.yml
+        state: absent
+
+    - name: Pihole to Backup Playbook Set
+      lineinfile:
+        path: /opt/pihole-to-backup.yml
+        create: yes
+        owner: root
+        group: root
+        mode: '0640'
+        line: "{{ item }}"
+      with_items:
+        - "---"
+        - "- name: pihole-backup.yml"
+        - "  hosts: localhost"
+        - "  gather_facts: false"
+        - "  collections:"
+        - "    - oracle.oci"
+        - "  tasks:"
+        - "  "
+        - "    - name: archive pihole locally"
+        - "      archive:"
+        - "        path: /opt/pihole"
+        - "        dest: /opt/pihole_backup.tar.gz"
+        - "        format: gz"
+        - "        owner: root"
+        - "        group: root"
+        - "        mode: '0640'"
+        - "   "
+        - "    - name: upload pihole backup to oci storage"
+        - "      oci_object_storage_object:"
+        - "        auth_type: \"instance_principal\""
+        - "        namespace_name: \"{{ oci_storage_namespace }}\""
+        - "        bucket_name: \"{{ oci_storage_bucketname }}\""
+        - "        object_name: \"pihole/pihole_backup.tar.gz\""
+        - "        src: \"/opt/pihole_backup.tar.gz\""
+
+    - name: pihole to backup timer
+      blockinfile:
+        path: /etc/systemd/system/pihole-to-backup.timer
+        create: yes
+        owner: root
+        group: root
+        mode: '0644'
+        block: |
+          [Unit]
+          Description=Archives and copies pihole to cloud storage
+          [Timer]
+          OnUnitActiveSec=12h
+          Unit=pihole-to-backup.service
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: pihole to backup service
+      blockinfile:
+        path: /etc/systemd/system/pihole-to-backup.service
+        create: yes
+        owner: root
+        group: root
+        mode: '0644'
+        block: |
+          [Unit]
+          Description=Archives and copies pihole to backup
+          After=network.target
+          [Service]
+          ExecStart=/usr/local/bin/ansible-playbook /opt/pihole-to-backup.yml
+          Type=simple
+          Restart=no
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: pihole to backup systemd start/enable
+      systemd:
+        name: "pihole-to-backup.{{ item }}"
+        daemon_reload: yes
+        state: started
+        enabled: yes
+      with_items:
+        - service
+        - timer
