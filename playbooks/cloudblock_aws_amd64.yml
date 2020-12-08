@@ -128,9 +128,9 @@
         dest: "/opt/wireguard_backup.tar.gz"
       ignore_errors: yes
 
-    - name: Determine wireguard directory state
+    - name: Determine wireguard state
       stat:
-        path: /opt/wireguard
+        path: /opt/wireguard/server
       register: wireguard_state
 
     - name: unarchive wireguard backup if dir not exists
@@ -149,9 +149,9 @@
         dest: "/opt/pihole_backup.tar.gz"
       ignore_errors: yes
 
-    - name: Determine pihole directory state
+    - name: Determine pihole state
       stat:
-        path: /opt/pihole
+        path: /opt/pihole/etc/pihole-FTL.db
       register: pihole_state
 
     - name: unarchive pihole backup if pulled from s3

@@ -120,9 +120,9 @@
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
       ignore_errors: True
 
-    - name: Determine wireguard directory state
+    - name: Determine wireguard state
       stat:
-        path: /opt/wireguard
+        path: /opt/wireguard/server
       register: wireguard_state
 
     - name: Unarchive wireguard backup if local not exists
@@ -147,7 +147,7 @@
 
     - name: Determine pihole directory state
       stat:
-        path: /opt/pihole
+        path: /opt/pihole/etc/pihole-FTL.db
       register: pihole_state
 
     - name: Unarchive pihole backup if local not exists
