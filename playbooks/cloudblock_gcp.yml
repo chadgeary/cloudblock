@@ -130,7 +130,7 @@
         src: /opt/wireguard_backup.tar.gz
         dest: /opt/
         remote_src: yes
-        owner: 1000
+        owner: '1000'
       when: wireguard_state.stat.exists|bool == False
       ignore_errors: True
 
@@ -156,7 +156,7 @@
         src: /opt/pihole_backup.tar.gz
         dest: /opt/
         remote_src: yes
-        owner: 1000
+        owner: '1000'
       when: pihole_state.stat.exists|bool == False
       ignore_errors: True
 
