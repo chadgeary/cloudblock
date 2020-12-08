@@ -132,6 +132,7 @@
         remote_src: yes
         owner: 1000
       when: wireguard_state.stat.exists|bool == False
+      ignore_errors: True
 
     - name: Get pihole backup from storage if exists
       uri:
@@ -157,6 +158,7 @@
         remote_src: yes
         owner: 1000
       when: pihole_state.stat.exists|bool == False
+      ignore_errors: True
 
     - name: Cloudflared Dockerfile
       blockinfile:

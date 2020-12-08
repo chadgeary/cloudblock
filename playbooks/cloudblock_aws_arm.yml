@@ -126,7 +126,7 @@
         bucket: "{{ s3_bucket }}"
         object: "/wireguard/wireguard_backup.tar.gz"
         dest: "/opt/wireguard_backup.tar.gz"
-      ignore_errors: yes
+      ignore_errors: True
 
     - name: Determine wireguard state
       stat:
@@ -140,6 +140,7 @@
         remote_src: yes
         owner: 1000
       when: wireguard_state.stat.exists|bool == False
+      ignore_errors: True
 
     - name: get pihole backup from s3 if exists
       aws_s3:
@@ -147,7 +148,7 @@
         bucket: "{{ s3_bucket }}"
         object: "/pihole/pihole_backup.tar.gz"
         dest: "/opt/pihole_backup.tar.gz"
-      ignore_errors: yes
+      ignore_errors: True
 
     - name: Determine pihole state
       stat:
@@ -161,6 +162,7 @@
         remote_src: yes
         owner: 1000
       when: pihole_state.stat.exists|bool == false
+      ignore_errors: True
 
 # cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
 # a lower mtu fixes the problem
