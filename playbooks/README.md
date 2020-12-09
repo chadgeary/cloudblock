@@ -102,7 +102,7 @@ Port 51820 must be open/forwarded to this host.
 
 - Raspberry Pi using DHCP and receiving the Pihole DNS (creating a non-working loop)?
   - Set the Raspberry Pi to a hardcoded DNS server.
-`
+```
 # If the Raspberry Pi's DHCP server points to the Pihole container, ensure the Raspberry Pi's host DNS is not set via DHCP, e.g.:
 # backup DHCP client conf
 sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.$(date +%F_%T)
@@ -118,4 +118,4 @@ sudo bash -c 'ip link set wlan0 down && ip link set wlan0 up' &
 
 # if Raspberry Pi is wired, disconnect/reconnect link
 sudo bash -c 'ip link set eth0 down && ip link set eth0 up' &
-`
+```
