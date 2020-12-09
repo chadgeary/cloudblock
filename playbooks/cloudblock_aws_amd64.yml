@@ -361,7 +361,12 @@
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
 
-    - name: pihole to s3 backup playbook
+    - name: Pihole to Backup Ansible Playbook (clear)
+      file:
+        path: /opt/pihole-to-s3-backup.yml
+        state: absent
+
+    - name: pihole to s3 backup playbook (set)
       lineinfile:
         path: /opt/pihole-to-s3-backup.yml
         create: yes

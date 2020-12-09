@@ -49,6 +49,39 @@
         - /opt/webproxy
         - /opt/wireguard
 
+    - name: Determine ph_password file exists
+      stat:
+        path: /opt/pihole/ph_password
+      register: ph_password_file
+
+    - name: Generate ph_password if not exists
+      set_fact:
+        ph_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+      when: ph_password_file.stat.exists|bool == False
+      no_log: True
+
+    - name: Set ph_password if not exists
+      lineinfile:
+        path: /opt/pihole/ph_password
+        create: yes
+        owner: root
+        group: root
+        mode: '0600'
+        line: "{{ ph_password }}"
+      when: ph_password_file.stat.exists|bool == False
+      no_log: True
+
+    - name: Get ph_password if exists
+      slurp:
+        src: /opt/pihole/ph_password
+      register: ph_password_content
+      when: ph_password_file.stat.exists|bool == True
+
+    - name: Register ph_password if exists
+      set_fact:
+        ph_password: "{{ ph_password_content['content'] | b64decode | trim }}"
+      when: ph_password_file.stat.exists|bool == True
+
     - name: secure proxy to pihole confs
       template:
         src: "{{ item }}"
@@ -218,3 +251,29 @@
         pull: yes
         purge_networks: yes
         restart_policy: "always"
+
+    - name: Wait for final peer conf (Wireguard)
+      wait_for:
+        path: "/opt/wireguard/peer{{ wireguard_peers }}/{{ item }}"
+        state: present
+        timeout: 600
+        sleep: 1
+      with_items:
+        - "publickey-peer{{ wireguard_peers }}"
+        - "privatekey-peer{{ wireguard_peers }}"
+        - "peer{{ wireguard_peers }}.conf"
+        - "peer{{ wireguard_peers }}.png"
+
+    - name: Playbook Summary
+      debug:
+        msg:
+          - Cloudblock completed installation of Wireguard, Pihole, Cloudflared, and Web Proxy!
+          - ""
+          - "Pihole WebUI (Local): https://{{ ansible_default_ipv4.address }}/admin/"
+          - "Pihole WebUI (VPN): https://{{ docker_webproxy }}/admin/"
+          - ""
+          - "Wireguard Client Files:"
+          - "ls -l /opt/wireguard/peer*"
+          - ""
+          - "Wireguard Client QR Codes via CLI:"
+          - "sudo docker logs wireguard"

@@ -1,20 +1,75 @@
 # Local Deployment
-`cloudblock_amd64.yml` and `cloudblock_arm64.yml` support standalone deployments.
+`cloudblock_amd64.yml`, `cloudblock_arm64.yml`, and `cloudblock_raspbian.yml` support standalone deployments.
 
-# Requirements
+# Ubuntu Deployment
 - Ubuntu 18.04+
 - Ansible 2.9+ (python3-based) installed
-
-# Deploy
 ```
-# Clone and change to directory
+# Clone and change to playbooks directory
 git clone https://github.com/chadgeary/cloudblock && cd cloudblock/playbooks/
 
-# Run playbook (target is the localhost)
-ansible-playbook cloudblock_amd64.yml --extra-vars 'docker_network=172.18.0.0 docker_gw=172.18.0.1 docker_doh=172.18.0.2 docker_pihole=172.18.0.3 docker_wireguard=172.18.0.4 wireguard_network=172.19.0.0 doh_provider=opendns dns_novpn=1 wireguard_peers=10 vpn_traffic=dns'
+# Set Variables
+doh_provider=opendns
+dns_novpn=1
+wireguard_peers=10
+vpn_traffic=dns
+docker_network=172.18.0.0
+docker_gw=172.18.0.1
+docker_doh=172.18.0.2
+docker_pihole=172.18.0.3
+docker_wireguard=172.18.0.4
+docker_webproxy=172.18.0.5
+wireguard_network=172.19.0.0
 
-# Locate configurations
-ls -ltrh /opt/wireguard/peer1/
+# Want to set your own pihole password instead of something randomly generated?
+sudo mkdir -p /opt/pihole
+echo "somepassword" | sudo tee /opt/pihole/ph_password
+sudo chmod 600 /opt/pihole/ph_password
+
+# Execute playbook via ansible - either _amd64 or _arm64 
+ansible-playbook cloudblock_amd64.yml --extra-vars="doh_provider=$doh_provider dns_novpn=$dns_novpn wireguard_peers=$wireguard_peers vpn_traffic=$vpn_traffic docker_network=$docker_network docker_gw=$docker_gw docker_doh=$docker_doh docker_pihole=$docker_pihole docker_wireguard=$docker_wireguard docker_webproxy=$docker_webproxy wireguard_network=$wireguard_network"
+
+# See Playbook Summary output for Pihole WebUI URL and Wireguard Client files
+```
+
+# Raspbian Deployment
+- Raspbian 10 (Buster)
+- Tested with Raspberry Pi 4
+```
+# Ansible + Git
+sudo apt update && sudo apt -y upgrade
+sudo apt install git python3-pip
+pip3 install --user --upgrade ansible
+
+# Add .local/bin to $PATH
+echo PATH="\$PATH:~/.local/bin" >> .bashrc
+source ~/.bashrc
+
+# Clone project and change to playbooks directory
+git clone https://github.com/chadgeary/cloudblock && cd cloudblock/playbooks/
+
+# Set Variables
+doh_provider=opendns
+dns_novpn=1
+wireguard_peers=10
+vpn_traffic=dns
+docker_network=172.18.0.0
+docker_gw=172.18.0.1
+docker_doh=172.18.0.2
+docker_pihole=172.18.0.3
+docker_wireguard=172.18.0.4
+docker_webproxy=172.18.0.5
+wireguard_network=172.19.0.0
+
+# Want to set your own pihole password instead of something randomly generated?
+sudo mkdir -p /opt/pihole
+echo "somepassword" | sudo tee /opt/pihole/ph_password
+sudo chmod 600 /opt/pihole/ph_password
+
+# Execute playbook via ansible
+ansible-playbook cloudblock_raspbian.yml --extra-vars="doh_provider=$doh_provider dns_novpn=$dns_novpn wireguard_peers=$wireguard_peers vpn_traffic=$vpn_traffic docker_network=$docker_network docker_gw=$docker_gw docker_doh=$docker_doh docker_pihole=$docker_pihole docker_wireguard=$docker_wireguard docker_webproxy=$docker_webproxy wireguard_network=$wireguard_network"
+
+# See Playbook Summary output for Pihole WebUI URL and Wireguard Client files
 ```
 
 # Variables
@@ -38,7 +93,7 @@ vpn_traffic = "dns"
 The IP address variables should be changed if they'll conflict/overlap local networks. wireguard_network must not be in the same /24 as docker_<var>s
 ```
 
-# Client Remote Wireguard Connectivity / Port Forwarding
+# Remote Wireguard Connectivity / Port Forwarding
 Port 51820 must be open/forwarded to this host.
 
 # FAQs
