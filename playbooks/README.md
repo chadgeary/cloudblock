@@ -99,3 +99,23 @@ Port 51820 must be open/forwarded to this host.
 # FAQs
 - Want to reach the PiHole webUI while away?
   - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.5/admin/ - for older installations its http://172.18.0.3/admin/ ).
+
+- Raspberry Pi using DHCP and receiving the Pihole DNS (creating a non-working loop)?
+  - Set the Raspberry Pi to a hardcoded DNS server.
+`
+# If the Raspberry Pi's DHCP server points to the Pihole container, ensure the Raspberry Pi's host DNS is not set via DHCP, e.g.:
+# backup DHCP client conf
+sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.$(date +%F_%T)
+
+# Disable DNS via DHCP
+sudo sed -i 's/option domain_name_servers, domain_name, domain_search, host_name/option domain_name, domain_search, host_name/' /etc/dhcpcd.conf
+
+# Set a hardcoded DNS server IP - replace 1.1.1.1 with your choice of DNS.
+sudo sed -i '0,/#static domain_name_servers=.*/s//static domain_name_servers=1.1.1.1/' /etc/dhcpcd.conf
+
+# if Raspberry Pi is wireless, disconnect/reconnect link
+sudo bash -c 'ip link set wlan0 down && ip link set wlan0 up' &
+
+# if Raspberry Pi is wired, disconnect/reconnect link
+sudo bash -c 'ip link set eth0 down && ip link set eth0 up' &
+`
