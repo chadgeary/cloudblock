@@ -119,3 +119,6 @@ sudo bash -c 'ip link set wlan0 down && ip link set wlan0 up' &
 # if Raspberry Pi is wired, disconnect/reconnect link
 sudo bash -c 'ip link set eth0 down && ip link set eth0 up' &
 ```
+
+# Discussion
+[Discord Room](https://discord.gg/zmu6GVnPnj)

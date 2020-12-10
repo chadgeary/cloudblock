@@ -302,6 +302,7 @@
           - ""
           - "Pihole WebUI (Local): https://{{ ansible_default_ipv4.address }}/admin/"
           - "Pihole WebUI (VPN): https://{{ docker_webproxy }}/admin/"
+          - "Pihole DNS (Local): {{ ansible_default_ipv4.address }}"
           - ""
           - "Wireguard Client Files:"
           - "ls -l /opt/wireguard/peer*"

@@ -13,11 +13,16 @@ Several deployment options are available, see the README of each subdirectory fo
 - OCI (Oracle)
 - Standalone (under playbooks/)
 
-# Step-by-Step Video
-By yours truly, for Windows users.
-- [Prerequisites](https://youtu.be/9VFexErMlvo) (all deployments should watch this first).
+# Videos
+### Raspberry Pi
+Step-by-step, follow along with me - for Raspberry Pi deployments.
+- [Raspberry Pi 4+ (Raspbian 10/Buster)](https://youtu.be/HMqz8c2UHG4)
 
-After watching the above, follow a guide specific to your cloud provider.
+### Cloud Deployments
+Step-by-step, follow along with me from a windows desktop - for Cloud deployments.
+- [Prerequisites](https://youtu.be/9VFexErMlvo) (all cloud deployments should watch this first).
+
+After watching the cloud prerequisites video, follow a guide specific to your cloud provider.
 - [AWS](https://youtu.be/zNElF0iS2bM) (for amazon web services)
 - [Azure](https://youtu.be/eZKptCWW-RI) (for microsoft azure cloud)
 - [GCP](https://youtu.be/EZyn6dEdqe0) (for google cloud)
