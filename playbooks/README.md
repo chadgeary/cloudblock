@@ -100,6 +100,9 @@ Port 51820 must be open/forwarded to this host.
 - Want to reach the PiHole webUI while away?
   - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.5/admin/ - for older installations its http://172.18.0.3/admin/ ).
 
+- Public IP address changed?
+  - Edit your Wireguard client's `Endpoint` value.
+
 - Raspberry Pi using DHCP and receiving the Pihole DNS (creating a non-working loop)?
   - Set the Raspberry Pi to a hardcoded DNS server.
 ```
