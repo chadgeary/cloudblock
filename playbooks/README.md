@@ -123,5 +123,36 @@ sudo bash -c 'ip link set wlan0 down && ip link set wlan0 up' &
 sudo bash -c 'ip link set eth0 down && ip link set eth0 up' &
 ```
 
+- How do I update my docker containers?
+  - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
+  - Cloudblock follows these instructions. Be sure cloudblock is locally up-to-date to display the instructions.
+
+```
+# Be in the cloudblock/playbooks directory
+cd ~/cloudblock/playbooks
+
+# Pull cloudblock code updates
+git pull
+
+# Set customized variables
+doh_provider=opendns
+dns_novpn=1
+wireguard_peers=10
+vpn_traffic=dns
+docker_network=172.18.0.0
+docker_gw=172.18.0.1
+docker_doh=172.18.0.2
+docker_pihole=172.18.0.3
+docker_wireguard=172.18.0.4
+docker_webproxy=172.18.0.5
+wireguard_network=172.19.0.0
+
+# Remove old containers (service is down until Ansible completes)
+sudo docker rm -f cloudflared_doh pihole web_proxy wireguard
+
+# Rerun ansible-playbook
+ansible-playbook cloudblock_raspbian.yml --extra-vars="doh_provider=$doh_provider dns_novpn=$dns_novpn wireguard_peers=$wireguard_peers vpn_traffic=$vpn_traffic docker_network=$docker_network docker_gw=$docker_gw docker_doh=$docker_doh docker_pihole=$docker_pihole docker_wireguard=$docker_wireguard docker_webproxy=$docker_webproxy wireguard_network=$wireguard_network"
+```
+
 # Discussion
 [Discord Room](https://discord.gg/zmu6GVnPnj)
