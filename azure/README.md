@@ -65,7 +65,7 @@ git clone https://github.com/chadgeary/cloudblock
 ssh-keygen
 ```
 
-Install the Azure cli and authenticate
+Install the Azure cli and authenticate. An [azure account](https://azure.microsoft.com/en-us/free/) is required to continue.
 ```
 #############################
 ##          Azure          ##

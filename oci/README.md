@@ -63,7 +63,7 @@ git clone https://github.com/chadgeary/cloudblock
 ssh-keygen
 ```
 
-Install the Oracle CLI and authenticate
+Install the Oracle CLI and authenticate. An [OCI account](https://signup.oraclecloud.com/) is required to continue.
 ```
 #############################
 ##         Oracle          ##

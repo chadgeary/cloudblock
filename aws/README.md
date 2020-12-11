@@ -62,7 +62,7 @@ git clone https://github.com/chadgeary/cloudblock
 ssh-keygen
 ```
 
-Install the AWS cli and create non-root AWS user
+Install the AWS cli and create non-root AWS user. An [AWS account](https://portal.aws.amazon.com/billing/signup) is required to continue.
 ```
 #############################
 ##          AWS            ##

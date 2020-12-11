@@ -45,7 +45,11 @@ pip3 install --user --upgrade ansible
 echo PATH="\$PATH:~/.local/bin" >> .bashrc
 source ~/.bashrc
 
-# Clone project and change to playbooks directory
+# Optionally, reboot the raspberry pi
+# This may be required if the system was months out date before installing updates!
+sudo reboot
+
+# Clone the cloudblock project and change to playbooks directory
 git clone https://github.com/chadgeary/cloudblock && cd cloudblock/playbooks/
 
 # Set Variables

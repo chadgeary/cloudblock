@@ -63,7 +63,7 @@ git clone https://github.com/chadgeary/cloudblock
 ssh-keygen
 ```
 
-Install the GCP CLI and authenticate
+Install the GCP CLI and authenticate. A [GCP account](https://console.cloud.google.com/) is required to continue.
 ```
 #############################
 ##           GCP           ##
