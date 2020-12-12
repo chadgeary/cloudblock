@@ -18,14 +18,16 @@ output "cloudblock-output" {
 
   ## Update Containers / Ansible Rerun Instructions ##
   ssh ubuntu@${azurerm_public_ip.ph-public-ip.ip_address}
+
   # If updating containers, remove the old containers - this brings down the service until ansible is re-applied.
-  sudo docker rm -f pihole
-  sudo docker rm -f wireguard
+  sudo docker rm -f cloudflared_doh pihole web_proxy wireguard
+
   # Update project
   cd /opt/cloudblock/
   sudo git pull
-  cd playbooks/
+
   # Re-apply Ansible playbook with custom variables
+  cd playbooks/
   ansible-playbook cloudblock_azure.yml --extra-vars 'docker_network=${var.docker_network} docker_gw=${var.docker_gw} docker_doh=${var.docker_doh} docker_pihole=${var.docker_pihole} docker_wireguard=${var.docker_wireguard} docker_webproxy=${var.docker_webproxy} wireguard_network=${var.wireguard_network} doh_provider=${var.doh_provider} dns_novpn=1 ph_prefix=${var.ph_prefix} ph_suffix=${random_string.ph-random.result} wireguard_peers=${var.wireguard_peers} vpn_traffic=${var.vpn_traffic}'
   OUTPUT
 }

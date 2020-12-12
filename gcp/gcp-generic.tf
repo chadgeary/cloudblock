@@ -33,6 +33,7 @@ variable "mgmt_cidr" {
 variable "client_cidrs" {
   type                     = list
   description              = "List of subnets (in CIDR notation) granted access to DNS without VPN"
+  default                  = []
 }
 
 variable "vpn_cidr" {

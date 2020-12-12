@@ -49,6 +49,7 @@ variable "mgmt_cidr" {
 variable "client_cidrs" {
   type                     = list
   description              = "An (optional) list of additional CIDR networks able to use the DNS service with VPN"
+  default                  = []
 }
 
 variable "ph_prefix" {
