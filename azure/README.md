@@ -175,6 +175,9 @@ terraform apply -var-file="az.tfvars"
   - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
   - Cloudblock follows these instructions and provides steps in the terraform output. Be sure cloudblock is locally up-to-date to display the instructions:
 ```
+# Ensure terraform is up-to-date
+sudo apt update && sudo apt-get install --only-upgrade terraform
+
 # Be in the azure subdirectory
 cd ~/cloudblock/azure/
 

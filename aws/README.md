@@ -173,12 +173,22 @@ terraform apply -var-file="aws.tfvars"
 
 - How do I update Pihole / Wireguard docker containers?
   - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
-  - Cloudblock follows these instructions, but containers must be removed manually first:
-  - SSH to the cloudblock instance.
-  - Remove the containers (local data is kept), e.g.:
+  - Cloudblock follows these instructions and provides steps in the terraform output. Be sure cloudblock is locally up-to-date to display the instructions:
 ```
-sudo docker rm -f cloudflared_doh pihole web_proxy wireguard
+# Ensure terraform is up-to-date
+sudo apt update && sudo apt-get install --only-upgrade terraform
+
+# Be in the aws subdirectory
+cd ~/cloudblock/aws/
+
+# Move vars file to be untracked by git, if not already done.
+if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv oci.tfvars pvars.tfvars; fi
+
+# Pull cloudblock updates
+git pull
+
+# Note any new variables in the default vars file compared to your original (pvars.tfvars), add any new variables to pvars.tfvars
+diff pvars.tfvars aws.tfvars
+
+# Re-run terraform apply with your pvars file, see the update instructions in terraform's output
 ```
-  - Re-apply the AWS SSM association to re-run the Ansible playbook. Ansible will re-install Pihole / Wireguard.
-  - Newer versions of cloudblock display an AWS CLI command to re-apply the AWS SSM association, otherwise:
-  - Visit https://console.aws.amazon.com/systems-manager/state-manager/ (be in the proper AWS region) -> select the association -> click 'Apply association now'
