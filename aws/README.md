@@ -175,11 +175,9 @@ terraform apply -var-file="aws.tfvars"
   - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
   - Cloudblock follows these instructions, but containers must be removed manually first:
   - SSH to the cloudblock instance.
-  - Remove the pihole or wireguard container (local data is kept), e.g.:
+  - Remove the containers (local data is kept), e.g.:
 ```
-sudo docker rm -f pihole
-# and/or
-sudo docker rm -f wireguard
+sudo docker rm -f cloudflared_doh pihole web_proxy wireguard
 ```
   - Re-apply the AWS SSM association to re-run the Ansible playbook. Ansible will re-install Pihole / Wireguard.
   - Newer versions of cloudblock display an AWS CLI command to re-apply the AWS SSM association, otherwise:
