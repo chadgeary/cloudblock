@@ -8,6 +8,11 @@ variable "aws_region" {
   type                     = string
 }
 
+variable "aws_az" {
+  type                     = number
+  default                  = 0
+}
+
 variable "aws_profile" {
   type                     = string
 }

@@ -31,7 +31,7 @@ resource "aws_route_table" "ph-pubrt" {
 # public subnet
 resource "aws_subnet" "ph-pubnet" {
   vpc_id                  = aws_vpc.ph-vpc.id
-  availability_zone       = data.aws_availability_zones.ph-azs.names[0]
+  availability_zone       = data.aws_availability_zones.ph-azs.names[var.aws_az]
   cidr_block              = var.pubnet_cidr
   tags                    = {
     Name                  = "ph-pubnet"
