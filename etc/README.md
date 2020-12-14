@@ -3,7 +3,7 @@ Additional configurations for various one-off/special deployment types + useful 
 
 # Commands
 Replace the PIHOLE_PW, PIHOLE_IP, and other variable values as necessary.
-`
+```
 #############
 ## Ad List ##
 #############
@@ -44,4 +44,4 @@ PIHOLE_TOKEN=$(curl --silent 'https://'"$PIHOLE_IP"'/admin/index.php' --compress
 
 # local name resolution addition
 curl 'https://'"$PIHOLE_IP"'/admin/scripts/pi-hole/php/customdns.php' --data-raw 'action=add&ip='"$LOCAL_IP"'&domain='"$LOCAL_NAME"'&token='"$PIHOLE_TOKEN"'' --compressed --insecure -b cookies.pihole -c cookies.pihole
-`
+```
