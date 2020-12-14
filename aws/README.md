@@ -187,8 +187,5 @@ if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv oci.t
 # Pull cloudblock updates
 git pull
 
-# Note any new variables in the default vars file compared to your original (pvars.tfvars), add any new variables to pvars.tfvars
-diff pvars.tfvars aws.tfvars
-
 # Re-run terraform apply with your pvars file, see the update instructions in terraform's output
 ```
