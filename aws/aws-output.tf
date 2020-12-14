@@ -18,7 +18,7 @@ output "cloudblock-output" {
 
   ## Update / Ansible Rerun ##
   # Move vars file to be untracked by git (one time command)
-  if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv oci.tfvars pvars.tfvars; fi
+  if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv aws.tfvars pvars.tfvars; fi
 
   # Pull cloudblock updates
   git pull
