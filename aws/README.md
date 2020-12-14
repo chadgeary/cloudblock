@@ -182,7 +182,7 @@ sudo apt update && sudo apt-get install --only-upgrade terraform
 cd ~/cloudblock/aws/
 
 # Move vars file to be untracked by git, if not already done.
-if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv oci.tfvars pvars.tfvars; fi
+if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv aws.tfvars pvars.tfvars; fi
 
 # Pull cloudblock updates
 git pull
