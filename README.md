@@ -28,5 +28,8 @@ After watching the cloud prerequisites video, follow a guide specific to your cl
 - [GCP](https://youtu.be/EZyn6dEdqe0) (for google cloud)
 - [OCI](https://youtu.be/bVoO6XRNhJs) (for oracle cloud)
 
+For maintaining a cloud-based cloudblock deployment, follow:
+- [Maintenance/Updates](https://youtu.be/jWDMsXy_-6Q) (all clouds, AWS-specific steps start at 8:30)
+
 # Discussion
 [Discord Room](https://discord.gg/zmu6GVnPnj)
