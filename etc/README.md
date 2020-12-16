@@ -1,12 +1,10 @@
 # Etc
 Additional configurations for various one-off/special deployment types + useful commands. The additional configurations may or may not be maintained, but the primary [aws/](../aws), [azure/](../azure), [gcp/](../gcp), [oci/](../oci), and [playbooks/](../playbooks) directories are, however!
 
-# Commands
-Replace the PIHOLE_PW, PIHOLE_IP, and other variable values as necessary.
+# Useful Commands and Troubleshooting
+
+## Pihole - Add ad-list(s) via CLI
 ```
-#############
-## Ad List ##
-#############
 # remove old cookies
 rm -f cookies.pihole
 
@@ -23,10 +21,10 @@ PIHOLE_TOKEN=$(curl --silent 'https://'"$PIHOLE_IP"'/admin/index.php' --compress
 
 # ad list addition
 curl 'https://'"$PIHOLE_IP"'/admin/scripts/pi-hole/php/groups.php' --data-raw 'action=add_adlist&address='"$ADLIST"'&token='"$PIHOLE_TOKEN"'' --compressed --insecure -b cookies.pihole -c cookies.pihole
+```
 
-###########################
-## Local Name Resolution ##
-###########################
+## Pihole - Add local name/ip resolution via CLI
+```
 # remove old cookies
 rm -f cookies.pihole
 
@@ -44,4 +42,11 @@ PIHOLE_TOKEN=$(curl --silent 'https://'"$PIHOLE_IP"'/admin/index.php' --compress
 
 # local name resolution addition
 curl 'https://'"$PIHOLE_IP"'/admin/scripts/pi-hole/php/customdns.php' --data-raw 'action=add&ip='"$LOCAL_IP"'&domain='"$LOCAL_NAME"'&token='"$PIHOLE_TOKEN"'' --compressed --insecure -b cookies.pihole -c cookies.pihole
+```
+
+## CloudflareD (DoH) - View counter of DNS requests and responses (plus the results)
+```
+CLOUDFLARED_METRICSPORT=$(sudo docker logs cloudflared_doh 2>&1 | awk -F':' '/metrics server on 127/ { print $4 }' | awk -F '/' '{ print $1 }')
+
+sudo docker exec cloudflared_doh /bin/bash -c 'which curl; if [ $? -ne 0 ]; then apt-get update && apt-get -y install curl; fi && curl --silent 127.0.0.1:'"$CLOUDFLARED_METRICSPORT/metrics"'' | grep '^coredns_dns_requests_total\|^coredns_dns_responses_total'
 ```
