@@ -197,5 +197,6 @@ if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv gcp.t
 git pull
 
 # Re-run terraform apply with your pvars file, see the update instructions in terraform's output
+terraform init
 terraform apply -var-file="pvars.tfvars"
 ```
