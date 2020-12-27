@@ -109,13 +109,13 @@
       register: ph_secret
 
     - name: Get wireguard backup from storage if exists
-      uri:
+      get_url:
         url: https://storage.googleapis.com/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/wireguard/wireguard_backup.tar.gz
         timeout: 120
-        method: GET
+        owner: root
+        group: root
+        mode: '0640'
         dest: /opt/wireguard_backup.tar.gz
-        remote_src: yes
-        return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
       ignore_errors: True
@@ -135,13 +135,14 @@
       ignore_errors: True
 
     - name: Get pihole backup from storage if exists
-      uri:
+      get_url:
         url: https://storage.googleapis.com/{{ gcp_project_prefix }}-bucket-{{ gcp_project_suffix }}/pihole/pihole_backup.tar.gz
         timeout: 120
-        method: GET
+        timeout: 120
+        owner: root
+        group: root
+        mode: '0640'
         dest: /opt/pihole_backup.tar.gz
-        remote_src: yes
-        return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
       ignore_errors: True
