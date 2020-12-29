@@ -34,7 +34,7 @@ ansible-playbook cloudblock_amd64.yml --extra-vars="doh_provider=$doh_provider d
 
 # Raspbian Deployment
 - Raspbian 10 (Buster)
-- Tested with Raspberry Pi 4
+- Tested with Raspberry Pi 4 and 3
 ```
 # Ansible + Git
 sudo apt update && sudo apt -y upgrade
