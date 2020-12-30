@@ -16,7 +16,7 @@ Several deployment options are available, see the README of each subdirectory fo
 # Videos
 ### Raspberry Pi
 Step-by-step, follow along with me - for Raspberry Pi deployments.
-- [Raspberry Pi 4+ (Raspbian 10/Buster)](https://youtu.be/NhIojIZUpXI)
+- [Raspberry Pi 4+ (Raspbian 10/Buster)](https://youtu.be/9oeQZvltWDc)
 
 ### Cloud Deployments
 Step-by-step, follow along with me from a windows desktop - for Cloud deployments.

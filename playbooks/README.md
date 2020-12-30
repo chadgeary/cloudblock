@@ -101,7 +101,7 @@ The IP address variables should be changed if they'll conflict/overlap local net
 ```
 
 # Remote Wireguard Connectivity / Port Forwarding
-Port 51820 must be open/forwarded to this host.
+Port 51820 UDP must be open/forwarded to this host.
 
 # FAQs
 - Want to reach the PiHole webUI while away?
