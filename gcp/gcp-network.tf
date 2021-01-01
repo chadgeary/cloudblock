@@ -2,6 +2,7 @@ resource "google_compute_network" "ph-network" {
   name                              = "${var.ph_prefix}-network"
   project                           = google_project.ph-project.project_id
   auto_create_subnetworks           = false
+  mtu                               = 1500
   depends_on                        = [google_project_service.ph-project-compute-service]
 }
 
