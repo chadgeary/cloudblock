@@ -171,7 +171,7 @@
         name: cloudblock
         driver: bridge
         driver_options:
-          com.docker.network.driver.mtu: 1420
+          com.docker.network.driver.mtu: 1500
         ipam_config:
           - subnet: "{{ docker_network }}/24"
             gateway: "{{ docker_gw }}"
