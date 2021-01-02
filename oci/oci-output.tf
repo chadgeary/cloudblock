@@ -30,5 +30,8 @@ output "cloudblock-output" {
   cd playbooks/
   sudo su
   ansible-playbook cloudblock_oci.yml --extra-vars 'docker_network=${var.docker_network} docker_gw=${var.docker_gw} docker_doh=${var.docker_doh} docker_pihole=${var.docker_pihole} docker_wireguard=${var.docker_wireguard} docker_webproxy=${var.docker_webproxy} wireguard_network=${var.wireguard_network} doh_provider=${var.doh_provider} dns_novpn=1 ph_password_cipher=${oci_kms_encrypted_data.ph-kms-ph-secret.ciphertext} oci_kms_endpoint=${oci_kms_vault.ph-kms-storage-vault.crypto_endpoint} oci_kms_keyid=${oci_kms_key.ph-kms-storage-key.id} oci_storage_namespace=${data.oci_objectstorage_namespace.ph-bucket-namespace.namespace} oci_storage_bucketname=${var.ph_prefix}-bucket wireguard_peers=${var.wireguard_peers} vpn_traffic=${var.vpn_traffic}'
+
+  # If destroying the project via terraform destroy, remove bucket objects first
+  oci os object bulk-delete-versions -bn ${var.ph_prefix}-bucket -ns ${data.oci_objectstorage_namespace.ph-bucket-namespace.namespace}
   OUTPUT
 }
