@@ -92,7 +92,7 @@
     - name: get wireguard backup from bucket if not local
       aws_s3:
         mode: get
-        s3_url: "s3.{{ scw_region }}.scw.cloud"
+        s3_url: "https://s3.{{ scw_region }}.scw.cloud"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: /wireguard/wireguard_backup.tar.gz
         dest: /opt/wireguard_backup.tar.gz
@@ -118,7 +118,7 @@
     - name: get pihole backup from bucket if not local
       aws_s3:
         mode: get
-        s3_url: "s3.{{ scw_region }}.scw.cloud"
+        s3_url: "https://s3.{{ scw_region }}.scw.cloud"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: /pihole/pihole_backup.tar.gz
         dest: /opt/pihole_backup.tar.gz
@@ -298,7 +298,7 @@
     - name: Upload peer conf (Wireguard) to storage - publickey
       aws_s3:
         mode: put
-        s3_url: "s3.{{ scw_region }}.scw.cloud"
+        s3_url: "https://s3.{{ scw_region }}.scw.cloud"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/publickey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/publickey-peer{{ item }}"
@@ -310,7 +310,7 @@
     - name: Upload peer conf (Wireguard) to storage - privatekey
       aws_s3:
         mode: put
-        s3_url: "s3.{{ scw_region }}.scw.cloud"
+        s3_url: "https://s3.{{ scw_region }}.scw.cloud"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/privatekey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}"
@@ -322,7 +322,7 @@
     - name: Upload peer conf (Wireguard) to storage - conf
       aws_s3:
         mode: put
-        s3_url: "s3.{{ scw_region }}.scw.cloud"
+        s3_url: "https://s3.{{ scw_region }}.scw.cloud"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.conf"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.conf"
@@ -334,7 +334,7 @@
     - name: Upload peer conf (Wireguard) to storage - png
       aws_s3:
         mode: put
-        s3_url: "s3.{{ scw_region }}.scw.cloud"
+        s3_url: "https://s3.{{ scw_region }}.scw.cloud"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.png"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
@@ -355,7 +355,7 @@
     - name: Upload Wireguard backup to storage - png
       aws_s3:
         mode: put
-        s3_url: "s3.{{ scw_region }}.scw.cloud"
+        s3_url: "https://s3.{{ scw_region }}.scw.cloud"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/wireguard_backup.tar.gz"
         src: "/opt/wireguard_backup.tar.gz"
@@ -396,7 +396,7 @@
         - "    - name: upload pihole backup to oci storage"
         - "      aws_s3:"
         - "        mode: put"
-        - "        s3_url: \"s3.{{ scw_region }}.scw.cloud\""
+        - "        s3_url: \"https://s3.{{ scw_region }}.scw.cloud\""
         - "        bucket: \"{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}\""
         - "        object: pihole/pihole_backup.tar.gz"
         - "        src: /opt/pihole_backup.tar.gz"
