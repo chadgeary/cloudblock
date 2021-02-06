@@ -99,6 +99,7 @@
         dest: /opt/wireguard_backup.tar.gz
         aws_access_key: "{{ scw_accesskey }}"
         aws_secret_key: "{{ scw_secretkey }}"
+        encrypt: "no"
       when: wireguard_state.stat.exists|bool == False
       ignore_errors: True
 
@@ -126,6 +127,7 @@
         dest: /opt/pihole_backup.tar.gz
         aws_access_key: "{{ scw_accesskey }}"
         aws_secret_key: "{{ scw_secretkey }}"
+        encrypt: "no"
       when: pihole_state.stat.exists|bool == False
       ignore_errors: True
 
@@ -307,6 +309,7 @@
         src: "/opt/wireguard/peer{{ item }}/publickey-peer{{ item }}"
         aws_access_key: "{{ scw_accesskey }}"
         aws_secret_key: "{{ scw_secretkey }}"
+        encrypt: "no"
       with_items:
         - "{{ peer_count }}"
 
@@ -320,6 +323,7 @@
         src: "/opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}"
         aws_access_key: "{{ scw_accesskey }}"
         aws_secret_key: "{{ scw_secretkey }}"
+        encrypt: "no"
       with_items:
         - "{{ peer_count }}"
 
@@ -333,6 +337,7 @@
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.conf"
         aws_access_key: "{{ scw_accesskey }}"
         aws_secret_key: "{{ scw_secretkey }}"
+        encrypt: "no"
       with_items:
         - "{{ peer_count }}"
 
@@ -346,6 +351,7 @@
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
         aws_access_key: "{{ scw_accesskey }}"
         aws_secret_key: "{{ scw_secretkey }}"
+        encrypt: "no"
       with_items:
         - "{{ peer_count }}"
 
@@ -368,6 +374,7 @@
         src: "/opt/wireguard_backup.tar.gz"
         aws_access_key: "{{ scw_accesskey }}"
         aws_secret_key: "{{ scw_secretkey }}"
+        encrypt: "no"
 
     - name: Pihole to Backup Playbook Clear
       file:
@@ -404,6 +411,7 @@
         - "      aws_s3:"
         - "        mode: put"
         - "        s3_url: \"https://s3.{{ scw_region }}.scw.cloud\""
+        - "        encrypt: \"no\""
         - "        region: \"{{ scw_region }}\""
         - "        bucket: \"{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}\""
         - "        object: pihole/pihole_backup.tar.gz"
