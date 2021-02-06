@@ -136,6 +136,11 @@
       when: pihole_state.stat.exists|bool == False
       ignore_errors: True
 
+    - name: Cloudflared Dockerfile clear
+      file:
+        path: /opt/cloudflared/Dockerfile
+        state: absent
+
     - name: Cloudflared Dockerfile
       blockinfile:
         create: yes
@@ -159,7 +164,6 @@
           path: /opt/cloudflared
         source: build
         force_source: yes
-      when: cloudflared_doh_dockerfile.changed
 
 # cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
     - name: cloudflared pihole and wireguard network
