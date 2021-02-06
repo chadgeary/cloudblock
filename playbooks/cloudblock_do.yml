@@ -457,7 +457,7 @@
         - service
         - timer
 
-    - name: pihole to backup systemd enable
+    - name: pihole to backup systemd enable timer
       systemd:
         name: "pihole-to-backup.timer"
-        started: yes
+        state: started
