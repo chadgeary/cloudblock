@@ -93,6 +93,7 @@
       aws_s3:
         mode: get
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
+        region: "{{ scw_region }}"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: /wireguard/wireguard_backup.tar.gz
         dest: /opt/wireguard_backup.tar.gz
@@ -119,6 +120,7 @@
       aws_s3:
         mode: get
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
+        region: "{{ scw_region }}"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: /pihole/pihole_backup.tar.gz
         dest: /opt/pihole_backup.tar.gz
@@ -299,6 +301,7 @@
       aws_s3:
         mode: put
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
+        region: "{{ scw_region }}"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/publickey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/publickey-peer{{ item }}"
@@ -311,6 +314,7 @@
       aws_s3:
         mode: put
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
+        region: "{{ scw_region }}"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/privatekey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}"
@@ -323,6 +327,7 @@
       aws_s3:
         mode: put
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
+        region: "{{ scw_region }}"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.conf"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.conf"
@@ -335,6 +340,7 @@
       aws_s3:
         mode: put
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
+        region: "{{ scw_region }}"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.png"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
@@ -356,6 +362,7 @@
       aws_s3:
         mode: put
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
+        region: "{{ scw_region }}"
         bucket: "{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}"
         object: "wireguard/wireguard_backup.tar.gz"
         src: "/opt/wireguard_backup.tar.gz"
@@ -397,6 +404,7 @@
         - "      aws_s3:"
         - "        mode: put"
         - "        s3_url: \"https://s3.{{ scw_region }}.scw.cloud\""
+        - "        region: \"{{ scw_region }}\""
         - "        bucket: \"{{ scw_prefix }}-backup-bucket-{{ scw_suffix }}\""
         - "        object: pihole/pihole_backup.tar.gz"
         - "        src: /opt/pihole_backup.tar.gz"

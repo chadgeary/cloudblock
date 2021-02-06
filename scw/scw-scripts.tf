@@ -3,6 +3,7 @@ resource "local_file" "scw_init" {
   content                           = <<FILECONTENT
 #cloud-config for cloudblock on scw (scaleway)
 runcmd:
+  - [ bash, -c, "DNS_SERVER=$(systemd-resolve --status | awk '/DNS Servers/ { print $3 }') && DNS_SEARCH=$(grep '^search ' /etc/resolv.conf) ; systemctl disable systemd-resolved ; systemctl stop systemd-resolved ; rm -f /etc/resolv.conf ; echo nameserver $DNS_SERVER > /etc/resolv.conf ; echo options edns0 >> /etc/resolv.conf" ]
   - [ bash, -c, "apt-get update" ]
   - [ bash, -c, "DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git" ]
   - [ bash, -c, "pip3 install --upgrade ansible" ]

@@ -35,7 +35,7 @@ scw_image = "ubuntu_bionic"
 scw_size = "STARDUST1-S"
 
 ## UNCOMMON ##
-scw_prefix = "cloudoffice"
+scw_prefix = "cloudblock"
 project_url = "https://github.com/chadgeary/cloudblock"
 
 # Change if ip/port settings would interfere with existing scw networks, local networks, or container networks
