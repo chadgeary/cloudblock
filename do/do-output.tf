@@ -74,7 +74,7 @@ output "cloudblock-output" {
   ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address}
   
   ## WebUI ##
-  https://${digitalocean_floating_ip.do-ip.ip_address}/
+  https://${digitalocean_floating_ip.do-ip.ip_address}/admin/
   
   ## Wireguard Client Files ##
   https://cloud.digitalocean.com/spaces/${var.do_prefix}-bucket-${random_string.do-random.result}?path=wireguard%2F
