@@ -5,9 +5,12 @@ resource "azurerm_key_vault" "ph-vault-disk" {
   tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   sku_name                = "standard"
   enabled_for_disk_encryption = true
-  soft_delete_enabled         = true
-  soft_delete_retention_days  = 7
   purge_protection_enabled    = true
+  access_policy {
+    tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
+    object_id               = data.azurerm_client_config.ph-client-conf.object_id
+    key_permissions         = ["get", "create", "delete", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
+  }
 }
 
 resource "azurerm_key_vault" "ph-vault-storage" {
@@ -16,9 +19,17 @@ resource "azurerm_key_vault" "ph-vault-storage" {
   resource_group_name     = azurerm_resource_group.ph-resourcegroup.name
   tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   sku_name                = "standard"
-  soft_delete_enabled         = true
-  soft_delete_retention_days  = 7
   purge_protection_enabled    = true
+  access_policy {
+    tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
+    object_id               = data.azurerm_client_config.ph-client-conf.object_id
+    key_permissions         = ["get", "create", "delete", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
+  }
+  access_policy {
+    tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
+    object_id               = azurerm_storage_account.ph-storage-account.identity.0.principal_id
+    key_permissions         = ["get", "create", "list", "restore", "recover", "unwrapkey", "wrapkey", "encrypt", "decrypt", "sign", "verify"]
+  }
 }
 
 resource "azurerm_key_vault" "ph-vault-secret" {
@@ -27,30 +38,17 @@ resource "azurerm_key_vault" "ph-vault-secret" {
   resource_group_name     = azurerm_resource_group.ph-resourcegroup.name
   tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
   sku_name                = "standard"
-  soft_delete_enabled         = true
-  soft_delete_retention_days  = 7
   purge_protection_enabled    = true
-}
-
-resource "azurerm_key_vault_access_policy" "ph-vault-disk-access-admin" {
-  key_vault_id            = azurerm_key_vault.ph-vault-disk.id
-  tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
-  object_id               = data.azurerm_client_config.ph-client-conf.object_id
-  key_permissions         = ["get", "create", "delete", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
-}
-
-resource "azurerm_key_vault_access_policy" "ph-vault-storage-access-admin" {
-  key_vault_id            = azurerm_key_vault.ph-vault-storage.id
-  tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
-  object_id               = data.azurerm_client_config.ph-client-conf.object_id
-  key_permissions         = ["get", "create", "delete", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
-}
-
-resource "azurerm_key_vault_access_policy" "ph-vault-secret-access-admin" {
-  key_vault_id            = azurerm_key_vault.ph-vault-secret.id
-  tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
-  object_id               = data.azurerm_client_config.ph-client-conf.object_id
-  secret_permissions      = ["set","get","delete","list","purge","recover","restore"]
+  access_policy {
+    tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
+    object_id               = data.azurerm_client_config.ph-client-conf.object_id
+    secret_permissions      = ["set","get","delete","list","purge","recover","restore"]
+  }
+  access_policy {
+    tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
+    object_id               = azurerm_user_assigned_identity.ph-instance-id.principal_id
+    secret_permissions      = ["get","list"]
+  }
 }
 
 resource "azurerm_disk_encryption_set" "ph-disk-encrypt" {
@@ -63,30 +61,16 @@ resource "azurerm_disk_encryption_set" "ph-disk-encrypt" {
   }
 }
 
+resource "time_sleep" "wait_for_vaults" {
+  create_duration         = "30s"
+  depends_on              = [azurerm_key_vault.ph-vault-disk, azurerm_key_vault.ph-vault-storage, azurerm_key_vault.ph-vault-secret]
+}
+
 resource "azurerm_key_vault_access_policy" "ph-vault-disk-access-disk" {
   key_vault_id            = azurerm_key_vault.ph-vault-disk.id
   tenant_id               = azurerm_disk_encryption_set.ph-disk-encrypt.identity.0.tenant_id
   object_id               = azurerm_disk_encryption_set.ph-disk-encrypt.identity.0.principal_id
   key_permissions         = ["get","decrypt","encrypt","sign","unwrapKey","verify","wrapKey","unwrapKey"]
-}
-
-resource "azurerm_key_vault_access_policy" "ph-vault-storage-access-storage" {
-  key_vault_id            = azurerm_key_vault.ph-vault-storage.id
-  tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
-  object_id               = azurerm_storage_account.ph-storage-account.identity.0.principal_id
-  key_permissions         = ["get", "create", "list", "restore", "recover", "unwrapkey", "wrapkey", "encrypt", "decrypt", "sign", "verify"]
-}
-
-resource "azurerm_key_vault_access_policy" "ph-vault-secret-access-instance" {
-  key_vault_id            = azurerm_key_vault.ph-vault-secret.id
-  tenant_id               = data.azurerm_client_config.ph-client-conf.tenant_id
-  object_id               = azurerm_user_assigned_identity.ph-instance-id.principal_id
-  secret_permissions      = ["get","list"]
-}
-
-resource "time_sleep" "wait_for_vaults" {
-  create_duration         = "30s"
-  depends_on              = [azurerm_key_vault_access_policy.ph-vault-disk-access-admin,azurerm_key_vault_access_policy.ph-vault-storage-access-admin,azurerm_key_vault_access_policy.ph-vault-storage-access-storage,azurerm_key_vault_access_policy.ph-vault-secret-access-admin]
 }
 
 resource "azurerm_key_vault_key" "ph-disk-key" {
