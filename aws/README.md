@@ -112,6 +112,9 @@ cd ~/cloudblock/aws/
 terraform init
 terraform apply -var-file="aws.tfvars"
 
+# If permissions errors appear, fix with the below command and re-run the terraform apply.
+sudo chown $USER aws.tfvars && chmod 600 aws.tfvars
+
 # Note the outputs from terraform after the apply completes
 
 # Wait for the virtual machine to become ready (Ansible will setup the services for us)

@@ -166,6 +166,9 @@ sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" scw.tfvars
 
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="scw.tfvars"
+
+# If permissions errors appear, fix with the below command and re-run the terraform apply.
+sudo chown $USER scw.tfvars && chmod 600 scw.tfvars
 ```
 
 - How do I update Pihole / Wireguard docker containers?
