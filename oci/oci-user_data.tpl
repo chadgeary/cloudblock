@@ -11,6 +11,7 @@ $DNS_SEARCH
 EOM
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git
+pip3 install --upgrade pip
 pip3 install --upgrade ansible oci
 ansible-galaxy collection install oracle.oci
 mkdir /opt/cloudblock

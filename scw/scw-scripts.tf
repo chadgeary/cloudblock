@@ -6,7 +6,7 @@ runcmd:
   - [ bash, -c, "DNS_SERVER=$(systemd-resolve --status | awk '/DNS Servers/ { print $3 }') && DNS_SEARCH=$(grep '^search ' /etc/resolv.conf) ; systemctl disable systemd-resolved ; systemctl stop systemd-resolved ; rm -f /etc/resolv.conf ; echo nameserver $DNS_SERVER > /etc/resolv.conf ; echo options edns0 >> /etc/resolv.conf" ]
   - [ bash, -c, "apt-get update" ]
   - [ bash, -c, "DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git" ]
-  - [ bash, -c, "pip3 install --upgrade ansible" ]
+  - [ bash, -c, "pip3 install --upgrade pip && pip3 install --upgrade ansible" ]
   - [ bash, -c, "mkdir -p /opt/git/cloudblock && git clone ${var.project_url} /opt/git/cloudblock; cd /opt/git/cloudblock; git pull" ]
   - [ bash, -c, "cd /opt/git/cloudblock/playbooks/ && ansible-playbook cloudblock_do_bootstrap.yml >> /var/log/cloudblock-bootstrap.log" ]
 FILECONTENT

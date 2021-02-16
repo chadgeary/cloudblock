@@ -11,6 +11,7 @@ $DNS_SEARCH
 EOM
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git
+pip3 install --upgrade pip
 pip3 install ansible[azure]
 ansible-galaxy collection install azure.azcollection
 wget https://raw.githubusercontent.com/ansible-collections/azure/dev/requirements-azure.txt
