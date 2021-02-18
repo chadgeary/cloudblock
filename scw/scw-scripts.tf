@@ -51,6 +51,8 @@ sudo tee /opt/cloudblock-ansible-state.sh << EOM
 apt-get update
 # Install pip3 and git
 DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git
+# pip3 update pip
+pip3 install --upgrade pip
 # Install ansible
 pip3 install --upgrade ansible
 # Make the project directory
