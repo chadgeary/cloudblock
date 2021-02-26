@@ -150,7 +150,7 @@
           EXPOSE 53/udp
           RUN apt-get update && \
               apt-get install -y wget && \
-              wget https://github.com/cloudflare/cloudflared/releases/download/2020.10.2/cloudflared-linux-amd64 --directory-prefix=/usr/local/bin/ && \
+              wget https://github.com/cloudflare/cloudflared/releases/download/2021.2.2/cloudflared-linux-amd64 --directory-prefix=/usr/local/bin/ && \
               chmod 555 /usr/local/bin/cloudflared-linux-amd64
               ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
@@ -171,7 +171,7 @@
         name: cloudblock
         driver: bridge
         driver_options:
-          com.docker.network.driver.mtu: 1380
+          com.docker.network.driver.mtu: 1500
         ipam_config:
           - subnet: "{{ docker_network }}/24"
             gateway: "{{ docker_gw }}"
