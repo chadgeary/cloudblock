@@ -9,8 +9,10 @@ Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS)
 Several deployment options are available, see the README of each subdirectory for platform-specific guides.
 - Azure (Microsoft)
 - AWS (Amazon)
+- DO (Digital Ocean)
 - GCP (Google)
 - OCI (Oracle)
+- SCW (Scaleway)
 - Standalone (under playbooks/)
 
 # Videos
