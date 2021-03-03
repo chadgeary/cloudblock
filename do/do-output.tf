@@ -68,46 +68,60 @@ sudo systemctl enable cloudblock-ansible-state.service
 output "cloudblock-output" {
   value = <<OUTPUT
 
-  #############
-  ## OUTPUTS ##
-  #############
-  
-  ## SSH ##
-  ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address}
-  
-  ## WebUI ##
-  https://${digitalocean_floating_ip.do-ip.ip_address}/admin/
-  
-  ## Wireguard Client Files ##
-  https://cloud.digitalocean.com/spaces/${var.do_prefix}-bucket-${random_string.do-random.result}?path=wireguard%2F
+#############
+## OUTPUTS ##
+#############
 
-  ## ##################### ##
-  ## Ansible Service Setup ##
-  ## ##################### ##
-  scp ${var.do_prefix}-setup-${random_string.do-random.result}.sh ubuntu@${digitalocean_floating_ip.do-ip.ip_address}:~/${var.do_prefix}-setup-${random_string.do-random.result}.sh
-  ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address} "chmod +x ${var.do_prefix}-setup-${random_string.do-random.result}.sh && ~/${var.do_prefix}-setup-${random_string.do-random.result}.sh"
-  
-  ## ################################################ ##
-  ## Update Containers and Ansible Rerun Instructions ##
-  ## ################################################ ##
-  ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address}
-  
-  # If updating containers, remove the old containers - this brings down the service until ansible is re-applied.
-  sudo docker rm -f cloudflared_doh pihole wireguard web_proxy
-  
-  # Re-apply Ansible playbook via systemd service
-  sudo systemctl start cloudblock-ansible-state.service
-  
-  ## Destroying ##
-  
-  # Before terraform destroy, delete all objects from buckets using the aws CLI - this action is irreversible.
-  # Install awscli via pip3
-  sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt-get -q -y install python3-pip
-  pip3 install --user --upgrade awscli
-  # Set credentials
-  aws configure set aws_access_key_id ${var.do_storageaccessid}
-  aws configure set aws_secret_access_key ${var.do_storagesecretkey}
-  # Remove objects
-  aws s3 rm --recursive s3://${var.do_prefix}-bucket-${random_string.do-random.result}/ --endpoint https://${var.do_region}.digitaloceanspaces.com
-  OUTPUT
+## SSH ##
+ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address}
+
+## WebUI ##
+https://${digitalocean_floating_ip.do-ip.ip_address}/admin/
+
+## Wireguard Client Files ##
+https://cloud.digitalocean.com/spaces/${var.do_prefix}-bucket-${random_string.do-random.result}?path=wireguard%2F
+
+#############
+## Install ##
+#############
+
+# Copy (via SCP) installation script to server
+scp ${var.do_prefix}-setup-${random_string.do-random.result}.sh ubuntu@${digitalocean_floating_ip.do-ip.ip_address}:~/${var.do_prefix}-setup-${random_string.do-random.result}.sh
+
+# Start the installation script
+ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address} "chmod +x ${var.do_prefix}-setup-${random_string.do-random.result}.sh && ~/${var.do_prefix}-setup-${random_string.do-random.result}.sh"
+
+#############
+## Updates ##
+#############
+
+# SSH to server
+ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address}
+
+# Remove containers (services are down until ansible step completes!)
+sudo docker rm -f cloudflared_doh pihole web_proxy wireguard
+
+# Re-apply ansible playbook via systemctl
+sudo systemctl start cloudblock-ansible-state.service
+
+#############
+## DESTROY ##
+#############
+
+# Before terraform destroy, delete all objects from buckets using the aws CLI - this action is irreversible.
+# Install awscli via pip3
+sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt-get -q -y install python3-pip
+pip3 install --user --upgrade awscli
+
+# Set credentials
+aws configure set aws_access_key_id ${var.do_storageaccessid}
+aws configure set aws_secret_access_key ${var.do_storagesecretkey}
+
+# Remove objects
+aws s3 rm --recursive s3://${var.do_prefix}-bucket-${random_string.do-random.result}/ --endpoint https://${var.do_region}.digitaloceanspaces.com
+
+# then, use terraform destroy as normal
+terraform destroy -var-file="do.tfvars"
+
+OUTPUT
 }

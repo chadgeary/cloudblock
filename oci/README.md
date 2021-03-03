@@ -172,6 +172,13 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 # Post-Deployment
 - See terraform output for VPN Client configuration files link and the Pihole WebUI address.
 
+# Updates
+- See the notes from `terraform output` for oraclecloud-specific update instructions.
+- Important note, if you are familiar with a traditional pihole deployment keep in mind cloudblock uses the docker container which does not follow the same
+update path. Cloudblock follows the official pihole (and wireguard) container update instructions:
+  - [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations)
+  - [Wireguard](https://github.com/linuxserver/docker-wireguard)
+
 # FAQs
 - Want to reach the PiHole webUI while away?
   - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.5/admin/ - for older installations its http://172.18.0.3/admin/ ).
@@ -191,25 +198,4 @@ sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" oci.tfvars
 
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="oci.tfvars"
-```
-
-- How do I update Pihole / Wireguard docker containers?
-  - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
-  - Cloudblock follows these instructions and provides steps in the terraform output. Be sure cloudblock is locally up-to-date to display the instructions:
-```
-# Ensure terraform is up-to-date
-sudo apt update && sudo apt-get install --only-upgrade terraform
-
-# Be in the oci subdirectory
-cd ~/cloudblock/oci/
-
-# Move vars file to be untracked by git, if not already done.
-if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv oci.tfvars pvars.tfvars; fi
-
-# Pull cloudblock updates
-git pull
-
-# Re-run terraform apply with your pvars file, see the update instructions in terraform's output
-terraform init
-terraform apply -var-file="pvars.tfvars"
 ```
