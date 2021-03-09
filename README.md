@@ -27,6 +27,7 @@ Step-by-step, follow along with me from a windows desktop - for Cloud deployment
 After watching the cloud prerequisites video, follow a guide specific to your cloud provider.
 - [AWS](https://youtu.be/zNElF0iS2bM) (for amazon web services)
 - [Azure](https://youtu.be/eZKptCWW-RI) (for microsoft azure cloud)
+- [Digital Ocean](https://youtu.be/cYOeJpuEuFo) (for digital ocean cloud)
 - [GCP](https://youtu.be/EZyn6dEdqe0) (for google cloud)
 - [OCI](https://youtu.be/bVoO6XRNhJs) (for oracle cloud)
 
