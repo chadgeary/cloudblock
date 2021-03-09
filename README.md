@@ -30,6 +30,7 @@ After watching the cloud prerequisites video, follow a guide specific to your cl
 - [Digital Ocean](https://youtu.be/cYOeJpuEuFo) (for digital ocean cloud)
 - [GCP](https://youtu.be/EZyn6dEdqe0) (for google cloud)
 - [OCI](https://youtu.be/bVoO6XRNhJs) (for oracle cloud)
+- [Scaleway](https://youtu.be/jiyEKAixi0w) (for scaleway cloud)
 
 For maintaining the containers running your cloudblock services, see the README (or terraform output) specific to your deployment.
 
