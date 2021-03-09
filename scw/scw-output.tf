@@ -10,6 +10,8 @@ ssh ubuntu@${scaleway_instance_ip.scw-ip.address}
 # WebUI #
 https://${scaleway_instance_ip.scw-ip.address}/admin/
 
+# VPN Files #
+https://console.scaleway.com/object-storage/buckets/${var.scw_region}/${var.scw_prefix}-backup-bucket-${random_string.scw-random.result}/explorer/wireguard
 #############
 ## INSTALL ##
 #############
