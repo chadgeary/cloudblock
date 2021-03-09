@@ -118,7 +118,7 @@ pip3 install --user --upgrade awscli
 ~/.local/bin/aws configure set aws_secret_access_key ${var.do_storagesecretkey}
 
 # Remove objects
-aws s3 rm --recursive s3://${var.do_prefix}-bucket-${random_string.do-random.result}/ --endpoint https://${var.do_region}.digitaloceanspaces.com
+~/.local/bin/aws s3 rm --recursive s3://${var.do_prefix}-bucket-${random_string.do-random.result}/ --endpoint https://${var.do_region}.digitaloceanspaces.com
 
 # then, use terraform destroy as normal
 terraform destroy -var-file="do.tfvars"
