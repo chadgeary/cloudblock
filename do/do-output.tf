@@ -114,8 +114,8 @@ sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt-get -q -y install pyt
 pip3 install --user --upgrade awscli
 
 # Set credentials
-aws configure set aws_access_key_id ${var.do_storageaccessid}
-aws configure set aws_secret_access_key ${var.do_storagesecretkey}
+~/.local/bin/aws configure set aws_access_key_id ${var.do_storageaccessid}
+~/.local/bin/aws configure set aws_secret_access_key ${var.do_storagesecretkey}
 
 # Remove objects
 aws s3 rm --recursive s3://${var.do_prefix}-bucket-${random_string.do-random.result}/ --endpoint https://${var.do_region}.digitaloceanspaces.com
