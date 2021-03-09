@@ -82,7 +82,7 @@ https://${digitalocean_floating_ip.do-ip.ip_address}/admin/
 https://cloud.digitalocean.com/spaces/${var.do_prefix}-bucket-${random_string.do-random.result}?path=wireguard%2F
 
 #############
-## Install ##
+## INSTALL ##
 #############
 
 # Copy (via SCP) installation script to server
@@ -92,7 +92,7 @@ scp ${var.do_prefix}-setup-${random_string.do-random.result}.sh ubuntu@${digital
 ssh ubuntu@${digitalocean_floating_ip.do-ip.ip_address} "chmod +x ${var.do_prefix}-setup-${random_string.do-random.result}.sh && ~/${var.do_prefix}-setup-${random_string.do-random.result}.sh"
 
 #############
-## Updates ##
+## UPDATES ##
 #############
 
 # SSH to server

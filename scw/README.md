@@ -109,8 +109,7 @@ terraform apply -var-file="scw.tfvars"
 # If permissions errors appear, fix with the below command and re-run the terraform apply.
 sudo chown $USER scw.tfvars && chmod 600 scw.tfvars
 
-# Note the outputs from terraform after the apply completes
-# Wait for the virtual machine to become ready (Ansible will setup the services for us)
+# Terraform outputs two INSTALL commands, use those to start the installation.
 ```
 
 Want to watch Ansible setup the virtual machine? SSH to the cloud instance - see the terraform output.

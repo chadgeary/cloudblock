@@ -161,6 +161,8 @@ terraform apply -var-file="do.tfvars"
 
 # If permissions errors appear, fix with the below command and re-run the terraform apply.
 sudo chown $USER do.tfvars && chmod 600 do.tfvars
+
+# Terraform outputs two INSTALL commands, use those to start the installation.
 ```
 
 # Post-Deployment
