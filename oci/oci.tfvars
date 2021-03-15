@@ -26,12 +26,30 @@ dns_novpn = 1
 # client_cidrs = ["127.0.0.1/32","8.8.8.8/32"]
 client_cidrs = []
 
-## UNCOMMON ##
-# If you're using the free-tier, see which region/ad is free-tier compatible run the following two commands and look for value: 2
+## FREE TIER USERS ##
+# Oracle configured your account for two free virtual machines in a specific cloud REGION + AD (Availability Domain), terraform needs to know these.
+# See which REGION + AD oracle assigned to your account with the following two commands (without the #):
+
 # OCI_TENANCY_OCID=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
 # oci limits value list --compartment-id $OCI_TENANCY_OCID --service-name compute --query "data [?contains(\"name\",'standard-e2-micro-core-count')]" --all
+
+# Example output - look at each "value" and find the 2 (thats the two free virtual machines)
+# The AD number is the last digit in "availability-domain" - 2 in this example (note - some regions only have one AD)
+#  {
+#    "availability-domain": "oaKW:US-ASHBURN-AD-1",
+#    "name": "standard-e2-micro-core-count",
+#    "scope-type": "AD",
+#    "value": 0
+#  },
+#  {
+#    "availability-domain": "oaKW:US-ASHBURN-AD-2",
+#    "name": "standard-e2-micro-core-count",
+#    "scope-type": "AD",
+#    "value": 2
+#  }
+
 oci_region = "us-ashburn-1"
-oci_adnumber = 2
+oci_adnumber = 1
 oci_instance_shape = "VM.Standard.E2.1.Micro"
 
 # OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
