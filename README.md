@@ -22,7 +22,7 @@ Step-by-step, follow along with me - for Raspberry Pi deployments.
 
 ### Cloud Deployments
 Step-by-step, follow along with me from a windows desktop - for Cloud deployments.
-- [Prerequisites](https://youtu.be/9VFexErMlvo) (all cloud deployments should watch this first).
+- [Prerequisites](https://youtu.be/SJ0hrXPbMNo) (all cloud deployments should watch this first).
 
 After watching the cloud prerequisites video, follow a guide specific to your cloud provider.
 - [AWS](https://youtu.be/zNElF0iS2bM) (for amazon web services)
