@@ -8,6 +8,40 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 - Follow Step-by-Step (compatible with Windows and Ubuntu)
 
 # Step-by-Step 
+Mac Users install (home)brew, then terraform, git, cloud cli.
+```
+#########
+## Mac ##
+#########
+# Launch terminal
+
+# Install brew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)”
+
+# Ensure brew up-to-date
+brew update
+
+# Install terraform git
+brew install terraform git
+
+# Download gcp cli (64-bit) - see latest versions and alternative architectures @ https://cloud.google.com/sdk/docs/quickstart#mac
+wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-341.0.0-darwin-x86_64.tar.gz 
+
+# Extract
+tar -xvf google-cloud-sdk-341.0.0-darwin-x86_64.tar.gz
+
+# Install
+./google-cloud-sdk/install.sh
+
+# Add cli alias
+echo "alias gcloud ~/google-cloud-sdk/bin/gcloud" >> ~/.bash_profile && source ~/.bash_profile
+
+# Verify the three are installed
+which terraform git gcloud
+
+# Skip down to 'git clone' below
+```
+
 Windows Users install WSL (Windows Subsystem Linux)
 ```
 #############################

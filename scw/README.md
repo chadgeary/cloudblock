@@ -8,6 +8,35 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 - Follow Step-by-Step (compatible with Windows and Ubuntu)
 
 # Step-by-Step
+Mac Users install (home)brew, then terraform, git, cloud cli.
+```
+#########
+## Mac ##
+#########
+# Launch terminal
+
+# Install brew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)”
+
+# Ensure brew up-to-date
+brew update
+
+# Install terraform git
+brew install terraform git
+
+# Download cloud cli - see latest version and alternative architecture @ https://github.com/scaleway/scaleway-cli/releases
+curl -o ~/scw -L "https://github.com/scaleway/scaleway-cli/releases/download/v2.3.0/scw-2.3.0-darwin-x86_64"
+chmod +x ~/scw
+
+# Add alias
+echo "alias scw ~/scw" >> ~/.bash_profile && source ~/.bash_profile
+
+# Verify the three are installed
+which terraform git gcloud scw
+
+# Skip down to 'git clone' below
+```
+
 Windows users install WSL (Windows Subsystem Linux)
 ```
 #############################
@@ -75,7 +104,7 @@ wsl
 cd ~
 
 # WSL Install scaleway-cli via github prebuilt binary
-sudo curl -o /usr/local/bin/scw -L "https://github.com/scaleway/scaleway-cli/releases/download/v2.2.4/scw-2.2.4-linux-x86_64"
+sudo curl -o /usr/local/bin/scw -L "https://github.com/scaleway/scaleway-cli/releases/download/v2.3.0/scw-2.3.0-linux-x86_64"
 sudo chmod +x /usr/local/bin/scw
 
 # Generate an API key @ https://console.scaleway.com/project/credentials
