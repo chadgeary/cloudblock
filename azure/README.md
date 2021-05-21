@@ -16,7 +16,7 @@ Mac Users install (home)brew, then terraform, git, az cli.
 # Launch terminal
 
 # Install brew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)”
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Ensure brew up-to-date
 brew update

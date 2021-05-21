@@ -1,0 +1,40 @@
+output "cloudblock-output" {
+  value = <<OUTPUT
+  
+#############  
+## OUTPUTS ##
+#############
+  
+## SSH (VPN) ##
+ssh ubuntu@${aws_lightsail_static_ip.ph-staticip.ip_address}
+(ssh ubuntu@${var.docker_gw})
+  
+## WebUI (VPN) ##
+https://${aws_lightsail_static_ip.ph-staticip.ip_address}/admin/
+(https://${var.docker_webproxy}/admin/)
+  
+## Wireguard Configurations ##
+https://s3.console.aws.amazon.com/s3/buckets/${aws_s3_bucket.ph-bucket.id}/wireguard/?region=${var.aws_region}&tab=overview
+
+#############
+## UPDATES ##
+#############
+
+# SSH to the server
+ssh ubuntu@${aws_lightsail_static_ip.ph-staticip.ip_address}
+
+# Remove the old containers and exit SSH (service is down until completion of next step!)
+sudo docker rm -f cloudflared_doh pihole web_proxy wireguard && exit
+
+# Use AWS CLI to re-run SSM association (ansible playbook) 
+~/.local/bin/aws ssm start-associations-once --region ${var.aws_region} --association-ids ${aws_ssm_association.ph-ssm-assoc.association_id}
+
+#############
+## DESTROY ##
+#############
+
+# To destroy the project via terraform, run:
+terraform destroy -var-file="aws.tfvars"
+
+OUTPUT
+}

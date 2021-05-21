@@ -1,5 +1,5 @@
 # Reference
-End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS). Built in AWS with an ARM EC2 instance using Terraform, Ansible, and Docker.
+End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS). Built in AWS with a lightsail instance using Terraform, Ansible, and Docker.
 
 ![Diagram](../diagram.png)
 
@@ -120,8 +120,8 @@ pip3 install --user --upgrade awscli
 
 Customize the deployment - See variables section below
 ```
-# Change to the project's aws directory in powershell
-cd ~/cloudblock/aws/
+# Change to the project's lightsail directory in powershell
+cd ~/cloudblock/lightsail/
 
 # Open File Explorer in a separate window
 # Navigate to aws project directory - change \chad\ to your WSL username
@@ -133,7 +133,7 @@ cd ~/cloudblock/aws/
 Deploy
 ```
 # In powershell's WSL window, change to the project's aws directory
-cd ~/cloudblock/aws/
+cd ~/cloudblock/lightsail/
 
 # Initialize terraform and apply the terraform state
 terraform init
@@ -199,7 +199,7 @@ update path. Cloudblock follows the official pihole (and wireguard) container up
 wsl
 
 # Change to the project directory
-cd ~/cloudblock/aws/
+cd ~/cloudblock/lightsail/
 
 # Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
 sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" aws.tfvars
