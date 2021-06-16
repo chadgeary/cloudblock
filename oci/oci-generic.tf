@@ -34,7 +34,7 @@ variable "oci_instance_shape" {
 variable "oci_instance_diskgb" {
   type                     = string
   description              = "Size of system boot disk, in gb"
-  default                  = 47
+  default                  = 50
 }
 
 variable "oci_instance_memgb" {
