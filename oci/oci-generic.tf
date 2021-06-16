@@ -31,6 +31,24 @@ variable "oci_instance_shape" {
   description              = "The size of the compute instance, only certain sizes are free-tier"
 }
 
+variable "oci_instance_diskgb" {
+  type                     = string
+  description              = "Size of system boot disk, in gb"
+  default                  = 47
+}
+
+variable "oci_instance_memgb" {
+  type                     = string
+  description              = "Memory GB(s) for instance"
+  default                  = 1
+}
+
+variable "oci_instance_ocpus" {
+  type                     = string
+  description              = "Oracle CPUs for instance"
+  default                  = 1
+}
+
 variable "ssh_key" {
   type                     = string
   description              = "Public SSH key for SSH to compute instance, user is ubuntu"
