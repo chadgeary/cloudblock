@@ -50,7 +50,17 @@ client_cidrs = []
 
 oci_region = "us-ashburn-1"
 oci_adnumber = 1
+
+# By default Cloudblock for OCI is configured to use the Always Free tier included Micro (AMD) instance - a different shape can be specified here
 oci_instance_shape = "VM.Standard.E2.1.Micro"
+
+# If required, the instance boot volume can be changed here. By default the "VM.Standard.E2.1.Micro" instance uses a 50GB boot volume
+# The Always Free tier includes 200GB of block volume storage across all instances in your tenancy
+oci_instance_diskgb = 50
+
+# Default OCPUs and Memory set Always Free tier included Micro instance - can be adjusted here if other shape specified above
+oci_instance_ocpus = 1
+oci_instance_memgb = 1
 
 # OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
 # See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/

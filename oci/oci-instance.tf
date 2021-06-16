@@ -42,10 +42,15 @@ resource "oci_core_instance" "ph-instance" {
     display_name            = "${var.ph_prefix}-nic"
     subnet_id               = oci_core_subnet.ph-subnet.id
   }
+  shape_config {
+    memory_in_gbs           = var.oci_instance_memgb
+    ocpus                   = var.oci_instance_ocpus
+  }
   source_details {
     source_id               = data.oci_core_image.ph-image.id
     source_type             = "image"
     kms_key_id              = oci_kms_key.ph-kms-disk-key.id
+    boot_volume_size_in_gbs = var.oci_instance_diskgb
   }
   metadata = {
     ssh_authorized_keys       = var.ssh_key
