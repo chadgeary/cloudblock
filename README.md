@@ -7,27 +7,28 @@ Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS)
 
 # Instructions
 Several deployment options are available, see the README of each subdirectory for platform-specific guides.
-- Azure (Microsoft)
 - AWS (Amazon)
+- Azure (Microsoft)
 - DO (Digital Ocean)
 - GCP (Google)
+- Lightsail (Fixed-rate/Low-cost AWS)
 - OCI (Oracle)
 - SCW (Scaleway)
-- Standalone (under playbooks/)
+- Standalone Raspberry Pi or Ubuntu Server (under playbooks/)
 
 # Videos
-### Raspberry Pi
-Step-by-step, follow along with me - for Raspberry Pi deployments.
+### Standalone Raspberry Pi or Ubuntu Server
+Step-by-step, follow along with me as I install on a Raspberry Pi.
 - [Raspberry Pi 4+ (Raspbian 10/Buster)](https://youtu.be/9oeQZvltWDc)
 
 ### Cloud Deployments
-Step-by-step, follow along with me from a windows desktop - for Cloud deployments.
+Step-by-step, follow along with me as I deploy from a windows desktop - for Cloud deployments.
 - [Prerequisites](https://youtu.be/SJ0hrXPbMNo) (all cloud deployments should watch this first).
 
 After watching the cloud prerequisites video, follow a guide specific to your cloud provider.
-- [AWS](https://youtu.be/zNElF0iS2bM) (for amazon web services)
+- [AWS or Lightsail](https://youtu.be/zNElF0iS2bM) (for amazon web services)
 - [Azure](https://youtu.be/eZKptCWW-RI) (for microsoft azure cloud)
-- [Digital Ocean](https://youtu.be/cYOeJpuEuFo) (for digital ocean cloud)
+- [DO](https://youtu.be/cYOeJpuEuFo) (for digital ocean cloud)
 - [GCP](https://youtu.be/EZyn6dEdqe0) (for google cloud)
 - [OCI](https://youtu.be/bVoO6XRNhJs) (for oracle cloud)
 - [Scaleway](https://youtu.be/jiyEKAixi0w) (for scaleway cloud)
