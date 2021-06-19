@@ -52,19 +52,24 @@ oci_region = "us-ashburn-1"
 oci_adnumber = 1
 
 # By default Cloudblock for OCI is configured to use the Always Free tier included Micro (AMD) instance - a different shape can be specified here
+# Always Free VM.Standard.E2.1.Micro up to 1 OCPU and 1 MemGB
+# Always Free VM.Standard.A1.Flex up to 4 OCPU and 24 MemGB but OnlyOffice is not compatible
+# For ARM, use VM.Standard.A1.Flex
 oci_instance_shape = "VM.Standard.E2.1.Micro"
-
-# If required, the instance boot volume can be changed here. By default the "VM.Standard.E2.1.Micro" instance uses a 50GB boot volume
-# The Always Free tier includes 200GB of block volume storage across all instances in your tenancy
-oci_instance_diskgb = 50
 
 # Default OCPUs and Memory set Always Free tier included Micro instance - can be adjusted here if other shape specified above
 oci_instance_ocpus = 1
 oci_instance_memgb = 1
 
-# OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
-# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
-# Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
+# If required, the instance boot volume can be changed here. By default the "VM.Standard.E2.1.Micro" instance uses a 50GB boot volume
+# The Always Free tier includes 200GB of block volume storage across all instances in your tenancy
+oci_instance_diskgb = 50
+
+# Use a recent version of OCI's managed Ubuntu 20.04 image - specific to your region.
+# For the latest Ubuntu image ids in your region, run:
+# OCI_TENANCY_OCID=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]") && oci compute image list --compartment-id $OCI_TENANCY_OCID --all --lifecycle-state 'AVAILABLE' --operating-system "Canonical Ubuntu" --operating-system-version "20.04" --sort-by "TIMECREATED" | grep 'display-name\|ocid'
+
+# For ARM instances, choose the AARCH64 ocid in the command above
 oci_imageid = "ocid1.image.oc1.iad.aaaaaaaascyqvxuxse7kgqtu4go2fazlxqjhq4p4p2rromclajqglaqfyhlq"
 
 ## VERY UNCOMMON - Change if git project is cloned or deploying into an existing OCI environment where IP schema might overlap ##
