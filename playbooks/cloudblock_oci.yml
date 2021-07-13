@@ -21,7 +21,7 @@
       pip:
         name:
           - docker
-        executable: /usr/bin/pip3
+        executable: pip3
         state: latest
 
     - name: IP Forwarding enable/persist
