@@ -38,7 +38,7 @@ gcp_image_project = "ubuntu-os-cloud"
 
 ## VERY UNCOMMON ##
 ph_prefix = "cloudblock"
-gcp_machine_type = "f1-micro"
+gcp_machine_type = "e2-micro"
 project_url = "https://github.com/chadgeary/cloudblock"
 gcp_project_services = ["serviceusage.googleapis.com","cloudkms.googleapis.com","storage-api.googleapis.com","secretmanager.googleapis.com"]
 vpn_cidr = "0.0.0.0/0"

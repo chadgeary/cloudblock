@@ -120,7 +120,7 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyr
 # Install the google cloud sdk package
 sudo apt-get update && sudo apt-get -y install google-cloud-sdk
 
-# Authenticate - copy link to browser, auth, and paste response. If prompted for a project, create new with name: default
+# Authenticate - copy link to browser, auth, and paste response. If prompted for a project - use an existing (if any exists) or create a new with some random name.
 gcloud init
 
 # Enable application-default login
@@ -131,6 +131,10 @@ gcloud beta billing accounts list | grep True
 
 # Note the gcp user (account) for the vars file
 gcloud auth list
+
+# Two notes for July 2021
+# A max of three billing-linked projects are available while under the free tier.
+# Google has replaced f1-micro with e2-micro as the always-free VM. This has more CPU and RAM.
 ```
 
 Customize the deployment - See variables section below
