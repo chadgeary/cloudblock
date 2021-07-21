@@ -9,7 +9,7 @@ value = <<OUTPUT
 ssh ubuntu@${oci_core_instance.nc-instance.public_ip}
 
 ## WebUI ##
-https://${var.enable_duckdns == 1 ? var.duckdns_domain : oci_core_instance.nc-instance.public_ip}${var.web_port == "443" ? "" : ":${var.web_port}"}/
+https://${var.enable_duckdns == 1 ? "${var.duckdns_domain}/nc" : oci_core_instance.nc-instance.public_ip}${var.web_port == "443" ? "" : ":${var.web_port}"}/
 
 ## Update / Ansible Rerun Instructions ##
 ssh ubuntu@${oci_core_instance.nc-instance.public_ip}
