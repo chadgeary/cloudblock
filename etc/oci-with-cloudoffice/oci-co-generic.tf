@@ -80,6 +80,11 @@ variable "co_docker_onlyoffice" {
   description              = "onlyoffice container"
 }
 
+variable "co_docker_duckdnsupdater" {
+  type        = string
+  description = "duckdns dynamic dns update container ip"
+}
+
 variable "project_directory" {
   type                     = string
   description              = "Location to install/run project"
@@ -97,3 +102,20 @@ variable "oo_port" {
   description              = "Port to run onlyoffice"
   default                  = "8443"
 }
+
+variable "enable_duckdns" {
+  type = number
+}
+
+variable "duckdns_domain" {
+  type = string
+}
+
+variable "duckdns_token" {
+  type = string
+}
+
+variable "letsencrypt_email" {
+  type = string
+}
+

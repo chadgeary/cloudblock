@@ -19,6 +19,7 @@ wireguard_peers = 20
 doh_provider = "opendns"
 vpn_traffic = "dns"
 dns_novpn = 1
+# See image ID note at bottom of this page
 cb_oci_instance_shape = "VM.Standard.E2.1.Micro"
 cb_oci_instance_ocpus = 1
 cb_oci_instance_memgb = 1
@@ -42,6 +43,7 @@ db_password = "changeme2"
 oo_password = "changeme3"
 web_port = "443"
 oo_port = "8443"
+# See image ID note at bottom of this page
 co_oci_imageid = "ocid1.image.oc1.iad.aaaaaaaayat6mdwvukpjnffxjwcfgbrq7qehcydfnjdhyyuosq6awzqucdia"
 co_oci_instance_shape = "VM.Standard.A1.Flex"
 co_oci_instance_ocpus = 4
@@ -54,8 +56,19 @@ co_docker_nextcloud = "172.18.1.2"
 co_docker_webproxy = "172.18.1.3"
 co_docker_db = "172.18.1.4"
 co_docker_onlyoffice = "172.18.1.6"
+co_docker_duckdnsupdater = "172.18.1.7"
 
-# Run the following command to get image ids:
+# Optionally create a domain (and token) @ duckdns.org for LetsEncrypt signed/auto-renewed HTTPS certificates.
+# enable_duckdns must be set to 1
+# duckdns_domain should be something like "mycloudoffice.duckdns.org"
+# use a valid email address to get alerts if your certificate renewal ever encounters problems.
+enable_duckdns    = 0
+duckdns_domain    = ""
+duckdns_token     = "123456789-XXXX-XXXX-XXXX-XXXXXXXXX"
+letsencrypt_email = "changeme@changeme.com"
+
+# image ID note - run this command to get image ids in your region:
 # OCI_TENANCY_OCID=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]") && oci compute image list --compartment-id $OCI_TENANCY_OCID --all --lifecycle-state 'AVAILABLE' --operating-system "Canonical Ubuntu" --operating-system-version "20.04" --sort-by "TIMECREATED" | grep 'display-name\|ocid'
 
-# and keep in mind OnlyOffice is ignored/does not deploy on ARM, but nextcloud runs very well on 4 ocpu/24 memgb compared to 1 ocpu/1 memgb!
+# keep in mind OnlyOffice does not work on ARM and will not be installed if that image id is chosen for cloudoffice but nextcloud runs very well on 4 ocpu/24 memgb compared to 1 ocpu/1 memgb.
+# For free tier, VM.Standard.E2.1.Micro is always 1 ocpu and 1 memgb. VM.Standard.A1.Flex (ARM) can be up to 4 ocpu and 24 memgb.

@@ -17,6 +17,7 @@ data "template_file" "nc-user-data" {
     docker_db = var.co_docker_db
     docker_webproxy = var.co_docker_webproxy
     docker_onlyoffice = var.co_docker_onlyoffice
+    docker_duckdnsupdater  = var.co_docker_duckdnsupdater
     admin_password_cipher = oci_kms_encrypted_data.nc-kms-nc-admin-secret.ciphertext
     db_password_cipher = oci_kms_encrypted_data.nc-kms-nc-db-secret.ciphertext
     oo_password_cipher = oci_kms_encrypted_data.nc-kms-nc-oo-secret.ciphertext
@@ -31,6 +32,10 @@ data "template_file" "nc-user-data" {
     web_port = var.web_port
     oo_port = var.oo_port
     project_directory = var.project_directory
+    enable_duckdns         = var.enable_duckdns
+    duckdns_domain         = var.duckdns_domain
+    duckdns_token          = var.duckdns_token
+    letsencrypt_email      = var.letsencrypt_email
   }
 }
 
