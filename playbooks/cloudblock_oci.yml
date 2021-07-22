@@ -150,8 +150,8 @@
           RUN apt-get update && \
               apt-get install -y wget && \
               wget https://github.com/cloudflare/cloudflared/releases/download/2021.5.10/cloudflared-linux-{% if ansible_architecture == "aarch64" %}arm{% else %}amd{% endif %}64 --directory-prefix=/usr/local/bin/ && \
-              chmod 555 /usr/local/bin/cloudflared-linux-amd64
-              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+              chmod 555 /usr/local/bin/cloudflared-linux-{% if ansible_architecture == "aarch64" %}arm{% else %}amd{% endif %}64
+              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-{% if ansible_architecture == "aarch64" %}arm{% else %}amd{% endif %}64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
 
     - name: Cloudflared image
