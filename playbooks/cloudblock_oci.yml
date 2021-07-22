@@ -144,6 +144,7 @@
         path: /opt/cloudflared/Dockerfile
         block: |
           FROM {% if ansible_architecture == "aarch64" %}arm64v8/ubuntu:bionic{% else %}ubuntu:bionic{% endif %}
+
           EXPOSE 53/tcp
           EXPOSE 53/udp
           RUN apt-get update && \
