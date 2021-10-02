@@ -31,7 +31,7 @@ az_zone = "1"
 
 # The version of Ubuntu 1804 to use, use the following command to see the latest official version (replace centralus with the previous command's cli column name
 # az vm image show --location "centralus" --urn Canonical:UbuntuServer:18.04-LTS:latest --query name --output table
-az_image_version = "18.04.202010140"
+az_image_version = "18.04.202109180"
 
 # free tier
 az_vm_size = "Standard_B1s"
