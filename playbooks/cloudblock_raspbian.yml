@@ -147,7 +147,7 @@
           EXPOSE 53/udp
           RUN apt-get update && \
               apt-get install -y wget && \
-              wget https://github.com/cloudflare/cloudflared/releases/download/2021.9.2/cloudflared-linux-armv6 --directory-prefix=/usr/local/bin/ && \
+              wget https://github.com/cloudflare/cloudflared/releases/download/2021.7.4/cloudflared-linux-armv6 --directory-prefix=/usr/local/bin/ && \
               chmod 555 /usr/local/bin/cloudflared-linux-armv6
               ENTRYPOINT ["/usr/local/bin/cloudflared-linux-armv6", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
