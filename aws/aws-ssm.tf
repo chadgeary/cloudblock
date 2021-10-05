@@ -107,7 +107,7 @@ resource "aws_ssm_association" "ph-ssm-assoc" {
   }
   parameters              = {
     ExtraVariables          = "SSM=True aws_region=${var.aws_region} name_prefix=${var.name_prefix} s3_bucket=${aws_s3_bucket.ph-bucket.id} kms_key_id=${aws_kms_key.ph-kmscmk-s3.key_id} docker_network=${var.docker_network} docker_gw=${var.docker_gw} docker_doh=${var.docker_doh} docker_pihole=${var.docker_pihole} docker_wireguard=${var.docker_wireguard} docker_webproxy=${var.docker_webproxy} wireguard_network=${var.wireguard_network} doh_provider=${var.doh_provider} dns_novpn=${var.dns_novpn} wireguard_peers=${var.wireguard_peers} vpn_traffic=${var.vpn_traffic}"
-    PlaybookFile            = "cloudblock_aws_arm.yml"
+    PlaybookFile            = data.aws_ami.ph-vendor-ami-latest.architecture == "arm64" ? "cloudblock_aws_arm.yml" : "cloudblock_aws_amd64.yml"
     SourceInfo              = "{\"path\":\"https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.ph-bucket.id}/playbook/\"}"
     SourceType              = "S3"
     Verbose                 = "-v"

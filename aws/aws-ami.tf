@@ -11,10 +11,6 @@ data "aws_ami" "ph-vendor-ami-latest" {
     values                  = ["hvm"]
   }
   filter {
-    name                    = "architecture"
-    values                  = ["arm64"]
-  }
-  filter {
     name                    = "root-device-type"
     values                  = ["ebs"]
   }
