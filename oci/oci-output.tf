@@ -14,7 +14,7 @@ https://${oci_core_instance.ph-instance.public_ip}/admin/
 (https://${var.docker_webproxy}/admin/)
 
 ## Wireguard Configurations ##
-https://console.${var.oci_region}.oraclecloud.com/object-storage/buckets/${data.oci_objectstorage_namespace.ph-bucket-namespace.namespace}/${var.ph_prefix}-bucket/objects
+https://console.${local.oci_region}.oraclecloud.com/object-storage/buckets/${data.oci_objectstorage_namespace.ph-bucket-namespace.namespace}/${var.ph_prefix}-bucket/objects
 
 #############
 ## UPDATES ##

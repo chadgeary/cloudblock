@@ -23,5 +23,5 @@ resource "oci_identity_policy" "ph-id-storageobject-policy" {
   compartment_id          = data.oci_identity_compartment.ph-root-compartment.id
   name                    = "${var.ph_prefix}-id-storageobject-policy"
   description             = "Identity Policy for objectstorage service"
-  statements              = ["Allow service objectstorage-${var.oci_region} to use keys in compartment id ${oci_identity_compartment.ph-compartment.id} where target.vault.id='${oci_kms_vault.ph-kms-storage-vault.id}'"]
+  statements              = ["Allow service objectstorage-${local.oci_region} to use keys in compartment id ${oci_identity_compartment.ph-compartment.id} where target.vault.id='${oci_kms_vault.ph-kms-storage-vault.id}'"]
 }

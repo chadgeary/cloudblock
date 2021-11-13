@@ -16,6 +16,10 @@ variable "oci_region" {
   description              = "Region to deploy services in."
 }
 
+locals {
+  oci_region = lower(var.oci_region)
+}
+
 variable "oci_imageid" {
   type                     = string
   description              = "An OCID of an image, the playbook is compatible with Ubuntu 18.04+ minimal"
