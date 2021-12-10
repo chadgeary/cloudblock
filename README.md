@@ -22,6 +22,8 @@ Step-by-step, follow along with me as I install on a Raspberry Pi.
 - [Raspberry Pi 4+ (Raspbian 10/Buster)](https://youtu.be/9oeQZvltWDc)
 
 ### Cloud Deployments
+Choosing a cloud provider? [Watch this](https://youtu.be/HB7VwTffdIY) for a mostly un-biased comparison of free options/free trials.
+
 Step-by-step, follow along with me as I deploy from a windows desktop - for Cloud deployments.
 - [Prerequisites](https://youtu.be/SJ0hrXPbMNo) (all cloud deployments should watch this first).
 
