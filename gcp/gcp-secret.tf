@@ -11,7 +11,7 @@ resource "google_secret_manager_secret" "ph-secret-password" {
       }
     }
   }
-  depends_on = [google_project_service.ph-project-services]
+  depends_on = [google_project_service_identity.ph-project-services-identities, google_kms_crypto_key_iam_binding.ph-key-secret-binding]
 }
 
 resource "google_secret_manager_secret_version" "ph-secret-password-version" {

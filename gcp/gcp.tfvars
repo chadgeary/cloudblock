@@ -41,6 +41,7 @@ ph_prefix            = "cloudblock"
 gcp_machine_type     = "e2-micro"
 project_url          = "https://github.com/chadgeary/cloudblock"
 gcp_project_services = ["serviceusage.googleapis.com", "cloudkms.googleapis.com", "storage-api.googleapis.com", "secretmanager.googleapis.com"]
+gcp_project_services_identities = ["secretmanager.googleapis.com"]
 vpn_cidr             = "0.0.0.0/0"
 ssh_user             = "ubuntu"
 gcp_cidr             = "10.10.12.0/24"

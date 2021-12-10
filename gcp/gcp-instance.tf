@@ -45,5 +45,5 @@ resource "google_compute_instance" "ph-instance" {
     scopes = ["cloud-platform", "storage-rw"]
   }
   allow_stopping_for_update = true
-  depends_on                = [google_kms_crypto_key_iam_binding.ph-key-compute-binding, google_service_account_iam_policy.ph-account-service-iam-policy, google_storage_bucket.ph-bucket]
+  depends_on                = [google_kms_crypto_key_iam_binding.ph-key-compute-binding, google_service_account_iam_policy.ph-account-service-iam-policy, google_kms_crypto_key_iam_binding.ph-key-secret-binding, google_storage_bucket.ph-bucket]
 }

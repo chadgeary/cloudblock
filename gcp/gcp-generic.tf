@@ -2,6 +2,10 @@ provider "google" {
   region = var.gcp_region
 }
 
+provider "google-beta" {
+  region = var.gcp_region
+}
+
 variable "gcp_region" {
   type = string
 }
@@ -74,6 +78,11 @@ variable "gcp_billing_account" {
 variable "gcp_project_services" {
   type        = list(string)
   description = "The service APIs to enable under the project"
+}
+
+variable "gcp_project_services_identities" {
+  type        = list(string)
+  description = "The service APIs that require identities"
 }
 
 variable "gcp_image_project" {

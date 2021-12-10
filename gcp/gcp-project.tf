@@ -21,3 +21,11 @@ resource "google_project_service" "ph-project-services" {
   service    = var.gcp_project_services[count.index]
   depends_on = [google_project_service.ph-project-compute-service]
 }
+
+resource "google_project_service_identity" "ph-project-services-identities" {
+  provider   = google-beta
+  count      = length(var.gcp_project_services_identities)
+  project    = google_project.ph-project.project_id
+  service    = var.gcp_project_services_identities[count.index]
+  depends_on = [google_project_service.ph-project-services]
+}
