@@ -36,11 +36,11 @@ apt-get update
 # Install pip3 git and python packages
 DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git
 pip3 install --upgrade pip
-pip3 install ansible[azure]
+pip3 install --upgrade ansible[azure]
 # And the collection
-ansible-galaxy collection install azure.azcollection
+ansible-galaxy collection install azure.azcollection --force
 # And the requirements
-pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+pip3 install --upgrade -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
 # Make the project directory
 mkdir -p /opt/cloudblock
 # Clone project
