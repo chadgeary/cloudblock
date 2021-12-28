@@ -40,10 +40,7 @@ pip3 install ansible[azure]
 # And the collection
 ansible-galaxy collection install azure.azcollection
 # And the requirements
-rm -f requirements-azure.txt
-wget https://raw.githubusercontent.com/ansible-collections/azure/dev/requirements-azure.txt
-# Install the requirements
-pip3 install -r requirements-azure.txt
+pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
 # Make the project directory
 mkdir -p /opt/cloudblock
 # Clone project
