@@ -6,6 +6,16 @@
   become: true
   tasks:
 
+    - name: sanity check for required variables
+      fail:
+        msg: "Exiting - the required variable 'doh_provider' not set"
+      when: doh_provider is not defined
+
+    - name: sanity check for required variables 2
+      fail:
+        msg: "Exiting - the required variable 'doh_provider' is set but blank"
+      when: doh_provider == ""
+
     - name: add docker apt key
       apt_key:
         url: https://download.docker.com/linux/raspbian/gpg
