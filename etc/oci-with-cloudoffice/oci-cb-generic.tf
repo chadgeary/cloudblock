@@ -59,7 +59,7 @@ variable "vcn_cidr" {
   description              = "Subnet (in CIDR notation) for the OCI network, change if would overlap existing resources"
 }
 
-variable "mgmt_cidr" {
+variable "cb_mgmt_cidr" {
   type                     = string
   description              = "Subnet (in CIDR notation) granted access to Pihole WebUI and SSH running on the compute instance. Also granted DNS access if dns_novpn = 1"
 }

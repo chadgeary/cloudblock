@@ -40,7 +40,7 @@ resource "oci_core_network_security_group" "ph-network-security-group" {
 }
 
 resource "oci_core_default_security_list" "ph-security-list-nodirectdns" {
-  count                        = var.dns_novpn * 0
+  count                        = var.dns_novpn == 1 ? 0 : 1
   manage_default_resource_id   = oci_core_vcn.ph-vcn.default_security_list_id
   display_name                 = "${var.ph_prefix}-security"
   egress_security_rules {
@@ -49,7 +49,7 @@ resource "oci_core_default_security_list" "ph-security-list-nodirectdns" {
   }
   ingress_security_rules {
     protocol                     = 6
-    source                       = var.mgmt_cidr
+    source                       = var.cb_mgmt_cidr
     tcp_options {
       max                          = "22"
       min                          = "22"
@@ -57,7 +57,7 @@ resource "oci_core_default_security_list" "ph-security-list-nodirectdns" {
   }
   ingress_security_rules {
     protocol                     = 6
-    source                       = var.mgmt_cidr
+    source                       = var.cb_mgmt_cidr
     tcp_options {
       max                          = "443"
       min                          = "443"
@@ -73,10 +73,34 @@ resource "oci_core_default_security_list" "ph-security-list-nodirectdns" {
   }
   ingress_security_rules {
     protocol                     = 6
-    source                       = var.mgmt_cidr
+    source                       = var.co_mgmt_cidr
+    tcp_options {
+      max                          = "22"
+      min                          = "22"
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = var.co_mgmt_cidr
+    tcp_options {
+      max                          = "443"
+      min                          = "443"
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = var.co_mgmt_cidr
     tcp_options {
       max                          = var.oo_port
       min                          = var.oo_port
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = var.co_mgmt_cidr
+    tcp_options {
+      max                          = var.web_port
+      min                          = var.web_port
     }
   }
   ingress_security_rules {
@@ -98,7 +122,7 @@ resource "oci_core_default_security_list" "ph-security-list-nodirectdns" {
 }
 
 resource "oci_core_default_security_list" "ph-security-list-directdns" {
-  count                        = var.dns_novpn * 1
+  count                        = var.dns_novpn == 1 ? 1 : 0
   manage_default_resource_id   = oci_core_vcn.ph-vcn.default_security_list_id
   display_name                 = "${var.ph_prefix}-security"
   egress_security_rules {
@@ -107,7 +131,7 @@ resource "oci_core_default_security_list" "ph-security-list-directdns" {
   }
   ingress_security_rules {
     protocol                     = 6
-    source                       = var.mgmt_cidr
+    source                       = var.cb_mgmt_cidr
     tcp_options {
       max                          = "22"
       min                          = "22"
@@ -115,7 +139,7 @@ resource "oci_core_default_security_list" "ph-security-list-directdns" {
   }
   ingress_security_rules {
     protocol                     = 6
-    source                       = var.mgmt_cidr
+    source                       = var.cb_mgmt_cidr
     tcp_options {
       max                          = "443"
       min                          = "443"
@@ -131,7 +155,55 @@ resource "oci_core_default_security_list" "ph-security-list-directdns" {
   }
   ingress_security_rules {
     protocol                     = 6
-    source                       = var.mgmt_cidr
+    source                       = var.co_mgmt_cidr
+    tcp_options {
+      max                          = "22"
+      min                          = "22"
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = var.co_mgmt_cidr
+    tcp_options {
+      max                          = "443"
+      min                          = "443"
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = var.co_mgmt_cidr
+    tcp_options {
+      max                          = var.oo_port
+      min                          = var.oo_port
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = var.co_mgmt_cidr
+    tcp_options {
+      max                          = var.web_port
+      min                          = var.web_port
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = "${oci_core_instance.nc-instance.public_ip}/32"
+    tcp_options {
+      max                          = var.web_port
+      min                          = var.web_port
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = "${oci_core_instance.nc-instance.public_ip}/32"
+    tcp_options {
+      max                          = var.oo_port
+      min                          = var.oo_port
+    }
+  }
+  ingress_security_rules {
+    protocol                     = 6
+    source                       = var.cb_mgmt_cidr
     tcp_options {
       max                          = "53"
       min                          = "53"
@@ -139,7 +211,7 @@ resource "oci_core_default_security_list" "ph-security-list-directdns" {
   }
   ingress_security_rules {
     protocol                     = 17
-    source                       = var.mgmt_cidr
+    source                       = var.cb_mgmt_cidr
     udp_options {
       max                          = "53"
       min                          = "53"

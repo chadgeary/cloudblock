@@ -11,6 +11,12 @@ resource "azurerm_storage_account" "ph-storage-account" {
   identity {
     type = "SystemAssigned"
   }
+  blob_properties {
+    versioning_enabled = true
+    delete_retention_policy {
+      days                     = 30
+    }
+  }
 }
 
 resource "azurerm_storage_account_customer_managed_key" "ph-storage-cmk" {

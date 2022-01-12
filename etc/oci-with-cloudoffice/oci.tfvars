@@ -6,13 +6,14 @@ oci_root_compartment = "ocid1.tenancy.oc1..aaaaaaaaCHANGE_ME_CHANGE_ME_CHANGE_ME
 oci_region = "us-ashburn-1"
 oci_adnumber = 1
 ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNCHANGE_ME_CHANGE_ME_CHANGE_ME"
-mgmt_cidr = "1.2.3.4/32"
 client_cidrs = []
 vcn_cidr = "10.10.12.0/24"
 
 ##            ##
 ## CLOUDBLOCK ##
 ##            ##
+# The cb_mgmt_cidr permits firewall access to pihole web console, ssh, and direct DNS lookups (if dns_novpn = 1) without wireguard
+cb_mgmt_cidr = "1.2.3.4/32"
 ph_prefix = "cloudblock"
 ph_password = "changeme0"
 wireguard_peers = 20
@@ -37,6 +38,8 @@ cb_wireguard_network = "172.19.0.0"
 ##             ##
 ## CLOUDOFFICE ##
 ##             ##
+# The co_mgmt_cidr permits firewall access to nextcloud/onlyoffice and ssh. 0.0.0.0/0 makes this accessible anywhere.
+co_mgmt_cidr = "1.2.3.4/32"
 nc_prefix = "cloudoffice"
 admin_password = "changeme1"
 db_password = "changeme2"

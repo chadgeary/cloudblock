@@ -25,6 +25,11 @@ variable "co_oci_instance_ocpus" {
   default                  = 1
 }
 
+variable "co_mgmt_cidr" {
+  type                     = string
+  description              = "Subnet (in CIDR notation) granted access to nextcloud/onlyoffice and SSH running on the compute instance."
+}
+
 variable "nc_prefix" {
   type                     = string
   description              = "A friendly prefix (like 'pihole') affixed to many resources, like the bucket name."
