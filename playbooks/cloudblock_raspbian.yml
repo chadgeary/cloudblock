@@ -16,6 +16,11 @@
         msg: "Exiting - the required variable 'doh_provider' is set but blank"
       when: doh_provider == ""
 
+    - name: get dpkg architecture
+      shell: |
+        dpkg --print-architecture
+      register: dpkg_arch
+
     - name: add docker apt key
       apt_key:
         url: https://download.docker.com/linux/raspbian/gpg
@@ -23,7 +28,7 @@
 
     - name: add docker apt repo
       apt_repository:
-        repo: deb [arch=armhf] https://download.docker.com/linux/raspbian buster stable
+        repo: "deb [arch={{ dpkg_arch.stdout }}] https://download.docker.com/linux/raspbian {{ ansible_distribution_release }} stable"
         state: present
 
     - name: required packages
