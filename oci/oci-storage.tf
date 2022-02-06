@@ -23,5 +23,5 @@ resource "oci_objectstorage_object_lifecycle_policy" "ph-bucket-lifecycle" {
     time_amount             = 30
     time_unit               = "DAYS"
   }
-  depends_on = [oci_identity_policy.ph-id-storageobject-policy]
+  depends_on = [oci_identity_policy.ph-id-storageobject-policy, oci_objectstorage_bucket.ph-bucket]
 }
