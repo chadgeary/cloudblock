@@ -1,6 +1,6 @@
 ## COMMON ##
 pihole_password = "changeme"
-instance_key = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
+instance_key    = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
 
 # ip range permitted access to instance SSH and pihole webUI. Also granted DNS access if dns_novpn = 1.
 # Deploying for home use? This should be your public IP address/32.
@@ -42,23 +42,23 @@ instance_type = "t4g.micro"
 # AWS_REGION=us-east-1 && ~/.local/bin/aws ec2 describe-images --region $AWS_REGION --owners 099720109477 --filters 'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-*' 'Name=state,Values=available' --query 'sort_by(Images, &CreationDate)[-1].Name'
 # For x86_64 (non-ARM):
 # AWS_REGION=us-east-1 && ~/.local/bin/aws ec2 describe-images --region $AWS_REGION --owners 099720109477 --filters 'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*' 'Name=state,Values=available' --query 'sort_by(Images, &CreationDate)[-1].Name'
-vendor_ami_name_string = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-20210907"
+vendor_ami_name_string    = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-20210907"
 vendor_ami_account_number = "099720109477"
 
 ## VERY UNCOMMON ##
 # aws profile (e.g. from aws configure, usually "default")
-aws_profile = "default"
+aws_profile       = "default"
 instance_vol_size = 30
-name_prefix = "cloudblock"
+name_prefix       = "cloudblock"
 # Change if ip settings would interfere with existing networks, wireguard network must not be in same /24 as docker_<var>s
-vpn_cidr = "0.0.0.0/0"
-vpc_cidr = "10.10.12.0/24"
-pubnet_cidr = "10.10.12.0/26"
+vpn_cidr           = "0.0.0.0/0"
+vpc_cidr           = "10.10.12.0/24"
+pubnet_cidr        = "10.10.12.0/26"
 pubnet_instance_ip = "10.10.12.5"
-docker_network = "172.18.0.0"
-docker_gw = "172.18.0.1"
-docker_doh = "172.18.0.2"
-docker_pihole = "172.18.0.3"
-docker_wireguard = "172.18.0.4"
-docker_webproxy = "172.18.0.5"
-wireguard_network = "172.19.0.0"
+docker_network     = "172.18.0.0"
+docker_gw          = "172.18.0.1"
+docker_doh         = "172.18.0.2"
+docker_pihole      = "172.18.0.3"
+docker_wireguard   = "172.18.0.4"
+docker_webproxy    = "172.18.0.5"
+wireguard_network  = "172.19.0.0"

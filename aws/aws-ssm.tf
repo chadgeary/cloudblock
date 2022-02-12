@@ -1,16 +1,16 @@
 # pihole password as ssm parameter
 resource "aws_ssm_parameter" "ph-ssm-param-pass" {
-  name                    = "${var.name_prefix}-pihole-web-password"
-  type                    = "SecureString"
-  key_id                  = aws_kms_key.ph-kmscmk-ssm.key_id
-  value                   = var.pihole_password
+  name   = "${var.name_prefix}-pihole-web-password"
+  type   = "SecureString"
+  key_id = aws_kms_key.ph-kmscmk-ssm.key_id
+  value  = var.pihole_password
 }
 
 # document to install deps and run playbook
 resource "aws_ssm_document" "ph-ssm-doc" {
-  name                    = "${var.name_prefix}-ssm-doc"
-  document_type           = "Command"
-  content                 = <<DOC
+  name          = "${var.name_prefix}-ssm-doc"
+  document_type = "Command"
+  content       = <<DOC
   {
     "schemaVersion": "2.2",
     "description": "Ansible Playbooks via SSM for Ubuntu 18.04 ARM, installs Ansible properly.",
@@ -95,22 +95,22 @@ DOC
 
 # ansible playbook association for tag:value cloudblock:True
 resource "aws_ssm_association" "ph-ssm-assoc" {
-  association_name        = "${var.name_prefix}-ssm-assoc"
-  name                    = aws_ssm_document.ph-ssm-doc.name
+  association_name = "${var.name_prefix}-ssm-assoc"
+  name             = aws_ssm_document.ph-ssm-doc.name
   targets {
-    key                   = "tag:cloudblock"
-    values                = ["True"]
+    key    = "tag:cloudblock"
+    values = ["True"]
   }
   output_location {
-    s3_bucket_name          = aws_s3_bucket.ph-bucket.id
-    s3_key_prefix           = "ssm"
+    s3_bucket_name = aws_s3_bucket.ph-bucket.id
+    s3_key_prefix  = "ssm"
   }
-  parameters              = {
-    ExtraVariables          = "SSM=True aws_region=${var.aws_region} name_prefix=${var.name_prefix} s3_bucket=${aws_s3_bucket.ph-bucket.id} kms_key_id=${aws_kms_key.ph-kmscmk-s3.key_id} docker_network=${var.docker_network} docker_gw=${var.docker_gw} docker_doh=${var.docker_doh} docker_pihole=${var.docker_pihole} docker_wireguard=${var.docker_wireguard} docker_webproxy=${var.docker_webproxy} wireguard_network=${var.wireguard_network} doh_provider=${var.doh_provider} dns_novpn=${var.dns_novpn} wireguard_peers=${var.wireguard_peers} vpn_traffic=${var.vpn_traffic}"
-    PlaybookFile            = data.aws_ami.ph-vendor-ami-latest.architecture == "arm64" ? "cloudblock_aws_arm.yml" : "cloudblock_aws_amd64.yml"
-    SourceInfo              = "{\"path\":\"https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.ph-bucket.id}/playbook/\"}"
-    SourceType              = "S3"
-    Verbose                 = "-v"
+  parameters = {
+    ExtraVariables = "SSM=True aws_region=${var.aws_region} name_prefix=${var.name_prefix} s3_bucket=${aws_s3_bucket.ph-bucket.id} kms_key_id=${aws_kms_key.ph-kmscmk-s3.key_id} docker_network=${var.docker_network} docker_gw=${var.docker_gw} docker_doh=${var.docker_doh} docker_pihole=${var.docker_pihole} docker_wireguard=${var.docker_wireguard} docker_webproxy=${var.docker_webproxy} wireguard_network=${var.wireguard_network} doh_provider=${var.doh_provider} dns_novpn=${var.dns_novpn} wireguard_peers=${var.wireguard_peers} vpn_traffic=${var.vpn_traffic}"
+    PlaybookFile   = data.aws_ami.ph-vendor-ami-latest.architecture == "arm64" ? "cloudblock_aws_arm.yml" : "cloudblock_aws_amd64.yml"
+    SourceInfo     = "{\"path\":\"https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.ph-bucket.id}/playbook/\"}"
+    SourceType     = "S3"
+    Verbose        = "-v"
   }
-  depends_on              = [aws_iam_role_policy_attachment.ph-iam-attach-ssm, aws_iam_role_policy_attachment.ph-iam-attach-s3,aws_s3_bucket_object.ph-files]
+  depends_on = [aws_iam_role_policy_attachment.ph-iam-attach-ssm, aws_iam_role_policy_attachment.ph-iam-attach-s3, aws_s3_object.ph-files]
 }
