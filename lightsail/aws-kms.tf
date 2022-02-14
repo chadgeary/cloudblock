@@ -1,12 +1,12 @@
 resource "aws_kms_key" "ph-kmscmk-s3" {
-  description             = "Key for ph s3"
-  key_usage               = "ENCRYPT_DECRYPT"
+  description              = "Key for ph s3"
+  key_usage                = "ENCRYPT_DECRYPT"
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
-  enable_key_rotation     = "true"
-  tags                    = {
-    Name                  = "ph-kmscmk-s3"
+  enable_key_rotation      = "true"
+  tags = {
+    Name = "ph-kmscmk-s3"
   }
-  policy                  = <<EOF
+  policy = <<EOF
 {
   "Id": "ph-kmskeypolicy-s3",
   "Version": "2012-10-17",
@@ -67,19 +67,19 @@ EOF
 }
 
 resource "aws_kms_alias" "ph-kmscmk-s3-alias" {
-  name                    = "alias/ph-ksmcmk-s3"
-  target_key_id           = aws_kms_key.ph-kmscmk-s3.key_id
+  name          = "alias/${var.name_prefix}-ph-ksmcmk-s3"
+  target_key_id = aws_kms_key.ph-kmscmk-s3.key_id
 }
 
 resource "aws_kms_key" "ph-kmscmk-ssm" {
-  description             = "Key for ph ssm"
-  key_usage               = "ENCRYPT_DECRYPT"
+  description              = "Key for ph ssm"
+  key_usage                = "ENCRYPT_DECRYPT"
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
-  enable_key_rotation     = "true"
-  tags                    = {
-    Name                  = "ph-kmscmk-ssm"
+  enable_key_rotation      = "true"
+  tags = {
+    Name = "ph-kmscmk-ssm"
   }
-  policy                  = <<EOF
+  policy = <<EOF
 {
   "Id": "ph-kmskeypolicy-ssm",
   "Version": "2012-10-17",
@@ -114,6 +114,6 @@ EOF
 }
 
 resource "aws_kms_alias" "ph-kmscmk-ssm-alias" {
-  name                    = "alias/ph-ksmcmk-ssm"
-  target_key_id           = aws_kms_key.ph-kmscmk-ssm.key_id
+  name          = "alias/${var.name_prefix}-ph-ksmcmk-ssm"
+  target_key_id = aws_kms_key.ph-kmscmk-ssm.key_id
 }

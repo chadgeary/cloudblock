@@ -1,6 +1,6 @@
 ## COMMON ##
 pihole_password = "changeme"
-instance_key = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
+instance_key    = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
 
 # ip range permitted access to instance SSH and pihole webUI. Also granted DNS access if dns_novpn = 1.
 # Deploying for home use? This should be your public IP address/32.
@@ -37,7 +37,7 @@ aws_az = 0
 
 # lightsail uses "bundles and blueprints" instead of instance typesi and AMIs - see: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lightsail_instance#bundles and https://aws.amazon.com/lightsail/pricing/
 # attempting to use nano may or may not succeed, good luck!
-bundle_id = "micro_2_0"
+bundle_id    = "micro_2_0"
 blueprint_id = "ubuntu_20_04"
 
 # aws profile (e.g. from aws configure, usually "default")
@@ -45,11 +45,11 @@ aws_profile = "default"
 name_prefix = "cloudblock"
 
 # Change if ip settings would interfere with existing networks, wireguard network must not be in same /24 as docker_<var>s
-vpn_cidr = "0.0.0.0/0"
-docker_network = "172.18.0.0"
-docker_gw = "172.18.0.1"
-docker_doh = "172.18.0.2"
-docker_pihole = "172.18.0.3"
-docker_wireguard = "172.18.0.4"
-docker_webproxy = "172.18.0.5"
+vpn_cidr          = "0.0.0.0/0"
+docker_network    = "172.18.0.0"
+docker_gw         = "172.18.0.1"
+docker_doh        = "172.18.0.2"
+docker_pihole     = "172.18.0.3"
+docker_wireguard  = "172.18.0.4"
+docker_webproxy   = "172.18.0.5"
 wireguard_network = "172.19.0.0"

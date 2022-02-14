@@ -1,18 +1,18 @@
 resource "aws_lightsail_key_pair" "ph-key" {
-  name                    = "${var.name_prefix}-key"
-  public_key              = var.instance_key
+  name       = "${var.name_prefix}-key"
+  public_key = var.instance_key
 }
 
 resource "aws_lightsail_instance" "ph-instance" {
-  name                    = "${var.name_prefix}-cloudblock"
-  key_pair_name           = aws_lightsail_key_pair.ph-key.name
-  availability_zone       = data.aws_availability_zones.ph-azs.names[var.aws_az]
-  blueprint_id            = var.blueprint_id
-  bundle_id               = var.bundle_id
-  tags                    = {
-    Name                    = "${var.name_prefix}-cloudblock"
+  name              = "${var.name_prefix}-cloudblock"
+  key_pair_name     = aws_lightsail_key_pair.ph-key.name
+  availability_zone = data.aws_availability_zones.ph-azs.names[var.aws_az]
+  blueprint_id      = var.blueprint_id
+  bundle_id         = var.bundle_id
+  tags = {
+    Name = "${var.name_prefix}-cloudblock"
   }
-  user_data               = <<EOF
+  user_data = <<EOF
 #!/bin/bash
 # disable systemd-resolved
 DNS_SERVER=$(systemd-resolve --status | awk -F': ' '/DNS Servers/{print $2}')
@@ -37,10 +37,10 @@ EOF
 }
 
 resource "aws_lightsail_static_ip" "ph-staticip" {
-  name                    = "${var.name_prefix}-staticip"
+  name = "${var.name_prefix}-staticip"
 }
 
 resource "aws_lightsail_static_ip_attachment" "ph-staticipattach" {
-  static_ip_name          = aws_lightsail_static_ip.ph-staticip.name
-  instance_name           = aws_lightsail_instance.ph-instance.id
+  static_ip_name = aws_lightsail_static_ip.ph-staticip.name
+  instance_name  = aws_lightsail_instance.ph-instance.id
 }

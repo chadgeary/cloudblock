@@ -1,18 +1,18 @@
 # SSM Managed Policy
 data "aws_iam_policy" "ph-instance-policy-ssm" {
-  arn                     = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 data "aws_iam_policy" "ph-instance-policy-ssmdir" {
-  arn                     = "arn:aws:iam::aws:policy/AmazonSSMDirectoryServiceAccess"
+  arn = "arn:aws:iam::aws:policy/AmazonSSMDirectoryServiceAccess"
 }
 
 # Instance Policy SSM Parameter
 resource "aws_iam_policy" "ph-instance-policy-ssmparameter" {
-  name                    = "ph-instance-policy-ssmparameter"
-  path                    = "/"
-  description             = "Provides ph instances access to ssm parameter(s)"
-  policy                  = <<EOF
+  name        = "ph-instance-policy-ssmparameter"
+  path        = "/"
+  description = "Provides ph instances access to ssm parameter(s)"
+  policy      = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -37,10 +37,10 @@ EOF
 
 # Instance Policy S3
 resource "aws_iam_policy" "ph-instance-policy-s3" {
-  name                    = "ph-instance-policy-s3"
-  path                    = "/"
-  description             = "Provides ph instances access to s3 objects/bucket"
-  policy                  = <<EOF
+  name        = "ph-instance-policy-s3"
+  path        = "/"
+  description = "Provides ph instances access to s3 objects/bucket"
+  policy      = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -88,9 +88,9 @@ EOF
 
 # Instance Role
 resource "aws_iam_role" "ph-instance-iam-role" {
-  name                    = "ph-instance-profile-${random_string.ph-random.result}-role"
-  path                    = "/"
-  assume_role_policy      = <<EOF
+  name               = "ph-instance-profile-${random_string.ph-random.result}-role"
+  path               = "/"
+  assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -109,21 +109,21 @@ EOF
 
 # Instance Role Attachments
 resource "aws_iam_role_policy_attachment" "ph-iam-attach-ssm" {
-  role                    = aws_iam_role.ph-instance-iam-role.name
-  policy_arn              = data.aws_iam_policy.ph-instance-policy-ssm.arn
+  role       = aws_iam_role.ph-instance-iam-role.name
+  policy_arn = data.aws_iam_policy.ph-instance-policy-ssm.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ph-iam-attach-ssmdir" {
-  role                    = aws_iam_role.ph-instance-iam-role.name
-  policy_arn              = data.aws_iam_policy.ph-instance-policy-ssmdir.arn
+  role       = aws_iam_role.ph-instance-iam-role.name
+  policy_arn = data.aws_iam_policy.ph-instance-policy-ssmdir.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ph-iam-attach-ssmparameter" {
-  role                    = aws_iam_role.ph-instance-iam-role.name
-  policy_arn              = aws_iam_policy.ph-instance-policy-ssmparameter.arn
+  role       = aws_iam_role.ph-instance-iam-role.name
+  policy_arn = aws_iam_policy.ph-instance-policy-ssmparameter.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ph-iam-attach-s3" {
-  role                    = aws_iam_role.ph-instance-iam-role.name
-  policy_arn              = aws_iam_policy.ph-instance-policy-s3.arn
+  role       = aws_iam_role.ph-instance-iam-role.name
+  policy_arn = aws_iam_policy.ph-instance-policy-s3.arn
 }
