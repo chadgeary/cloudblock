@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "ph-bucket-policy" {
   statement {
     sid       = "InstanceListGet"
     effect    = "Allow"
-    actions   = ["s3:ListBucket", "s3:GetObject", "s3:GetObjectVersion"]
+    actions   = ["s3:ListBucket", "s3:GetObject", "s3:GetObjectVersion", "s3:GetObjectTagging"]
     resources = ["arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}", "arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}/*"]
     principals {
       type        = "AWS"
@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "ph-bucket-policy" {
   statement {
     sid       = "InstancePut"
     effect    = "Allow"
-    actions   = ["s3:PutObject", "s3:PutObjectAcl"]
+    actions   = ["s3:PutObject", "s3:PutObjectAcl", "s3:PutObjectTagging"]
     resources = ["arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}/ssm/*", "arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}/wireguard/*"]
     principals {
       type        = "AWS"
