@@ -30,6 +30,8 @@
       apt_repository:
         repo: "deb [arch={{ dpkg_arch.stdout }}] https://download.docker.com/linux/raspbian {{ ansible_distribution_release }} stable"
         state: present
+      when:
+        - dpkg_arch.stdout != "arm64"
 
     - name: required packages
       apt:
@@ -37,7 +39,7 @@
           - apt-transport-https
           - ca-certificates
           - curl
-          - docker-ce
+          - "{% if dpkg_arch.stdout == 'arm64' %}docker.io{% else %}docker-ce{% endif %}"
           - libcap2-bin
           - python3-pip
           - raspberrypi-kernel-headers
