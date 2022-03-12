@@ -10,7 +10,6 @@ resource "digitalocean_floating_ip" "do-ip" {
 resource "digitalocean_droplet" "do-droplet" {
   name                              = "${var.do_prefix}-instance-${random_string.do-random.result}"
   region                            = var.do_region
-  private_networking                = "true"
   vpc_uuid                          = digitalocean_vpc.do-network.id
   image                             = var.do_image
   size                              = var.do_size
