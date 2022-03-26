@@ -11,26 +11,6 @@ resource "azurerm_network_interface" "ph-net-interface" {
   }
 }
 
-data "template_file" "ph-custom-data" {
-  template = file("az-custom_data.tpl")
-  vars = {
-    project_url       = var.project_url
-    ph_prefix         = var.ph_prefix
-    ph_suffix         = random_string.ph-random.result
-    docker_network    = var.docker_network
-    docker_gw         = var.docker_gw
-    docker_doh        = var.docker_doh
-    docker_pihole     = var.docker_pihole
-    docker_wireguard  = var.docker_wireguard
-    docker_webproxy   = var.docker_webproxy
-    wireguard_network = var.wireguard_network
-    doh_provider      = var.doh_provider
-    dns_novpn         = var.dns_novpn
-    wireguard_peers   = var.wireguard_peers
-    vpn_traffic       = var.vpn_traffic
-  }
-}
-
 resource "azurerm_linux_virtual_machine" "ph-instance" {
   name                  = "${var.ph_prefix}-instance"
   location              = azurerm_resource_group.ph-resourcegroup.location
@@ -58,6 +38,24 @@ resource "azurerm_linux_virtual_machine" "ph-instance" {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.ph-instance-id.id]
   }
-  custom_data = base64encode(data.template_file.ph-custom-data.rendered)
-  depends_on  = [azurerm_key_vault_access_policy.ph-vault-disk-des, azurerm_role_assignment.ph-instance-role-assignment]
+  custom_data = base64encode(templatefile(
+    "az-custom_data.tpl",
+    {
+      project_url       = var.project_url
+      ph_prefix         = var.ph_prefix
+      ph_suffix         = random_string.ph-random.result
+      docker_network    = var.docker_network
+      docker_gw         = var.docker_gw
+      docker_doh        = var.docker_doh
+      docker_pihole     = var.docker_pihole
+      docker_wireguard  = var.docker_wireguard
+      docker_webproxy   = var.docker_webproxy
+      wireguard_network = var.wireguard_network
+      doh_provider      = var.doh_provider
+      dns_novpn         = var.dns_novpn
+      wireguard_peers   = var.wireguard_peers
+      vpn_traffic       = var.vpn_traffic
+    }
+  ))
+  depends_on = [azurerm_key_vault_access_policy.ph-vault-disk-des, azurerm_role_assignment.ph-instance-role-assignment]
 }

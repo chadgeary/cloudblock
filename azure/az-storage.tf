@@ -14,7 +14,7 @@ resource "azurerm_storage_account" "ph-storage-account" {
   blob_properties {
     versioning_enabled = true
     delete_retention_policy {
-      days                     = 30
+      days = 30
     }
   }
 }
