@@ -16,12 +16,14 @@ tee /etc/systemd/system/cloudblock-ansible-state.service << EOM
 [Unit]
 Description=cloudblock-ansible-state
 After=network.target
+StartLimitInterval=600
+StartLimitBurst=3
 
 [Service]
 ExecStart=/opt/cloudblock-ansible-state.sh
 Type=simple
 Restart=on-failure
-RestartSec=30
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
