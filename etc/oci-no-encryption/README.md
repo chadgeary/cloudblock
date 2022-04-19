@@ -1,5 +1,5 @@
 # /etc Note
-A special version of cloudblock/oci, but deploys two instances instead of one - within the free tier limits withOUT encryption. The two instances share the cloud network (among other things), but are distinct/separate wireguard/pihole services.
+A special version of cloudblock/oci, but deploys without encryption. Useful for deployments in OCI free tier that do not have any vaults remaining.
 
 # Reference
 End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VPN), pihole (adblock), and cloudflared (DNS over HTTPS). Built in OCI using Terraform, Ansible, and Docker.
@@ -111,11 +111,11 @@ oci iam compartment list --all --compartment-id-in-subtree true --access-level A
 Customize the deployment - See variables section below
 ```
 # Change to the project's oci directory in powershell
-cd ~/cloudblock/oci/
+cd ~/cloudblock/etc/oci-no-encryption
 
 # Open File Explorer in a separate window
 # Navigate to oci project directory - change \chad\ to your WSL username
-%HOMEPATH%\ubuntu-1804\rootfs\home\chad\cloudblock\oci
+%HOMEPATH%\ubuntu-1804\rootfs\home\chad\cloudblock\etc\oci-no-encryption
 
 # Edit the oci.tfvars file using notepad and save
 ```
@@ -123,7 +123,7 @@ cd ~/cloudblock/oci/
 Deploy
 ```
 # In powershell's WSL window, change to the project's oci directory
-cd ~/cloudblock/oci/
+cd ~/cloudblock/etc/oci-no-encryption
 
 # Initialize terraform and the apply the terraform state
 terraform init
@@ -184,7 +184,7 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 wsl
 
 # Change to the project directory
-cd ~/cloudblock/oci/
+cd ~/cloudblock/etc/oci-no-encryption/
 
 # Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
 sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" oci.tfvars
@@ -198,7 +198,7 @@ terraform apply -var-file="oci.tfvars"
   - Cloudblock follows these instructions and provides steps in the terraform output. Be sure cloudblock is locally up-to-date to display the instructions:
 ```
 # Be in the oci subdirectory
-cd ~/cloudblock/oci/
+cd ~/cloudblock/etc/oci-no-encryption/
 
 # Move vars file to be untracked by git, if not already done.
 if [ -f pvars.tfvars ]; then echo "pvars exists, not overwriting"; else mv oci.tfvars pvars.tfvars; fi
