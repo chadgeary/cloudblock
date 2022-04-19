@@ -1,4 +1,9 @@
-provider "oci" {
+terraform {
+  required_providers {
+    oci = {
+      source = "oracle/oci"
+    }
+  }
 }
 
 variable "oci_config_profile" {
