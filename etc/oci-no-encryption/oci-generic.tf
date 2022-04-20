@@ -147,8 +147,3 @@ variable "vpn_traffic" {
   type        = string
   description = "dns peers or all, sets instance1's Wireguard VPN client configuration to route only dns traffic or all traffic through the VPN."
 }
-
-variable "vpn_traffic2" {
-  type        = string
-  description = "dns peers or all, sets instance2's Wireguard VPN client configuration to route only dns traffic or all traffic through the VPN."
-}
