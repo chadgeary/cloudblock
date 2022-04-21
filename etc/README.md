@@ -55,23 +55,25 @@ sudo docker exec cloudflared_doh /bin/bash -c 'which curl; if [ $? -ne 0 ]; then
 ```
 #!/bin/bash
 # Author: Aelfa
-# Run every 5 minutes with cron
-# check for ip changes every 5 minutes
+# check for ip changes with cron
 # crontab -e, please don't use sudo crontab -e
-# */5 * * * * /usr/bin/bash "/home/YOUR_USER/update_cloudblock_ip.sh" >> /home/YOUR_USER/cron.log
+# check for ip changes every 5 minutes
+# */5 * * * * /usr/bin/bash "/home/YOUR_USER/change_ip.sh" >> /home/YOUR_USER/cron.log
+# or daily
+# @daily /usr/bin/bash "/home/YOUR_USER/change_ip.sh" >> /home/YOUR_USER/cron.log
 
 cloudprovider=oci #type the name to your cloudprovider example azure, aws, oci
 
 if [[ $EUID == 0 ]]; then
   tee <<-EOF
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        ⛔  You must execute as a user or as root, please don't use sudo
+           ⛔  You must execute as a user or as root, please don't use sudo
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EOF
   exit 0
 fi
 
-############################# SYSTEM INFORMATION #######################
+########################## SYSTEM INFORMATION ##########################
 readonly DETECTED_PUID=${SUDO_UID:-$UID}
 readonly DETECTED_UNAME=$(id -un "${DETECTED_PUID}" 2>/dev/null || true)
 readonly DETECTED_HOMEDIR=$(eval echo "~${DETECTED_UNAME}" 2>/dev/null || true)
