@@ -58,7 +58,7 @@ sudo docker exec cloudflared_doh /bin/bash -c 'which curl; if [ $? -ne 0 ]; then
 # Run every 5 minutes with cron
 # check for ip changes every 5 minutes
 # crontab -e, please don't use sudo crontab -e
-# */5 * * * * /usr/bin/bash "/home/YOUR_USER/change_ip.sh" >> /home/YOUR_USER/cron.log
+# */5 * * * * /usr/bin/bash "/home/YOUR_USER/update_cloudblock_ip.sh" >> /home/YOUR_USER/cron.log
 
 cloudprovider=oci #type the name to your cloudprovider example azure, aws, oci
 
