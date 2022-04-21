@@ -65,7 +65,7 @@ cloudprovider=oci #type the name to your cloudprovider example azure, aws, oci
 if [[ $EUID == 0 ]]; then
   tee <<-EOF
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⛔  You must execute as a user or as root, please don't use sudo
+        ⛔  You must execute as a user or as root, please don't use sudo
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EOF
   exit 0
