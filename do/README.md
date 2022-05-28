@@ -13,6 +13,8 @@ Mac Users install (home)brew, then terraform, git, doctl cli.
 #########
 ## Mac ##
 #########
+# Important - Apple's Private Relay can prevent access to your cloudblock server/VPN.
+
 # Launch terminal
 
 # Install brew
