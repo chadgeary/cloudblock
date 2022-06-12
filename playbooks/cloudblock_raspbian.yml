@@ -165,8 +165,8 @@
           RUN apt-get update && \
               apt-get install -y wget && \
               wget https://github.com/cloudflare/cloudflared/releases/download/2022.4.1/cloudflared-linux-arm --directory-prefix=/usr/local/bin/ && \
-              chmod 555 /usr/local/bin/cloudflared-linux-armv6
-              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-armv6", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+              chmod 555 /usr/local/bin/cloudflared-linux-arm
+              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
 
 
