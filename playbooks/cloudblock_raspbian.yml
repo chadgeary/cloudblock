@@ -169,7 +169,7 @@
         mode: '0644'
         path: /opt/cloudflared/Dockerfile
         block: |
-          FROM arm32v7/ubuntu:bionic
+          FROM {% if ansible_architecture == 'aarch64' %}arm64v8{% else %}arm32v7{% endif %}/ubuntu:bionic
           EXPOSE 53/tcp
           EXPOSE 53/udp
           RUN apt-get update && \
