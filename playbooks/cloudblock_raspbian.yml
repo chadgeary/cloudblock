@@ -21,9 +21,9 @@
         wireguard_hostname: "auto"
       when: wireguard_hostname is not defined
 
-    - name: sanity check for wireguard_hostname blank
-      fail:
-        msg: "Exiting - the optional variable 'wireguard_hostname' is set but blank"
+    - name: wireguard_hostname auto if blank
+      set_fact:
+        wireguard_hostname: "auto"
       when: wireguard_hostname == ""
 
     - name: get dpkg architecture
