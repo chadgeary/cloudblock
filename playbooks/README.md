@@ -40,11 +40,13 @@ ansible-playbook cloudblock_amd64.yml --extra-vars="doh_provider=$doh_provider d
 sudo apt update && sudo apt -y upgrade
 sudo apt install git python3-pip
 pip3 install --user --upgrade ansible
-ansible-galaxy collection install community.general
 
 # Add .local/bin to $PATH
 echo PATH="\$PATH:~/.local/bin" >> .bashrc
 source ~/.bashrc
+
+# Install the community ansible collection
+ansible-galaxy collection install community.general
 
 # Optionally, reboot the raspberry pi
 # This may be required if the system was months out date before installing updates!
