@@ -6,15 +6,25 @@
   become: true
   tasks:
 
-    - name: sanity check for required variables
+    - name: sanity check for doh_provider set
       fail:
         msg: "Exiting - the required variable 'doh_provider' not set"
       when: doh_provider is not defined
 
-    - name: sanity check for required variables 2
+    - name: sanity check for doh_provider blank
       fail:
         msg: "Exiting - the required variable 'doh_provider' is set but blank"
       when: doh_provider == ""
+
+    - name: wireguard_hostname auto if not set
+      set_fact:
+        wireguard_hostname: "auto"
+      when: wireguard_hostname is not defined
+
+    - name: sanity check for wireguard_hostname blank
+      fail:
+        msg: "Exiting - the optional variable 'wireguard_hostname' is set but blank"
+      when: wireguard_hostname == ""
 
     - name: get dpkg architecture
       shell: |
@@ -263,7 +273,7 @@
           PUID: "1000"
           PGID: "1000"
           TZ: "Etc/UTC"
-          SERVERURL: "auto"
+          SERVERURL: "{{ wireguard_hostname }}"
           SERVERPORT: "51820"
           ALLOWEDIPS: "{% if vpn_traffic is not defined %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32{% elif vpn_traffic == 'dns' %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32{% elif vpn_traffic == 'peers' %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32,{{ wireguard_network }}/24{% elif vpn_traffic == 'all' %}0.0.0.0/0{% else %}{{ docker_pihole }}/32,{{ docker_webproxy }}/32{% endif %}"
           PEERS: "{{ wireguard_peers }}"

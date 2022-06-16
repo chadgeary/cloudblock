@@ -66,6 +66,9 @@ docker_wireguard=172.18.0.4
 docker_webproxy=172.18.0.5
 wireguard_network=172.19.0.0
 
+# Optional (e.g. your DDNS hostname)
+wireguard_hostname=example.com
+
 # Want to set your own pihole password instead of something randomly generated?
 sudo mkdir -p /opt/pihole
 echo "somepassword" | sudo tee /opt/pihole/ph_password
