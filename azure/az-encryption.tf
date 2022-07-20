@@ -24,9 +24,10 @@ resource "azurerm_key_vault_access_policy" "ph-vault-disk-admin" {
   object_id    = data.azurerm_client_config.ph-client-conf.object_id
 
   key_permissions = [
-    "Get", "Create", "Delete", "List", "Restore", "Recover", "Unwrapkey", "Wrapkey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"
+	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
+	"Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
   ]
   certificate_permissions = [
   ]
@@ -43,9 +44,10 @@ resource "azurerm_key_vault_access_policy" "ph-vault-disk-des" {
   object_id    = azurerm_disk_encryption_set.ph-disk-encrypt.identity.0.principal_id
 
   key_permissions = [
-    "Get", "WrapKey", "UnwrapKey"
+    "Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
+	"Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
   ]
   certificate_permissions = [
   ]
@@ -71,9 +73,10 @@ resource "azurerm_key_vault_access_policy" "ph-vault-storage-admin" {
   object_id    = data.azurerm_client_config.ph-client-conf.object_id
 
   key_permissions = [
-    "Get", "Create", "Delete", "List", "Restore", "Recover", "Unwrapkey", "Wrapkey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"
+	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
+	"Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
   ]
   certificate_permissions = [
   ]
@@ -90,9 +93,10 @@ resource "azurerm_key_vault_access_policy" "ph-vault-storage-storage-account" {
   object_id    = azurerm_storage_account.ph-storage-account.identity.0.principal_id
 
   key_permissions = [
-    "Get", "Create", "Delete", "List", "Restore", "Recover", "Unwrapkey", "Wrapkey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"
+	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
+	"Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
   ]
   certificate_permissions = [
   ]
@@ -118,9 +122,10 @@ resource "azurerm_key_vault_access_policy" "ph-vault-secret-admin" {
   object_id    = data.azurerm_client_config.ph-client-conf.object_id
 
   key_permissions = [
+	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
-    "Set", "Get", "Delete", "List", "Purge", "Recover", "Restore"
+	"Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
   ]
   certificate_permissions = [
   ]
@@ -137,9 +142,10 @@ resource "azurerm_key_vault_access_policy" "ph-vault-secret-instance" {
   object_id    = azurerm_user_assigned_identity.ph-instance-id.principal_id
 
   key_permissions = [
+	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
-    "Get", "List"
+    "Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
   ]
   certificate_permissions = [
   ]
