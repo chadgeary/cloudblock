@@ -118,7 +118,6 @@ resource "azurerm_key_vault_access_policy" "ph-vault-secret-admin" {
   object_id    = data.azurerm_client_config.ph-client-conf.object_id
 
   key_permissions = [
-	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
 	"Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
