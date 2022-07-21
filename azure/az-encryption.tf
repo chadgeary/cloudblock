@@ -93,7 +93,6 @@ resource "azurerm_key_vault_access_policy" "ph-vault-storage-storage-account" {
 	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
-	"Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
   ]
   certificate_permissions = [
   ]
