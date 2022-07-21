@@ -145,7 +145,7 @@ resource "azurerm_key_vault_access_policy" "ph-vault-secret-instance" {
 	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
-    "Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
+    "Get", "List"
   ]
   certificate_permissions = [
   ]
