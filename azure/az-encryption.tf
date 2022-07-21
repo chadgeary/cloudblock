@@ -137,7 +137,6 @@ resource "azurerm_key_vault_access_policy" "ph-vault-secret-instance" {
   object_id    = azurerm_user_assigned_identity.ph-instance-id.principal_id
 
   key_permissions = [
-	"Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
   ]
   secret_permissions = [
     "Get", "List"
