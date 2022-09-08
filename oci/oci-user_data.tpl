@@ -52,7 +52,7 @@ DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git
 # Pip update pip
 pip3 install --upgrade pip
 # Install ansible and oci libraries
-pip3 install --upgrade ansible oci
+pip3 install --upgrade ansible cryptography pyOpenssl oci
 # And the collection
 ansible-galaxy collection install oracle.oci
 # Make the project directory
