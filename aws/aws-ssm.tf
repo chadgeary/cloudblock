@@ -73,7 +73,7 @@ resource "aws_ssm_document" "ph-ssm-doc" {
         "apt-get update",
         "DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git",
         "pip3 install --upgrade pip",
-        "pip3 install --upgrade ansible",
+        "pip3 install --upgrade ansible cryptography pyOpenssl",
         "echo \"Running Ansible in `pwd`\"",
         "#this section locates files and unzips them",
         "for zip in $(find -iname '*.zip'); do",
