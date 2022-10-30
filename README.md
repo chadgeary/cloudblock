@@ -17,6 +17,8 @@ Several deployment options are available, see the README of each subdirectory fo
 - Standalone Raspberry Pi or Ubuntu Server (under playbooks/)
 
 # Videos
+As these videos have aged a bit, replace references to Ubuntu 18.04 with Ubuntu 22.04. Text guides are up to date.
+
 ### Standalone Raspberry Pi or Ubuntu Server
 Step-by-step, follow along with me as I install on a Raspberry Pi.
 - [Raspberry Pi 4+ (Raspbian 10/Buster)](https://youtu.be/9oeQZvltWDc)
@@ -39,3 +41,10 @@ For maintaining the containers running your cloudblock services, see the README 
 
 # Discussion
 [Discord Room](https://discord.gg/zmu6GVnPnj)
+
+# Changelog
+
+### 2022-10
+* Added references to Ubuntu 22.04 (replacing Ubuntu 18.04) for:
+  * WSL installation
+  * Cloud virtual machine images

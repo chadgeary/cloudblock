@@ -31,7 +31,7 @@ client_cidrs = []
 # and see: https://registry.terraform.io/providers/scaleway/scaleway/latest/docs/guides/regions_and_zones
 scw_region = "nl-ams"
 scw_zone = "nl-ams-1"
-scw_image = "ubuntu_bionic"
+scw_image = "ubuntu_jammy"
 scw_size = "STARDUST1-S"
 
 ## UNCOMMON ##

@@ -66,11 +66,11 @@ oci_instance_memgb = 1
 oci_instance_diskgb = 50
 
 # Use a recent version of OCI's managed Ubuntu 20.04 image - specific to your region.
-# For the latest Ubuntu image ids in your region, run:
-# OCI_TENANCY_OCID=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]") && oci compute image list --compartment-id $OCI_TENANCY_OCID --all --lifecycle-state 'AVAILABLE' --operating-system "Canonical Ubuntu" --operating-system-version "20.04" --sort-by "TIMECREATED" | grep 'display-name\|ocid'
+# For the latest Ubuntu 22.04 image ids in your region, run:
+# OCI_TENANCY_OCID=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]") && oci compute image list --compartment-id $OCI_TENANCY_OCID --all --lifecycle-state 'AVAILABLE' --operating-system "Canonical Ubuntu" --operating-system-version "22.04" --sort-by "TIMECREATED" | grep 'display-name\|ocid'
 
 # For ARM instances, choose the AARCH64 ocid in the command above
-oci_imageid = "ocid1.image.oc1.iad.aaaaaaaascyqvxuxse7kgqtu4go2fazlxqjhq4p4p2rromclajqglaqfyhlq"
+oci_imageid = "ocid1.image.oc1.iad.aaaaaaaas6qul34auoiybzgbd4dw2irxix73hgps622rk6d7oawzlrtpfiwa"
 
 ## VERY UNCOMMON - Change if git project is cloned or deploying into an existing OCI environment where IP schema might overlap ##
 vcn_cidr = "10.10.12.0/24"

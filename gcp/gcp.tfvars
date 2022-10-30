@@ -32,8 +32,8 @@ gcp_region = "us-east1"
 gcp_zone   = "b"
 
 # Ubuntu occasionally updates the base image, use the following command to see the latest image name
-# gcloud compute images list --project ubuntu-os-cloud --filter="family=('ubuntu-1804-lts')" --format="value('NAME')"
-gcp_image_name    = "ubuntu-1804-bionic-v20201014"
+# gcloud compute images list --project ubuntu-os-cloud --filter="family ~ 'ubuntu-2204-lts'" --format="value('NAME')" | grep -v arm64
+gcp_image_name    = "ubuntu-2204-jammy-v20221018"
 gcp_image_project = "ubuntu-os-cloud"
 
 ## VERY UNCOMMON ##

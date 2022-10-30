@@ -26,11 +26,14 @@ brew update
 # Install terraform git
 brew install terraform git
 
-# Download gcp cli (64-bit) - see latest versions and alternative architectures @ https://cloud.google.com/sdk/docs/quickstart#mac
-wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-341.0.0-darwin-x86_64.tar.gz 
+# Download gcp cli for intel or m1 - see latest versions and alternative architectures @ https://cloud.google.com/sdk/docs/quickstart#mac
+# intel macs
+wget -O gcloud.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-407.0.0-darwin-x86_64.tar.gz
+# or m1 macs
+wget -O gcloud.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-407.0.0-darwin-arm.tar.gz
 
 # Extract
-tar -xvf google-cloud-sdk-341.0.0-darwin-x86_64.tar.gz
+tar -xvf gcloud.tar.gz
 
 # Install
 ./google-cloud-sdk/install.sh
@@ -60,20 +63,21 @@ shutdown /r /t 5
 # After reboot, launch a REGULAR Powershell prompt (left click).
 # Do NOT proceed with an ELEVATED Powershell prompt.
 
-# Download the Ubuntu 1804 package from Microsoft
-curl.exe -L -o ubuntu-1804.appx https://aka.ms/wsl-ubuntu-1804
+# Download the Ubuntu 2204 package from Microsoft
+curl.exe -L -o ubuntu-2204.AppxBundle https://aka.ms/wslubuntu2204
  
-# Rename the package
-Rename-Item ubuntu-1804.appx ubuntu-1804.zip
+# Rename the package, unzip it, and cd (change directory)
+Rename-Item ubuntu-2204.AppxBundle ubuntu-2204.zip
+Expand-Archive ubuntu-2204.zip ubuntu-2204
+cd ubuntu-2204
+
+# Repeat the above three steps for the x64 file, update 0.10.0 if needed
+Rename-Item ubuntu-2204.0.10.0_x64.zip ubuntu-2204_x64.zip
+Expand-Archive ubuntu-2204_x64.zip ubuntu-2204_x64
+cd ubuntu-2204_x64
  
-# Expand the zip
-Expand-Archive ubuntu-1804.zip ubuntu-1804
- 
-# Change to the zip directory
-cd ubuntu-1804
- 
-# Execute the ubuntu 1804 installer
-.\ubuntu1804.exe
+# Execute the ubuntu installer
+.\ubuntu2204.exe
  
 # Create a username and password when prompted
 ```
@@ -146,7 +150,7 @@ cd ~/cloudblock/gcp/
 
 # Open File Explorer in a separate window
 # Navigate to gcp project directory - change \chad\ to your WSL username
-%HOMEPATH%\ubuntu-1804\rootfs\home\chad\cloudblock\gcp
+%HOMEPATH%\ubuntu-2204\rootfs\home\chad\cloudblock\gcp
 
 # Edit the gcp.tfvars file using notepad and save
 ```

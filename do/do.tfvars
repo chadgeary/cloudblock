@@ -30,9 +30,9 @@ client_cidrs = []
 
 ## UNCOMMON ##
 # Note only sfo2, sfo3, nyc3, fra1, and ams3 currently support object storage
-# See: https://cloud.digitalocean.com/spaces/new
+# See: https://cloud.digitalocean.com/spaces/new and https://slugs.do-api.dev/
 do_region = "nyc3"
-do_image = "ubuntu-18-04-x64"
+do_image = "ubuntu-22-04-x64"
 
 ## VERY UNCOMMON ##
 do_size = "s-1vcpu-1gb"

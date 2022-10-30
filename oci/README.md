@@ -48,20 +48,21 @@ shutdown /r /t 5
 # After reboot, launch a REGULAR Powershell prompt (left click).
 # Do NOT proceed with an ELEVATED Powershell prompt.
 
-# Download the Ubuntu 1804 package from Microsoft
-curl.exe -L -o ubuntu-1804.appx https://aka.ms/wsl-ubuntu-1804
+# Download the Ubuntu 2204 package from Microsoft
+curl.exe -L -o ubuntu-2204.AppxBundle https://aka.ms/wslubuntu2204
+ 
+# Rename the package, unzip it, and cd (change directory)
+Rename-Item ubuntu-2204.AppxBundle ubuntu-2204.zip
+Expand-Archive ubuntu-2204.zip ubuntu-2204
+cd ubuntu-2204
 
-# Rename the package
-Rename-Item ubuntu-1804.appx ubuntu-1804.zip
-
-# Expand the zip
-Expand-Archive ubuntu-1804.zip ubuntu-1804
-
-# Change to the zip directory
-cd ubuntu-1804
-
-# Execute the ubuntu 1804 installer
-.\ubuntu1804.exe
+# Repeat the above three steps for the x64 file, update 0.10.0 if needed
+Rename-Item ubuntu-2204.0.10.0_x64.zip ubuntu-2204_x64.zip
+Expand-Archive ubuntu-2204_x64.zip ubuntu-2204_x64
+cd ubuntu-2204_x64
+ 
+# Execute the ubuntu installer
+.\ubuntu2204.exe
 
 # Create a username and password when prompted
 ```
@@ -116,11 +117,14 @@ source ~/.bashrc
 # Setup oci CLI with user and tenancy OCID and a default region
 oci setup config
 
+# Earlier versions of oci cli did not require entering a passphrase for the private key (including in videos), but it is now required.
+# type y when prompted: Do you want to write your passphrase to the config file
+
 # Copy contents of public key to clipboard
 cat ~/.oci/oci_api_key_public.pem
 
 # Add key via Oracle Web console
-# Navigate to Identity -> Users -> <your user> -> API Keys (Bottom left, under Resource) -> Add Public Key -> Paste Public Keys
+# Navigate to Identity -> Users -> <your user> -> API Keys (Bottom left, under Resources) -> Add Public Key -> Paste Public Keys
 
 # Note command's output of config file location for vars file
 ls ~/.oci/config
@@ -136,7 +140,7 @@ cd ~/cloudblock/oci/
 
 # Open File Explorer in a separate window
 # Navigate to oci project directory - change \chad\ to your WSL username
-%HOMEPATH%\ubuntu-1804\rootfs\home\chad\cloudblock\oci
+%HOMEPATH%\ubuntu-2204\rootfs\home\chad\cloudblock\oci
 
 # Edit the oci.tfvars file using notepad and save
 ```
@@ -189,7 +193,7 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 # The OCID of the tenancy id (a.k.a. root compartment)
 
 # OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
-# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
+# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-2204/
 # Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
 ```
 

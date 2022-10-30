@@ -38,7 +38,7 @@ oci_adnumber = 2
 oci_instance_shape = "VM.Standard.E2.1.Micro"
 
 # OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
-# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-1804/
+# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-2204/
 # Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
 oci_imageid = "ocid1.image.oc1.iad.aaaaaaaascyqvxuxse7kgqtu4go2fazlxqjhq4p4p2rromclajqglaqfyhlq"
 

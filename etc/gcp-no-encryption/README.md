@@ -58,20 +58,20 @@ shutdown /r /t 5
 # After reboot, launch a REGULAR Powershell prompt (left click).
 # Do NOT proceed with an ELEVATED Powershell prompt.
 
-# Download the Ubuntu 1804 package from Microsoft
-curl.exe -L -o ubuntu-1804.appx https://aka.ms/wsl-ubuntu-1804
+# Download the Ubuntu 2204 package from Microsoft
+curl.exe -L -o ubuntu-2204.AppxBundle https://aka.ms/wslubuntu2204
  
 # Rename the package
-Rename-Item ubuntu-1804.appx ubuntu-1804.zip
+Rename-Item ubuntu-2204.AppxBundle ubuntu-2204.zip
  
 # Expand the zip
-Expand-Archive ubuntu-1804.zip ubuntu-1804
+Expand-Archive ubuntu-2204.zip ubuntu-2204
  
 # Change to the zip directory
-cd ubuntu-1804
+cd ubuntu-2204
  
 # Execute the ubuntu 1804 installer
-.\ubuntu1804.exe
+.\ubuntu2204.exe
  
 # Create a username and password when prompted
 ```
@@ -144,7 +144,7 @@ cd ~/cloudblock/gcp/
 
 # Open File Explorer in a separate window
 # Navigate to gcp project directory - change \chad\ to your WSL username
-%HOMEPATH%\ubuntu-1804\rootfs\home\chad\cloudblock\gcp
+%HOMEPATH%\ubuntu-2204\rootfs\home\chad\cloudblock\gcp
 
 # Edit the gcp.tfvars file using notepad and save
 ```
