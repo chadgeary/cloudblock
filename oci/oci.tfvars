@@ -65,7 +65,7 @@ oci_instance_memgb = 1
 # The Always Free tier includes 200GB of block volume storage across all instances in your tenancy
 oci_instance_diskgb = 50
 
-# Use a recent version of OCI's managed Ubuntu 20.04 image - specific to your region.
+# Use a recent version of OCI's managed Ubuntu 22.04 image - specific to your region.
 # For the latest Ubuntu 22.04 image ids in your region, run:
 # OCI_TENANCY_OCID=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]") && oci compute image list --compartment-id $OCI_TENANCY_OCID --all --lifecycle-state 'AVAILABLE' --operating-system "Canonical Ubuntu" --operating-system-version "22.04" --sort-by "TIMECREATED" | grep 'display-name\|ocid'
 
