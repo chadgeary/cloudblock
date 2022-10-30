@@ -1,11 +1,11 @@
 ## COMMON ##
 ph_password = "changeme1"
-ssh_key = "ssh-rsa AAAAB3replace_me_replace_me_replace_me"
-mgmt_cidr = "1.2.3.4/32"
+ssh_key     = "ssh-rsa AAAAB3replace_me_replace_me_replace_me"
+mgmt_cidr   = "1.2.3.4/32"
 
 # digital ocean specific vars for authentication to DO APIs and Storage
-do_token = "changeme3"
-do_storageaccessid = "changeme4"
+do_token            = "changeme3"
+do_storageaccessid  = "changeme4"
 do_storagesecretkey = "changeme5"
 
 # The number of wireguard peer configurations to generate / store - 1 per device
@@ -32,20 +32,20 @@ client_cidrs = []
 # Note only sfo2, sfo3, nyc3, fra1, and ams3 currently support object storage
 # See: https://cloud.digitalocean.com/spaces/new and https://slugs.do-api.dev/
 do_region = "nyc3"
-do_image = "ubuntu-22-04-x64"
+do_image  = "ubuntu-22-04-x64"
 
 ## VERY UNCOMMON ##
-do_size = "s-1vcpu-1gb"
-do_cidr = "10.10.12.0/24"
-do_prefix = "cloudblock"
+do_size     = "s-1vcpu-1gb"
+do_cidr     = "10.10.12.0/24"
+do_prefix   = "cloudblock"
 project_url = "https://github.com/chadgeary/cloudblock"
 
 # Change if ip/port settings would interfere with existing networks, should all be within a /24
-vpn_cidr = "0.0.0.0/0"
-docker_network = "172.18.0.0"
-docker_gw = "172.18.0.1"
-docker_doh = "172.18.0.2"
-docker_pihole = "172.18.0.3"
-docker_wireguard = "172.18.0.4"
-docker_webproxy = "172.18.0.5"
+vpn_cidr          = "0.0.0.0/0"
+docker_network    = "172.18.0.0"
+docker_gw         = "172.18.0.1"
+docker_doh        = "172.18.0.2"
+docker_pihole     = "172.18.0.3"
+docker_wireguard  = "172.18.0.4"
+docker_webproxy   = "172.18.0.5"
 wireguard_network = "172.19.0.0"

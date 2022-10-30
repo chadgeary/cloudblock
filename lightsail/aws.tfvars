@@ -37,7 +37,7 @@ aws_az = 0
 
 # lightsail uses "bundles and blueprints" instead of instance typesi and AMIs - see: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lightsail_instance#bundles and https://aws.amazon.com/lightsail/pricing/
 # attempting to use nano may or may not succeed, good luck!
-bundle_id    = "micro_2_0"
+bundle_id = "micro_2_0"
 
 # aws lightsail get-blueprints --region us-east-1 --query blueprints[*].blueprintId | grep ubuntu
 blueprint_id = "ubuntu_20_04"

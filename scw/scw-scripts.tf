@@ -1,6 +1,6 @@
 resource "local_file" "scw_init" {
-  filename                          = "${var.scw_prefix}-init-${random_string.scw-random.result}.yml"
-  content                           = <<FILECONTENT
+  filename = "${var.scw_prefix}-init-${random_string.scw-random.result}.yml"
+  content  = <<FILECONTENT
 #cloud-config for cloudblock on scw (scaleway)
 runcmd:
   - [ bash, -c, "DNS_SERVER=$(systemd-resolve --status | awk '/DNS Servers/ { print $3 }') && DNS_SEARCH=$(grep '^search ' /etc/resolv.conf) ; systemctl disable systemd-resolved ; systemctl stop systemd-resolved ; rm -f /etc/resolv.conf ; echo nameserver $DNS_SERVER > /etc/resolv.conf ; echo options edns0 >> /etc/resolv.conf" ]
@@ -13,8 +13,8 @@ FILECONTENT
 }
 
 resource "local_file" "scw_setup" {
-  filename                          = "${var.scw_prefix}-setup-${random_string.scw-random.result}.sh"
-  content                           = <<FILECONTENT
+  filename = "${var.scw_prefix}-setup-${random_string.scw-random.result}.sh"
+  content  = <<FILECONTENT
 # Create systemd service unit file
 sudo tee /etc/systemd/system/cloudblock-ansible-state.service << EOM
 [Unit]

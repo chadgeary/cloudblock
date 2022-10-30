@@ -1,6 +1,6 @@
 resource "local_file" "do_setup" {
-  filename                          = "${var.do_prefix}-setup-${random_string.do-random.result}.sh"
-  content                           = <<FILECONTENT
+  filename = "${var.do_prefix}-setup-${random_string.do-random.result}.sh"
+  content  = <<FILECONTENT
 # Create systemd service unit file
 sudo tee /etc/systemd/system/cloudblock-ansible-state.service << EOM
 [Unit]

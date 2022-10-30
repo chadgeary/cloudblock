@@ -1,12 +1,12 @@
 resource "azurerm_storage_account" "ph-storage-account" {
-  name                     = "${var.ph_prefix}store${random_string.ph-random.result}"
-  location                 = azurerm_resource_group.ph-resourcegroup.location
-  resource_group_name      = azurerm_resource_group.ph-resourcegroup.name
-  account_kind             = "StorageV2"
-  account_tier             = "Standard"
-  access_tier              = "Hot"
-  min_tls_version          = "TLS1_2"
-  account_replication_type = "LRS"
+  name                            = "${var.ph_prefix}store${random_string.ph-random.result}"
+  location                        = azurerm_resource_group.ph-resourcegroup.location
+  resource_group_name             = azurerm_resource_group.ph-resourcegroup.name
+  account_kind                    = "StorageV2"
+  account_tier                    = "Standard"
+  access_tier                     = "Hot"
+  min_tls_version                 = "TLS1_2"
+  account_replication_type        = "LRS"
   allow_nested_items_to_be_public = "false"
   identity {
     type = "SystemAssigned"

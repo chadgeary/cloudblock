@@ -6,8 +6,8 @@ resource "google_kms_key_ring" "ph-keyring" {
 }
 
 resource "google_kms_crypto_key" "ph-key-compute" {
-  name            = "${var.ph_prefix}-key-compute"
-  key_ring        = google_kms_key_ring.ph-keyring.id
+  name     = "${var.ph_prefix}-key-compute"
+  key_ring = google_kms_key_ring.ph-keyring.id
 }
 
 resource "google_kms_crypto_key_iam_binding" "ph-key-compute-binding" {
@@ -19,8 +19,8 @@ resource "google_kms_crypto_key_iam_binding" "ph-key-compute-binding" {
 }
 
 resource "google_kms_crypto_key" "ph-key-storage" {
-  name            = "${var.ph_prefix}-key-storage"
-  key_ring        = google_kms_key_ring.ph-keyring.id
+  name     = "${var.ph_prefix}-key-storage"
+  key_ring = google_kms_key_ring.ph-keyring.id
 }
 
 resource "google_kms_crypto_key_iam_binding" "ph-key-storage-binding" {
@@ -34,8 +34,8 @@ resource "google_kms_crypto_key_iam_binding" "ph-key-storage-binding" {
 }
 
 resource "google_kms_crypto_key" "ph-key-secret" {
-  name            = "${var.ph_prefix}-key-secret"
-  key_ring        = google_kms_key_ring.ph-keyring.id
+  name     = "${var.ph_prefix}-key-secret"
+  key_ring = google_kms_key_ring.ph-keyring.id
 }
 
 resource "google_kms_crypto_key_iam_binding" "ph-key-secret-binding" {

@@ -1,5 +1,5 @@
 output "cloudblock-output" {
-value = <<OUTPUT
+  value = <<OUTPUT
 
 #############
 ## OUTPUTS ##

@@ -1,7 +1,7 @@
 ## COMMON ##
 ph_password = "changeme1"
-ssh_key = "ssh-rsa AAAAB3replace_me_replace_me_replace_me"
-mgmt_cidr = "1.2.3.4/32"
+ssh_key     = "ssh-rsa AAAAB3replace_me_replace_me_replace_me"
+mgmt_cidr   = "1.2.3.4/32"
 
 scw_accesskey = "changeme2"
 scw_secretkey = "changeme3"
@@ -30,23 +30,23 @@ client_cidrs = []
 # See: https://console.scaleway.com/instance/servers/create
 # and see: https://registry.terraform.io/providers/scaleway/scaleway/latest/docs/guides/regions_and_zones
 scw_region = "nl-ams"
-scw_zone = "nl-ams-1"
-scw_image = "ubuntu_jammy"
-scw_size = "STARDUST1-S"
+scw_zone   = "nl-ams-1"
+scw_image  = "ubuntu_jammy"
+scw_size   = "STARDUST1-S"
 
 ## UNCOMMON ##
-scw_prefix = "cloudblock"
+scw_prefix  = "cloudblock"
 project_url = "https://github.com/chadgeary/cloudblock"
 
 # Change if ip/port settings would interfere with existing scw networks, local networks, or container networks
 scw_cidr = "10.10.13.0/24"
 
 # Change if ip/port settings would interfere with existing networks, should all be within a /24
-vpn_cidr = "0.0.0.0/0"
-docker_network = "172.18.0.0"
-docker_gw = "172.18.0.1"
-docker_doh = "172.18.0.2"
-docker_pihole = "172.18.0.3"
-docker_wireguard = "172.18.0.4"
-docker_webproxy = "172.18.0.5"
+vpn_cidr          = "0.0.0.0/0"
+docker_network    = "172.18.0.0"
+docker_gw         = "172.18.0.1"
+docker_doh        = "172.18.0.2"
+docker_pihole     = "172.18.0.3"
+docker_wireguard  = "172.18.0.4"
+docker_webproxy   = "172.18.0.5"
 wireguard_network = "172.19.0.0"
