@@ -117,11 +117,12 @@ source ~/.bashrc
 # Setup oci CLI with user and tenancy OCID and a default region
 oci setup config
 
-# Earlier versions of oci cli did not require entering a passphrase for the private key (including in videos), but it is now required.
-# type y when prompted: Do you want to write your passphrase to the config file
+# Earlier versions of oci cli did not require entering a passphrase for the private key (including in videos)
+# Instead of generating a separate key, answer this question with your SSH private key's path
+# Enter the location of your API Signing private key file: ~/.ssh/id_rsa
 
-# Copy contents of public key to clipboard
-cat ~/.oci/oci_api_key_public.pem
+# Copy contents of your SSH's public key in PEM format to clipboard
+openssl rsa -in ~/.ssh/id_rsa -pubout
 
 # Add key via Oracle Web console
 # Navigate to Identity -> Users -> <your user> -> API Keys (Bottom left, under Resources) -> Add Public Key -> Paste Public Keys

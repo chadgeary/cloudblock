@@ -48,3 +48,4 @@ For maintaining the containers running your cloudblock services, see the README 
 * Added references to Ubuntu 22.04 (replacing Ubuntu 18.04) for:
   * WSL installation
   * Cloud virtual machine images
+* Note about Oracle's private key generation for `oci config`
