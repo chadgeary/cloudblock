@@ -66,7 +66,7 @@ systemctl enable cloudblock-ansible-state.timer
 systemctl enable cloudblock-ansible-state.service
 
 ### Disable systemd-resolve
-DNS_SERVER=$(systemd-resolve --status | awk '/DNS Servers/ { print $3 }')
+DNS_SERVER=$(resolvectl | awk -F ': ' '/DNS Servers/ { print $2 }')
 DNS_SEARCH=$(grep '^search ' /etc/resolv.conf)
 systemctl disable systemd-resolved
 systemctl stop systemd-resolved

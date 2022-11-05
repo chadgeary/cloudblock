@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cloudblock
+description: Wireguard VPN, PiHole adblock, and DNS over HTTPS
+home: https://github.com/chadgeary/cloudblock
+sources:
+  - https://github.com/chadgeary/cloudblock
+type: application
+version: 1.0.0
+appVersion: 2022.10
+maintainers:
+  - name: chad
+    email: chad.geary@gmail.com

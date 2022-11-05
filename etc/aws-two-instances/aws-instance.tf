@@ -23,7 +23,7 @@ resource "aws_instance" "ph-instance" {
   user_data               = <<EOF
 #!/bin/bash
 # replace systemd-resolved with static dns derived from dhcp
-DNS_SERVER=$(systemd-resolve --status | awk -F': ' '/DNS Servers/{print $2}')
+DNS_SERVER=$(resolvectl | awk -F ': ' '/DNS Servers/ { print $2 }')
 systemctl disable systemd-resolved
 systemctl stop systemd-resolved
 rm -f /etc/resolv.conf
