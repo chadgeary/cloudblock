@@ -332,6 +332,9 @@
 
     - name: Upload peer conf (Wireguard) to OCI Storage - publickey
       oci_object_storage_object:
+        opc_sse_customer_algorithm: null
+        opc_sse_customer_key: null
+        opc_sse_customer_key_sha256: null
         auth_type: "instance_principal"
         namespace_name: "{{ oci_storage_namespace }}"
         bucket_name: "{{ oci_storage_bucketname }}"
@@ -342,6 +345,9 @@
 
     - name: Upload peer conf (Wireguard) to OCI Storage - privatekey
       oci_object_storage_object:
+        opc_sse_customer_algorithm: null
+        opc_sse_customer_key: null
+        opc_sse_customer_key_sha256: null
         auth_type: "instance_principal"
         namespace_name: "{{ oci_storage_namespace }}"
         bucket_name: "{{ oci_storage_bucketname }}"
@@ -352,6 +358,9 @@
 
     - name: Upload peer conf (Wireguard) to OCI Storage - conf
       oci_object_storage_object:
+        opc_sse_customer_algorithm: null
+        opc_sse_customer_key: null
+        opc_sse_customer_key_sha256: null
         auth_type: "instance_principal"
         namespace_name: "{{ oci_storage_namespace }}"
         bucket_name: "{{ oci_storage_bucketname }}"
@@ -362,6 +371,9 @@
 
     - name: Upload peer conf (Wireguard) to OCI Storage - png
       oci_object_storage_object:
+        opc_sse_customer_algorithm: null
+        opc_sse_customer_key: null
+        opc_sse_customer_key_sha256: null
         auth_type: "instance_principal"
         namespace_name: "{{ oci_storage_namespace }}"
         bucket_name: "{{ oci_storage_bucketname }}"
@@ -381,6 +393,9 @@
 
     - name: Upload Wireguard archive to OCI Storage
       oci_object_storage_object:
+        opc_sse_customer_algorithm: null
+        opc_sse_customer_key: null
+        opc_sse_customer_key_sha256: null
         auth_type: "instance_principal"
         namespace_name: "{{ oci_storage_namespace }}"
         bucket_name: "{{ oci_storage_bucketname }}"
@@ -420,6 +435,9 @@
         - "   "
         - "    - name: upload pihole backup to oci storage"
         - "      oci_object_storage_object:"
+        - "        opc_sse_customer_algorithm: null"
+        - "        opc_sse_customer_key: null"
+        - "        opc_sse_customer_key_sha256: null"
         - "        auth_type: \"instance_principal\""
         - "        namespace_name: \"{{ oci_storage_namespace }}\""
         - "        bucket_name: \"{{ oci_storage_bucketname }}\""
