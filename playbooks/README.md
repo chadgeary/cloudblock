@@ -21,13 +21,16 @@ docker_wireguard=172.18.0.4
 docker_webproxy=172.18.0.5
 wireguard_network=172.19.0.0
 
+# Optional (e.g. your DDNS hostname)
+wireguard_hostname=example.com
+
 # Want to set your own pihole password instead of something randomly generated?
 sudo mkdir -p /opt/pihole
 echo "somepassword" | sudo tee /opt/pihole/ph_password
 sudo chmod 600 /opt/pihole/ph_password
 
 # Execute playbook via ansible - either _amd64 or _arm64 
-ansible-playbook cloudblock_amd64.yml --extra-vars="doh_provider=$doh_provider dns_novpn=$dns_novpn wireguard_peers=$wireguard_peers vpn_traffic=$vpn_traffic docker_network=$docker_network docker_gw=$docker_gw docker_doh=$docker_doh docker_pihole=$docker_pihole docker_wireguard=$docker_wireguard docker_webproxy=$docker_webproxy wireguard_network=$wireguard_network"
+ansible-playbook cloudblock_amd64.yml --extra-vars="doh_provider=$doh_provider dns_novpn=$dns_novpn wireguard_peers=$wireguard_peers vpn_traffic=$vpn_traffic docker_network=$docker_network docker_gw=$docker_gw docker_doh=$docker_doh docker_pihole=$docker_pihole docker_wireguard=$docker_wireguard docker_webproxy=$docker_webproxy wireguard_network=$wireguard_network wireguard_hostname=$wireguard_hostname"
 
 # See Playbook Summary output for Pihole WebUI URL and Wireguard Client files
 ```
