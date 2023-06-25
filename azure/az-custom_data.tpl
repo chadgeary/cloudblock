@@ -40,7 +40,7 @@ DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git
 pip3 install --upgrade pip
 pip3 install --upgrade ansible[azure] cryptography pyOpenssl
 # And the collection
-ansible-galaxy collection install azure.azcollection --force
+ansible-galaxy collection install azure.azcollection:1.13.0 --force
 # And the requirements
 pip3 install --upgrade -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
 # Make the project directory
