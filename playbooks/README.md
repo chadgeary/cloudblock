@@ -4,7 +4,7 @@
 # Ubuntu Deployment
 - Ubuntu 18.04+
 - Ansible 2.9+ (python3-based) installed
-```
+```bash
 # Clone and change to playbooks directory
 git clone https://github.com/chadgeary/cloudblock && cd cloudblock/playbooks/
 
@@ -38,7 +38,7 @@ ansible-playbook cloudblock_amd64.yml --extra-vars="doh_provider=$doh_provider d
 # Raspbian Deployment
 - Raspbian 10 (Buster)
 - Tested with Raspberry Pi 4 and 3
-```
+```bash
 # Ansible + Git
 sudo apt update && sudo apt -y upgrade
 sudo apt install git python3-pip
@@ -85,8 +85,98 @@ ansible-playbook cloudblock_raspbian.yml --extra-vars="doh_provider=$doh_provide
 # See Playbook Summary output for Pihole WebUI URL and Wireguard Client files
 ```
 
-# Variables
+# Proxmox LXC Deployment
+
+## Create the Cloudblock container
+
+Create a Ubuntu LXC with the following options. Any unspecified options are sassumed to be default. 
+
+- **General:** Name your container 'cloudblock' or something informative. Uncheck the option to make the container `unprivileged`, which will make the container `priveleged` 
+- **Template:** Select a supported Ubuntu template (e.g. 22.04)
+- **Disks:** 16 gb
+- **CPU**: 1 core
+- **Memory:** 1024
+- **Network:** assign a static IPv4 address: e.g., 192.168.0.x/24
+- **DNS:** default options
+- **Confirm:** Leave `start after created` unchecked
+
+Select `Finish` to create your container
+
+## Modify your container options
+
+Select your newly created `cloudblock` container, then select `option` in the container menu. Select `Features` and `edit`.
+
+- **Features:** check the option for `nesting` to allow Cloudblock to create Docker containers
+
+Start your container
+
+## Optional: enable root ssh 
+
+The following commands will enable root ssh to use your preferred terminal program to manage the container. Login using the password you specified during your container creation.
+
+```bash
+sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+sudo systemctl restart ssh
 ```
+
+## Uninstall AppArmor
+
+Note, this is needed to install Cloudblock but presents a potential security risk for your system. see https://wiki.ubuntu.com/AppArmor for more information.
+
+```bash
+systemctl stop apparmor
+systemctl disable apparmor
+apt remove -y --purge apparmor
+```
+
+## Deploy Cloudblock
+
+```bash
+# Ansible + Git
+sudo apt update && sudo apt -y upgrade
+sudo apt install git python3-pip
+pip3 install --user --upgrade ansible
+
+# Add .local/bin to $PATH
+echo PATH="\$PATH:~/.local/bin" >> .bashrc
+source ~/.bashrc
+
+# Install the community ansible collection
+ansible-galaxy collection install community.general
+
+# Clone and change to playbooks directory
+git clone https://github.com/chadgeary/cloudblock && cd cloudblock/playbooks/
+
+# Set Variables
+doh_provider=opendns
+dns_novpn=1
+wireguard_peers=10
+vpn_traffic=dns
+docker_network=172.18.0.0
+docker_gw=172.18.0.1
+docker_doh=172.18.0.2
+docker_pihole=172.18.0.3
+docker_wireguard=172.18.0.4
+docker_webproxy=172.18.0.5
+wireguard_network=172.19.0.0
+
+# Optional (e.g. your DDNS hostname)
+wireguard_hostname=example.com
+
+# Want to set your own pihole password instead of something randomly generated?
+sudo mkdir -p /opt/pihole
+echo "somepassword" | sudo tee /opt/pihole/ph_password
+sudo chmod 600 /opt/pihole/ph_password
+
+# Execute playbook via ansible - either _amd64 or _arm64 
+ansible-playbook cloudblock_amd64.yml --extra-vars="doh_provider=$doh_provider dns_novpn=$dns_novpn wireguard_peers=$wireguard_peers vpn_traffic=$vpn_traffic docker_network=$docker_network docker_gw=$docker_gw docker_doh=$docker_doh docker_pihole=$docker_pihole docker_wireguard=$docker_wireguard docker_webproxy=$docker_webproxy wireguard_network=$wireguard_network wireguard_hostname=$wireguard_hostname"
+
+# See Playbook Summary output for Pihole WebUI URL and Wireguard Client files
+```
+
+# Variables
+
+```bash
 # doh_provider
 The upstream DNS provider reached via DNS over HTTPS. See https://github.com/curl/curl/wiki/DNS-over-HTTPS
 One of: adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns pi-dns quad9-recommended
@@ -121,7 +211,7 @@ Port 51820 UDP must be open/forwarded to this host.
 
 - Raspberry Pi using DHCP and receiving the Pihole DNS (creating a non-working loop)?
   - Set the Raspberry Pi to a hardcoded DNS server.
-```
+```bash
 # If the Raspberry Pi's DHCP server points to the Pihole container, ensure the Raspberry Pi's host DNS is not set via DHCP, e.g.:
 # backup DHCP client conf
 sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.$(date +%F_%T)
@@ -143,7 +233,7 @@ sudo bash -c 'ip link set eth0 down && ip link set eth0 up' &
   - Review [Pihole](https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations) and [Wireguard](https://github.com/linuxserver/docker-wireguard) container update instructions.
   - Cloudblock follows these instructions. Be sure cloudblock is locally up-to-date to display the instructions.
 
-```
+```bash
 # Be in the cloudblock/playbooks directory
 cd ~/cloudblock/playbooks
 

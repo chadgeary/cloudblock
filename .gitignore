@@ -5,3 +5,4 @@
 *-setup-*.sh
 *-init-*.yml
 *.swp
+.DS_Store
