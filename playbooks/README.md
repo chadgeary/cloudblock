@@ -26,7 +26,7 @@ wireguard_hostname=example.com
 
 # Want to set your own pihole password instead of something randomly generated?
 sudo mkdir -p /opt/pihole
-echo "somepassword" | sudo tee /opt/pihole/ph_password
+echo "somepassword" | sudo tee /opt/pihole/ph_password >/dev/null
 sudo chmod 600 /opt/pihole/ph_password
 
 # Execute playbook via ansible - either _amd64 or _arm64 
@@ -76,7 +76,7 @@ wireguard_hostname=example.com
 
 # Want to set your own pihole password instead of something randomly generated?
 sudo mkdir -p /opt/pihole
-echo "somepassword" | sudo tee /opt/pihole/ph_password
+echo "somepassword" | sudo tee /opt/pihole/ph_password >/dev/null
 sudo chmod 600 /opt/pihole/ph_password
 
 # Execute playbook via ansible

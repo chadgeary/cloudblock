@@ -1,5 +1,5 @@
 ---
-- name: cloudblock bootstrap for digital ocean
+- name: Cloudblock bootstrap for digital ocean
   hosts: localhost
   connection: local
   become: True
@@ -13,7 +13,7 @@
         create_home: True
 
     - name: ubuntu ssh dir
-      file:
+      ansible.builtin.file:
         path: /home/ubuntu/.ssh
         state: directory
         owner: ubuntu
@@ -28,13 +28,13 @@
         group: ubuntu
         mode: '0644'
 
-    - name: remove root's ssh pubkey
-      file:
+    - name: Remove root's ssh pubkey
+      ansible.builtin.file:
         path: /root/.ssh/authorized_keys
         state: absent
 
     - name: ubuntu gets sudo nopasswd
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/sudoers
         state: present
         line: 'ubuntu ALL=(ALL) NOPASSWD: ALL'

@@ -1,5 +1,5 @@
 ---
-- name: cloudblock - amd64 azure variant
+- name: Cloudblock - amd64 azure variant
   hosts: localhost
   collections:
     - azure.azcollection
@@ -7,42 +7,86 @@
   become: true
   tasks:
 
-    - name: required packages
-      apt:
+    - name: Absent packages
+      ansible.builtin.apt:
         pkg:
+          - containerd
+          - docker-compose
+          - docker-doc
           - docker.io
+          - podman-docker
+          - runc
+        state: absent
+
+    - name: Required packages
+      ansible.builtin.apt:
+        pkg:
+          - ca-certificates
+          - curl
+          - gnupg
           - libcap2-bin
           - python3-pip
           - ssl-cert
         state: latest
-        update_cache: yes
+        update_cache: true
 
-    - name: docker python packages
-      pip:
+    - name: Docker apt key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Dpkg Architecture
+      ansible.builtin.shell: |
+        dpkg --print-architecture
+      register: dpkg_arch
+
+    - name: Docker apt repo
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch={{ dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/docker.gpg]
+          https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Docker packages
+      ansible.builtin.apt:
+        pkg:
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+          - docker-ce
+          - docker-ce-cli
+        state: latest
+        update_cache: true
+
+    - name: Docker python packages
+      ansible.builtin.pip:
         name:
           - docker
         executable: /usr/bin/pip3
         state: latest
 
     - name: IP Forwarding enable/persist
-      sysctl:
+      ansible.builtin.sysctl:
         name: net.ipv4.ip_forward
         value: '1'
         state: present
-        reload: yes
-        sysctl_set: yes
+        reload: true
+        sysctl_set: true
         sysctl_file: /etc/sysctl.conf
 
-    - name: docker service started/enabled
-      systemd:
+    - name: Docker service started/enabled
+      ansible.builtin.systemd:
         name: docker
         state: started
-        enabled: True
+        enabled: true
 
-    - name: various container directories
-      file:
+    - name: Various container directories
+      ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        owner: root
+        group: root
+        mode: '0600'
       with_items:
         - /opt/cloudflared
         - /opt/pihole
@@ -51,8 +95,8 @@
         - /opt/webproxy
         - /opt/wireguard
 
-    - name: secure proxy to pihole confs
-      template:
+    - name: Secure proxy to pihole confs
+      ansible.builtin.template:
         src: "{{ item }}"
         dest: "/opt/webproxy/{{ item }}"
         owner: root
@@ -63,8 +107,8 @@
         - httpd.conf
 
     - name: DoH Endpoints
-      blockinfile:
-        create: yes
+      ansible.builtin.blockinfile:
+        create: true
         mode: '0644'
         path: /opt/cloudflared/endpoints
         block: |
@@ -81,7 +125,7 @@
           opendns https://doh.opendns.com/dns-query
 
     - name: Set DoH URL from DoH provider var
-      shell: |
+      ansible.builtin.shell: |
         awk '/{{ doh_provider }}/ { print $2 }' /opt/cloudflared/endpoints
       register: doh_url
 
@@ -104,7 +148,7 @@
       ignore_errors: True
 
     - name: Determine wireguard state
-      stat:
+      ansible.builtin.stat:
         path: /opt/wireguard/server
       register: wireguard_state
 
@@ -128,7 +172,7 @@
       ignore_errors: True
 
     - name: Determine pihole directory state
-      stat:
+      ansible.builtin.stat:
         path: /opt/pihole/etc/pihole-FTL.db
       register: pihole_state
 
@@ -142,12 +186,12 @@
       ignore_errors: True
 
     - name: Cloudflared Dockerfile
-      blockinfile:
-        create: yes
+      ansible.builtin.blockinfile:
+        create: true
         mode: '0644'
         path: /opt/cloudflared/Dockerfile
         block: |
-          FROM ubuntu:bionic
+          FROM ubuntu:22.04
           EXPOSE 53/tcp
           EXPOSE 53/udp
           RUN apt-get update && \
@@ -158,18 +202,18 @@
       register: cloudflared_doh_dockerfile
 
     - name: Cloudflared image
-      docker_image:
+      community.docker.docker_image:
         name: cloudflared_doh
         build:
           path: /opt/cloudflared
         source: build
-        force_source: yes
-      when: cloudflared_doh_dockerfile.changed
+        state: present
+        force_source: "{{ cloudflared_doh_dockerfile.changed }}"
 
 # cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
 # a lower mtu fixes the problem
-    - name: cloudflared pihole and wireguard network
-      docker_network:
+    - name: Cloudflared pihole and wireguard network
+      community.docker.docker_network:
         name: cloudblock
         driver: bridge
         driver_options:
@@ -178,18 +222,17 @@
           - subnet: "{{ docker_network }}/24"
             gateway: "{{ docker_gw }}"
 
-    - name: cloudflared_doh container
-      docker_container:
+    - name: Cloudflared_doh container
+      community.docker.docker_container:
         name: cloudflared_doh
         image: cloudflared_doh
         networks:
           - name: cloudblock
             ipv4_address: "{{ docker_doh }}"
-        purge_networks: yes
         restart_policy: "always"
 
-    - name: pihole container - without DNS listen
-      docker_container:
+    - name: Pihole container - without DNS listen
+      community.docker.docker_container:
         name: pihole
         hostname: cloudblockpihole
         env:
@@ -203,20 +246,20 @@
         volumes:
           - /opt/pihole/etc:/etc/pihole/:rw
           - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
-        pull: yes
-        purge_networks: yes
+        pull: true
         restart_policy: "always"
       when: dns_novpn == "0"
-      no_log: True
+      no_log: true
 
-    - name: pihole container - with DNS listen
-      docker_container:
+    - name: Pihole container - with DNS listen
+      community.docker.docker_container:
         name: pihole
         hostname: cloudblockpihole
         env:
           DNS1: "{{ docker_doh }}"
           DNS2: "{{ docker_doh }}"
           WEBPASSWORD: "{{ ph_password.secrets[0].secret }}" 
+          DNSMASQ_USER: root
         image: pihole/pihole:latest
         networks:
           - name: cloudblock
@@ -227,14 +270,13 @@
         volumes:
           - /opt/pihole/etc:/etc/pihole/:rw
           - /opt/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
-        pull: yes
-        purge_networks: yes
+        pull: true
         restart_policy: "always"
       when: dns_novpn == "1"
-      no_log: True
+      no_log: true
 
-    - name: wireguard container
-      docker_container:
+    - name: Wireguard container
+      community.docker.docker_container:
         name: wireguard
         capabilities:
           - NET_ADMIN
@@ -259,12 +301,11 @@
           net.ipv4.conf.all.src_valid_mark: 1
         volumes:
           - /opt/wireguard:/config:rw
-        pull: yes
+        pull: true
         restart_policy: "always"
-        purge_networks: yes
 
-    - name: web proxy container for pihole
-      docker_container:
+    - name: Web proxy container for pihole
+      community.docker.docker_container:
         name: web_proxy
         image: httpd:2.4
         networks:
@@ -277,16 +318,15 @@
           - /opt/webproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
           - /etc/ssl/certs/ssl-cert-snakeoil.pem:/usr/local/apache2/conf/server.crt:ro
           - /etc/ssl/private/ssl-cert-snakeoil.key:/usr/local/apache2/conf/server.key:ro
-        pull: yes
-        purge_networks: yes
+        pull: true
         restart_policy: "always"
 
     - name: Set peer count list
-      set_fact:
+      ansible.builtin.set_fact:
         peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
 
     - name: Wait for final peer conf (Wireguard)
-      wait_for:
+      ansible.builtin.wait_for:
         path: "/opt/wireguard/peer{{ wireguard_peers }}/{{ item }}"
         state: present
         timeout: 600
@@ -365,14 +405,14 @@
         content_type: 'application/gzip'
 
     - name: Pihole to Backup Playbook Clear
-      file:
+      ansible.builtin.file:
         path: /opt/pihole-to-backup.yml
         state: absent
 
     - name: Pihole to Backup Playbook Set
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /opt/pihole-to-backup.yml
-        create: yes
+        create: true
         owner: root
         group: root
         mode: '0640'
@@ -403,10 +443,10 @@
         - "        blob: \"pihole/pihole_backup.tar.gz\""
         - "        content_type: 'application/gzip'"
 
-    - name: pihole to backup timer
-      blockinfile:
+    - name: Pihole to backup timer
+      ansible.builtin.blockinfile:
         path: /etc/systemd/system/pihole-to-backup.timer
-        create: yes
+        create: true
         owner: root
         group: root
         mode: '0644'
@@ -419,10 +459,10 @@
           [Install]
           WantedBy=multi-user.target
 
-    - name: pihole to s3 backup service
-      blockinfile:
+    - name: Pihole to s3 backup service
+      ansible.builtin.blockinfile:
         path: /etc/systemd/system/pihole-to-backup.service
-        create: yes
+        create: true
         owner: root
         group: root
         mode: '0644'
@@ -437,8 +477,8 @@
           [Install]
           WantedBy=multi-user.target
 
-    - name: pihole to backup systemd start/enable
-      systemd:
+    - name: Pihole to backup systemd start/enable
+      ansible.builtin.systemd:
         name: "pihole-to-backup.{{ item }}"
         daemon_reload: yes
         state: started
