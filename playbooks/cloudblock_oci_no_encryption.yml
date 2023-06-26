@@ -7,6 +7,23 @@
   become: true
   tasks:
 
+    - name: Docker apt key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+
+    - name: Dpkg Architecture
+      ansible.builtin.shell: |
+        dpkg --print-architecture
+      register: dpkg_arch
+
+    - name: Docker apt repo
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch={{ dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/docker.asc]
+          https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
     - name: Absent packages
       ansible.builtin.apt:
         pkg:
@@ -29,23 +46,6 @@
           - ssl-cert
         state: latest
         update_cache: true
-
-    - name: Docker apt key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: Dpkg Architecture
-      ansible.builtin.shell: |
-        dpkg --print-architecture
-      register: dpkg_arch
-
-    - name: Docker apt repo
-      ansible.builtin.apt_repository:
-        repo: >
-          deb [arch={{ dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/docker.gpg]
-          https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-        state: present
 
     - name: Docker packages
       ansible.builtin.apt:
