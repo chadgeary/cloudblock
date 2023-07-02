@@ -159,14 +159,14 @@
           path: /opt/cloudflared
         source: build
         state: present
-        force_source: "{{ cloudflared_doh_dockerfile.changed }}"
+        force_source: "{{ cloudflared_doh_dockerfile.changed }} or cloudflared_image_check.failed|bool == True"
 
     - name: Get SSM parameter ph_password
       ansible.builtin.set_fact:
         ph_password: "{{ lookup('aws_ssm', name_prefix + '-pihole-web-password', decrypt=True, region=aws_region) }}"
       no_log: true
 
-    - name: get wireguard backup from s3 if exists
+    - name: Get wireguard backup from s3 if exists
       aws_s3:
         mode: get
         bucket: "{{ s3_bucket }}"
@@ -188,7 +188,7 @@
       when: wireguard_state.stat.exists|bool == False
       ignore_errors: True
 
-    - name: get pihole backup from s3 if exists
+    - name: Get pihole backup from s3 if exists
       aws_s3:
         mode: get
         bucket: "{{ s3_bucket }}"
@@ -384,7 +384,7 @@
       with_items:
         - "{{ peer_count }}"
 
-    - name: archive wireguard
+    - name: Archive wireguard
       archive: 
         path: /opt/wireguard
         dest: /opt/wireguard_backup.tar.gz
@@ -423,7 +423,7 @@
         - "  gather_facts: false"
         - "  tasks:"
         - "  "
-        - "    - name: archive pihole locally"
+        - "    - name: Archive pihole locally"
         - "      archive:"
         - "        path: /opt/pihole"
         - "        dest: /opt/pihole_backup.tar.gz"

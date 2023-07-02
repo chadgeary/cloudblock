@@ -186,7 +186,7 @@
           path: /opt/cloudflared
         source: build
         state: present
-        force_source: "{{ cloudflared_doh_dockerfile.changed }}"
+        force_source: "{{ cloudflared_doh_dockerfile.changed }} or cloudflared_image_check.failed|bool == True"
 
     - name: Cloudflared pihole and wireguard network
       community.docker.docker_network:
@@ -307,7 +307,7 @@
         - "peer{{ wireguard_peers }}.png"
 
     - name: Playbook Summary
-      debug:
+      ansible.builtin.debug:
         msg:
           - Cloudblock completed installation of Wireguard, Pihole, Cloudflared, and Web Proxy!
           - ""

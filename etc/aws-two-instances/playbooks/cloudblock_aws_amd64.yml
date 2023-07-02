@@ -159,7 +159,7 @@
           path: /opt/cloudflared
         source: build
         state: present
-        force_source: "{{ cloudflared_doh_dockerfile.changed }}"
+        force_source: "{{ cloudflared_doh_dockerfile.changed }} or cloudflared_image_check.failed|bool == True"
 
     - name: Get SSM parameter ph_password
       ansible.builtin.set_fact:

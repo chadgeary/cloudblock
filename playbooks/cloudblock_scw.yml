@@ -135,7 +135,7 @@
         path: /opt/wireguard/server
       register: wireguard_state
 
-    - name: get wireguard backup from bucket if not local
+    - name: Get wireguard backup from bucket if not local
       aws_s3:
         mode: get
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
@@ -163,7 +163,7 @@
         path: /opt/pihole/etc/pihole-FTL.db
       register: pihole_state
 
-    - name: get pihole backup from bucket if not local
+    - name: Get pihole backup from bucket if not local
       aws_s3:
         mode: get
         s3_url: "https://s3.{{ scw_region }}.scw.cloud"
@@ -441,7 +441,7 @@
         - "    - oracle.oci"
         - "  tasks:"
         - "  "
-        - "    - name: archive pihole locally"
+        - "    - name: Archive pihole locally"
         - "      archive:"
         - "        path: /opt/pihole"
         - "        dest: /opt/pihole_backup.tar.gz"
