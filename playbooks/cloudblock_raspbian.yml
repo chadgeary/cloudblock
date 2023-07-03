@@ -202,7 +202,7 @@
         state: present
         source: local
       register: cloudflared_image_check
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Cloudflared image
       community.docker.docker_image:

@@ -274,7 +274,7 @@
 
     - name: Set peer count list
       ansible.builtin.set_fact:
-        peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
+        peer_count: "{{ range(1, wireguard_peers | int + 1) | list }}"
 
     - name: Wait for final peer conf (Wireguard)
       ansible.builtin.wait_for:
@@ -295,7 +295,7 @@
       register: instance_id_from_metadata
 
     - name: Upload peer confs to s3 (Wireguard) - publickey
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/publickey-peer{{ item }}"
@@ -307,7 +307,7 @@
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - privatekey
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/privatekey-peer{{ item }}"
@@ -319,7 +319,7 @@
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - conf
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/peer{{ item }}.conf"
@@ -331,7 +331,7 @@
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - png
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/peer{{ item }}.png"

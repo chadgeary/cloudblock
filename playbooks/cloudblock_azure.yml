@@ -145,7 +145,7 @@
         container: "{{ ph_prefix }}-storage-container"
         dest: "/opt/wireguard_backup.tar.gz"
         blob: "wireguard/wireguard_backup.tar.gz"
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Determine wireguard state
       ansible.builtin.stat:
@@ -153,13 +153,13 @@
       register: wireguard_state
 
     - name: Unarchive wireguard backup if local not exists
-      unarchive:
+      ansible.builtin.unarchive:
         src: /opt/wireguard_backup.tar.gz
         dest: /opt/
-        remote_src: yes
+        remote_src: true
         owner: '1000'
-      when: wireguard_state.stat.exists|bool == False
-      ignore_errors: True
+      when: not wireguard_state.stat.exists
+      ignore_errors: true
 
     - name: Download pihole backup from Azure storage if exists
       azure_rm_storageblob:
@@ -169,7 +169,7 @@
         container: "{{ ph_prefix }}-storage-container"
         dest: "/opt/pihole_backup.tar.gz"
         blob: "pihole/pihole_backup.tar.gz"
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Determine pihole directory state
       ansible.builtin.stat:
@@ -177,13 +177,13 @@
       register: pihole_state
 
     - name: Unarchive pihole backup if local not exists
-      unarchive:
+      ansible.builtin.unarchive:
         src: /opt/pihole_backup.tar.gz
         dest: /opt/
-        remote_src: yes
+        remote_src: true
         owner: '1000'
-      when: pihole_state.stat.exists|bool == False
-      ignore_errors: True
+      when: not pihole_state.stat.exists
+      ignore_errors: true
 
     - name: Cloudflared Dockerfile
       ansible.builtin.blockinfile:
@@ -323,7 +323,7 @@
 
     - name: Set peer count list
       ansible.builtin.set_fact:
-        peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
+        peer_count: "{{ range(1, wireguard_peers | int + 1) | list }}"
 
     - name: Wait for final peer conf (Wireguard)
       ansible.builtin.wait_for:
@@ -386,7 +386,7 @@
         - "{{ peer_count }}"
 
     - name: Archive Wireguard
-      archive:
+      community.general.archive:
         path: /opt/wireguard
         dest: /opt/wireguard_backup.tar.gz
         format: gz
@@ -425,7 +425,7 @@
         - "  tasks:"
         - "  "
         - "    - name: Archive pihole locally"
-        - "      archive:"
+        - "      community.general.archive:"
         - "        path: /opt/pihole"
         - "        dest: /opt/pihole_backup.tar.gz"
         - "        format: gz"
