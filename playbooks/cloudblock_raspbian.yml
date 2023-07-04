@@ -97,7 +97,7 @@
         state: directory
         owner: root
         group: root
-        mode: '0600'
+        mode: '0750'
       with_items:
         - /opt/cloudflared
         - /opt/pihole
@@ -185,14 +185,14 @@
         mode: '0644'
         path: /opt/cloudflared/Dockerfile
         block: |
-          FROM {% if ansible_architecture == 'aarch64' %}arm64v8{% else %}arm32v7{% endif %}/ubuntu:bionic
+          FROM ubuntu:22.04
           EXPOSE 53/tcp
           EXPOSE 53/udp
           RUN apt-get update && \
               apt-get install -y wget && \
-              wget https://github.com/cloudflare/cloudflared/releases/download/2023.6.1/cloudflared-linux-arm --directory-prefix=/usr/local/bin/ && \
-              chmod 555 /usr/local/bin/cloudflared-linux-arm
-              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+              wget https://github.com/cloudflare/cloudflared/releases/download/2023.6.1/cloudflared-linux-arm64 --directory-prefix=/usr/local/bin/ && \
+              chmod 555 /usr/local/bin/cloudflared-linux-arm64
+          ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
 
     - name: Check cloudflared image exists
