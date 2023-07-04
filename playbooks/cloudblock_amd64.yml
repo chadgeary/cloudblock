@@ -183,7 +183,7 @@
           path: /opt/cloudflared
         source: build
         state: present
-        force_source: "{{ cloudflared_doh_dockerfile.changed }} or cloudflared_image_check.failed|bool == True"
+        force_source: "{{ cloudflared_doh_dockerfile.changed or cloudflared_image_check.failed }}"
 
     - name: Cloudflared pihole and wireguard network
       community.docker.docker_network:
