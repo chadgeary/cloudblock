@@ -179,6 +179,14 @@
               ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
 
+    - name: Check cloudflared image exists
+      community.docker.docker_image:
+        name: cloudflared_doh
+        state: present
+        source: local
+      register: cloudflared_image_check
+      ignore_errors: true
+
     - name: Cloudflared image
       community.docker.docker_image:
         name: cloudflared_doh

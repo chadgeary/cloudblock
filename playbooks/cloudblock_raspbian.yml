@@ -195,7 +195,6 @@
               ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
       register: cloudflared_doh_dockerfile
 
-
     - name: Check cloudflared image exists
       community.docker.docker_image:
         name: cloudflared_doh
@@ -211,7 +210,7 @@
           path: /opt/cloudflared
         source: build
         state: present
-        force_source: "{{ cloudflared_doh_dockerfile.changed }} or {{ cloudflared_image_check.failed }}"
+        force_source: "{{ cloudflared_doh_dockerfile.changed or cloudflared_image_check.failed }}"
 
     - name: Cloudflared pihole and wireguard network
       community.docker.docker_network:
