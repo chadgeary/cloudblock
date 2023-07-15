@@ -84,8 +84,8 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: root
-        group: root
+        owner: "999"
+        group: "999"
         mode: '0750'
       with_items:
         - /opt/cloudflared
