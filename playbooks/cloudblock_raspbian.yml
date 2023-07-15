@@ -292,7 +292,7 @@
           PEERS: "{{ wireguard_peers }}"
           PEERDNS: "{{ docker_pihole }}"
           INTERNAL_SUBNET: "{{ wireguard_network }}"
-        image: linuxserver/wireguard
+        image: {% if ansible_architecture == 'aarch64' %}linuxserver/wireguard{% else %}linuxserver/wireguard:legacy-v1.0.20210914-ls8{% endif %}
         networks:
           - name: cloudblock
             ipv4_address: "{{ docker_wireguard }}"
