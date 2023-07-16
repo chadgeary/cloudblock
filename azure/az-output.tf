@@ -34,7 +34,7 @@ sudo systemctl start cloudblock-ansible-state.service
 #############
 
 # To destroy the project via terraform
-terraform destroy -var-file="gcp.tfvars"
+terraform destroy -var-file="az.tfvars"
 
 OUTPUT
 }
