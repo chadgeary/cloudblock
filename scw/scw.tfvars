@@ -1,10 +1,10 @@
 ## COMMON ##
-ph_password = "changeme1"
-ssh_key     = "ssh-rsa AAAAB3replace_me_replace_me_replace_me"
-mgmt_cidr   = "1.2.3.4/32"
+ph_password = "mnementh"
+ssh_key     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIXr0/LJf26LpFtTiIvNI2epaTvxWvMDZWvLYBkT90ES login"
+mgmt_cidr   = "85.204.120.4/32"
 
-scw_accesskey = "changeme2"
-scw_secretkey = "changeme3"
+scw_accesskey = "SCWCEDE550DSHX9PY88Z"
+scw_secretkey = "7c7e7f55-9bd7-4ae8-a93f-153e6c1535e4"
 
 # The number of wireguard peer configurations to generate / store - 1 per device
 wireguard_peers = 20
