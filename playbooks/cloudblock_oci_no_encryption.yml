@@ -9,7 +9,7 @@
 
     - name: Custom facts
       ansible.builtin.set_fact:
-        url_from_doh:
+        url_from_doh_provider:
           adguard: https://dns.adguard.com/dns-query
           cloudflare: https://cloudflare-dns.com/dns-query
           cloudflare-security: https://security.cloudflare-dns.com/dns-query
