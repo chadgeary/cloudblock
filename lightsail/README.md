@@ -171,13 +171,16 @@ Edit the vars file (aws.tfvars) to customize the deployment, especially:
 # a public SSH key for SSH access to the instance via user `ubuntu`.
 # cat ~/.ssh/id_rsa.pub
 
-# mgmt_cidr
-# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
-# deploying from home? This should be your public IP address with a /32 suffix.
-
 # kms_manager
 # The AWS username (not root) granted access to read the Wireguard VPN configuration files in S3.
 ```
+
+>**Note**: Modify `mgmt_cidr` only if you must allow access to the deployed resources from a machine that is **not** the machine that is deploying this code *OR* if you must allow-list IPv6.
+```
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix.
+``` 
 
 # Post-Deployment
 - Wait for Ansible Playbook, watch [AWS State Manager](https://console.aws.amazon.com/systems-manager/state-manager)
@@ -203,9 +206,6 @@ wsl
 
 # Change to the project directory
 cd ~/cloudblock/lightsail/
-
-# Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
-sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" aws.tfvars
 
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="aws.tfvars"

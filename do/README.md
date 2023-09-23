@@ -166,13 +166,16 @@ Edit the vars file (do.tfvars) to customize the deployment, especially:
 # A public SSH key for access to the compute instance via SSH, with user ubuntu.
 # cat ~/.ssh/id_rsa.pub
 
-# mgmt_cidr
-# an IP range granted webUI, instance SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
-# deploying from home? This should be your public IP address with a /32 suffix. 
-
 # do_token, do_storageaccessid, and do_storagesecretkey
 # credentials generated via the Digital Ocean WebUI (API page)
 ```
+
+>**Note**: Modify `mgmt_cidr` only if you must allow access to the deployed resources from a machine that is **not** the machine that is deploying this code *OR* if you must allow-list IPv6.
+```
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix.
+``` 
 
 # Deploy
 ```
@@ -214,9 +217,6 @@ wsl
 
 # Change to the project directory
 cd ~/cloudblock/do/
-
-# Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
-sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" do.tfvars
 
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="do.tfvars"

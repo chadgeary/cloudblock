@@ -181,11 +181,7 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 
 # ssh_key
 # A public SSH key for access to the compute instance via SSH, with user ubuntu.
-# cat ~/.ssh/id_rsa.pub
-
-# mgmt_cidr
-# an IP range granted webUI, instance SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
-# deploying from home? This should be your public IP address with a /32 suffix.
+# cat ~/.ssh/id_rsa.pub 
 
 # oci_config_profile
 # The location of the oci config file (created by `oci setup config`)
@@ -197,6 +193,12 @@ Edit the vars file (oci.tfvars) to customize the deployment, especially:
 # See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-2204/
 # Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
 ```
+>**Note**: Modify `mgmt_cidr` only if you must allow access to the deployed resources from a machine that is **not** the machine that is deploying this code *OR* if you must allow-list IPv6.
+```
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix.
+``` 
 
 # Post-Deployment
 - See terraform output for VPN Client configuration files link and the Pihole WebUI address.
@@ -221,9 +223,6 @@ wsl
 
 # Change to the project directory
 cd ~/cloudblock/oci/
-
-# Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
-sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" oci.tfvars
 
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="oci.tfvars"

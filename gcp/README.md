@@ -192,16 +192,17 @@ Edit the vars file (gcp.tfvars) to customize the deployment, especially:
 # a public SSH key for SSH access to the instance via user `ubuntu`.
 # cat ~/.ssh/id_rsa.pub
 
-# mgmt_cidr
-# an IP range granted webUI and SSH access (without VPN). Also permitted PiHole DNS if dns_novpn = 1. 
-# deploying from home? This should be your public IP address with a /32 suffix. 
-
 # gcp_billing_account
 # The billing ID for the google cloud account
 
 # gcp_user
 # The GCP user
 ```
+
+>**Note**: Modify `mgmt_cidr` only if you must allow access to the deployed resources from a machine that is **not** the machine that is deploying this code *OR* if you must allow-list IPv6.
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix. 
 
 # Post-Deployment
 - See terraform output for VPN Client configuration files link and the Pihole WebUI address.
@@ -226,9 +227,6 @@ wsl
 
 # Change to the project directory
 cd ~/cloudblock/gcp/
-
-# Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
-sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" gcp.tfvars
 
 # Rerun terraform apply, terraform will update the cloud firewall rules
 terraform apply -var-file="gcp.tfvars"

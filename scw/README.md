@@ -164,16 +164,19 @@ Edit the vars file (scw.tfvars) to customize the deployment, especially:
 # A public SSH key for access to the compute instance via SSH, with user ubuntu.
 # cat ~/.ssh/id_rsa.pub
 
-# mgmt_cidr
-# an IP range granted webUI, instance SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
-# deploying from home? This should be your public IP address with a /32 suffix. 
-
 # scw_accesskey
 # The scaleway access key, used by nextcloud to talk with scaleway's object storage (username)
 
 # scw_secretkey
 # The scaleway secret key, used by nextcloud to talk with scaleway's object storage (password)
 ```
+
+>**Note**: Modify `mgmt_cidr` only if you must allow access to the deployed resources from a machine that is **not** the machine that is deploying this code *OR* if you must allow-list IPv6.
+```
+# mgmt_cidr
+# an IP range granted webUI, EC2 SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+# deploying from home? This should be your public IP address with a /32 suffix.
+``` 
 
 # Post-Deployment
 - See terraform output for VPN Client configuration files link and the Pihole WebUI address.
@@ -201,9 +204,6 @@ cd ~/cloudblock/scw/
 
 # Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
 sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" scw.tfvars
-
-# Rerun terraform apply, terraform will update the cloud firewall rules
-terraform apply -var-file="scw.tfvars"
 
 # If permissions errors appear, fix with the below command and re-run the terraform apply.
 sudo chown $USER scw.tfvars && chmod 600 scw.tfvars
