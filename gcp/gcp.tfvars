@@ -1,7 +1,9 @@
 ## COMMON ##
 ph_password = "changeme"
 ssh_key     = "ssh-rsa AAAAB3replace_me_replace_me_replace_me"
-mgmt_cidr   = "1.2.3.4/32"
+
+# This default value is set to IPv4 address of the machine executing the TF code. If you have other needs, such as different IPs between the machine executing TF code and the location that will use the pihole, then you must manually override this declaration
+mgmt_cidr = "${chomp(data.http.execution_ip.request_body)}/32"
 
 gcp_billing_account = "X1X1X1-ABABAB-123456"
 gcp_user            = "me@example.com"

@@ -1,7 +1,9 @@
 ## COMMON ##
 ph_password = "changeme"
 ssh_key     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNCHANGE_ME_CHANGE_ME_CHANGE_ME"
-mgmt_cidr   = "1.2.3.4/32"
+
+# This default value is set to IPv4 address of the machine executing the TF code. If you have other needs, such as different IPs between the machine executing TF code and the location that will use the pihole, then you must manually override this declaration
+mgmt_cidr = "${chomp(data.http.execution_ip.request_body)}/32"
 
 oci_config_profile   = "/home/chad/.oci/config"
 oci_root_compartment = "ocid1.tenancy.oc1..aaaaaaaaCHANGE_ME_CHANGE_ME_CHANGE_ME"

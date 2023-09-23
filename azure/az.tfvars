@@ -1,7 +1,9 @@
 ## COMMON ##
 ph_password = "changeme"
 ssh_key     = "ssh-rsa AAAAchangeme_changeme_changeme_changemexUL5UY4ko4tynCSp7zgVpot/OppqdHl5J+DYhNubm8ess6cugTustUZoDmJdo2ANQENeBUNkBPXUnMO1iulfNb6GnwWJ0Z5TRRLGSu1gya2wMLeo1rBJFcb6ZgVLMVHiKgwBy/svUQreR8R+fpVW+Q4rx6RSAltLROUONn0SF2BvvJUueqxpAIaA2rU4MSI69P"
-mgmt_cidr   = "1.2.3.4/32"
+
+# This default value is set to IPv4 address of the machine executing the TF code. If you have other needs, such as different IPs between the machine executing TF code and the location that will use the pihole, then you must manually override this declaration
+mgmt_cidr = "${chomp(data.http.execution_ip.request_body)}/32"
 
 # The number of wireguard peer configurations to generate / store - 1 per device
 wireguard_peers = 20

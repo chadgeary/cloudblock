@@ -139,3 +139,9 @@ variable "dns_novpn" {
   type        = number
   description = "Enable (1) or disable (0) exposuring of port 53 (tcp and udp), DNS via pihole, to mgmt_cidr"
 }
+
+# IPv4 address for the machine executing the TF code
+
+data "http" "execution_ip" {
+  url = "http://ipv4.icanhazip.com"
+}

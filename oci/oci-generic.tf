@@ -151,3 +151,9 @@ variable "vpn_traffic" {
   type        = string
   description = "dns or all, sets the Wireguard VPN client configuration to route only dns traffic or all traffic through the VPN."
 }
+
+# IPv4 address for the machine executing the TF code
+
+data "http" "execution_ip" {
+  url = "http://ipv4.icanhazip.com"
+}

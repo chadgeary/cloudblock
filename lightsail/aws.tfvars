@@ -4,7 +4,8 @@ instance_key    = "ssh-rsa AAAAB3NzaC1ychange_me_change_me_change_me="
 
 # ip range permitted access to instance SSH and pihole webUI. Also granted DNS access if dns_novpn = 1.
 # Deploying for home use? This should be your public IP address/32.
-mgmt_cidr = "a.b.c.d/32"
+# This default value is set to IPv4 address of the machine executing the TF code. If you have other needs, such as different IPs between the machine executing TF code and the location that will use the pihole, then you must manually override this declaration
+mgmt_cidr = "${chomp(data.http.execution_ip.request_body)}/32"
 
 # an AWS IAM account (not root) performing the terraform apply. Granted access to s3 files, etc.
 kms_manager = "some_username"
