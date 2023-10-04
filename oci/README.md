@@ -3,202 +3,255 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 
 ![Diagram](../diagram.png)
 
-# Requirements
+## Requirements
 - An Oracle cloud account
-- Follow Step-by-Step (compatible with Windows and Ubuntu)
+- Windows Subsystem for Linux, or Homebrew for Mac
+  - Follow Step-by-Step below to satisfy prerequesites
 
-# Step-by-Step
-Mac Users install (home)brew, then terraform, git, cloud cli.
-```
-#########
-## Mac ##
-#########
-# Important - Apple's Private Relay can prevent access to your cloudblock server/VPN.
+## Step-by-Step
+### Mac prerequesites
+  - Install - (home)brew, terraform, git, gcloud & oci cli.
 
-# Launch terminal
+  - Important - Apple's Private Relay can prevent access to your cloudblock server/VPN.
+  #### Launch Mac terminal
 
-# Install brew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  - Install brew
+    ```sh
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ```
+  - Ensure brew up-to-date
+    ```sh
+    brew update
+    ```
 
-# Ensure brew up-to-date
-brew update
+  - Install terraform git and cli
+    ```sh
+    brew install terraform git oci-cli
+    ```
 
-# Install terraform git and cli 
-brew install terraform git oci-cli
+  - Verify the three are installed
+    ```sh
+    which terraform git gcloud oci-cli
+    ```
+- After the Mac steps are done, skip down to the [git clone](#clone-the-cloudblock-repository) section below.
 
-# Verify the three are installed
-which terraform git gcloud oci-cli
+### Windows prerequesites
+  Windows Subsystem Linux (WSL) installation.
+  NOTE: Skip to [WSL Prerequesites](#wsl-prerequesites) if you already have WSL installed.
 
-# Skip down to 'git clone' below
-```
+- Launch an ELEVATED `Powershell` prompt (right click -> Run as Administrator)
 
-Windows users install WSL (Windows Subsystem Linux)
-```
-#############################
-## Windows Subsystem Linux ##
-#############################
-# Launch an ELEVATED Powershell prompt (right click -> Run as Administrator)
+  - Enable Windows Subsystem Linux
+    ```powershell
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    ```
 
-# Enable Windows Subsystem Linux
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+  - Reboot your Windows PC
+    ```powershell
+    shutdown /r /t 5
+    ```
 
-# Reboot your Windows PC
-shutdown /r /t 5
+- After reboot, launch a REGULAR Powershell prompt (left click).
+  - IMPORTANT: Do NOT proceed with an ELEVATED Powershell prompt.
+  - Download the Ubuntu 2204 package from Microsoft
+    ```powershell
+    curl.exe -L -o ubuntu-2204.AppxBundle https://aka.ms/wslubuntu2204
+    ```
 
-# After reboot, launch a REGULAR Powershell prompt (left click).
-# Do NOT proceed with an ELEVATED Powershell prompt.
+  - Rename the package, unzip it, and cd (change directory)
+    ```powershell
+    Rename-Item ubuntu-2204.AppxBundle ubuntu-2204.zip
+    ```
+    ```powershell
+    Expand-Archive ubuntu-2204.zip ubuntu-2204
+    ```
+    ```powershell
+    cd ubuntu-2204
+    ```
 
-# Download the Ubuntu 2204 package from Microsoft
-curl.exe -L -o ubuntu-2204.AppxBundle https://aka.ms/wslubuntu2204
- 
-# Rename the package, unzip it, and cd (change directory)
-Rename-Item ubuntu-2204.AppxBundle ubuntu-2204.zip
-Expand-Archive ubuntu-2204.zip ubuntu-2204
-cd ubuntu-2204
+  - Repeat the above three steps for the x64 file, update 0.10.0 if needed
+    ```powershell
+    Rename-Item ubuntu-2204.0.10.0_x64.zip ubuntu-2204_x64.zip
+    ```
+    ```powershell
+    Expand-Archive ubuntu-2204_x64.zip ubuntu-2204_x64
+    ```
+    ```powershell
+    cd ubuntu-2204_x64
+    ```
 
-# Repeat the above three steps for the x64 file, update 0.10.0 if needed
-Rename-Item ubuntu-2204.0.10.0_x64.zip ubuntu-2204_x64.zip
-Expand-Archive ubuntu-2204_x64.zip ubuntu-2204_x64
-cd ubuntu-2204_x64
- 
-# Execute the ubuntu installer
-.\ubuntu2204.exe
+  - Execute the ubuntu installer
+    ```powershell
+    .\ubuntu2204.exe
+    ```
 
-# Create a username and password when prompted
-```
+  - Create a username and password when prompted
 
-Install Terraform, Git, and create an SSH key pair
-```
-#############################
-##  Terraform + Git + SSH  ##
-#############################
-# Add terraform's apt key (enter previously created password at prompt)
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+### WSL prerequesites
 
-# Add terraform's apt repository
-sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+- Install - Terraform, Git, and create an SSH key pair using Windows Subsystem Linux
 
-# Install terraform and git
-sudo apt-get update && sudo apt-get -y install terraform git
+    - Add terraform's apt key (enter previously created password at prompt)
+    ```bash
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+    ```
 
-# Clone the cloudblock project
-git clone https://github.com/chadgeary/cloudblock
+    - Add terraform's apt repository
+    ```bash
+    sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    ```
 
-# Create SSH key pair (RETURN for defaults)
-ssh-keygen
-```
+    - Install terraform
+    ```bash
+    sudo apt-get update && sudo apt-get -y install terraform git
+    ```
 
-Install the Oracle CLI and authenticate. An [OCI account](https://signup.oraclecloud.com/) is required to continue.
-```
-#############################
-##         Oracle          ##
-#############################
-# Open powershell and start WSL
-wsl
+    - Create SSH key pair (RETURN for defaults)
+    ```bash
+    ssh-keygen
+    ```
 
-# Change to home directory
-cd ~
+### Oracle CLI setup
+  - Open Powershell and start WSL, or start a WSL terminal session with Windows Terminal.
+    ```powershell
+    wsl
+    ```
+  - Install the Oracle CLI and authenticate. An [OCI account](https://signup.oraclecloud.com/) is required to continue.
+  - Change to home directory
+    ```sh
+    cd ~
+    ```
+  - Download the oracle CLI installer
+    ```sh
+    curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -o oci_install.sh
+    ```
+  - Run the installer (enter linux password if prompted)
+    ```sh
+    bash oci_install.sh --accept-all-defaults
+    ```
+  - Refresh environment
+    ```sh
+    source ~/.bashrc
+    ```
 
-# Download the oracle CLI installer
-curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -o oci_install.sh
+  - Copy user OCID from Oracle Web Console
+  - Navigate to Identity -> Users
 
-# Run the installer (enter linux password if prompted)
-bash oci_install.sh --accept-all-defaults
+  - Copy tenancy OCID from Oracle Web Console
+  - Navigate to profile (top right) -> Tenancy: <some name>
 
-# Refresh environment
-source ~/.bashrc
+  - Setup oci CLI with user and tenancy OCID and a default region
+    ```sh
+    oci setup config
+    ```
 
-# Copy user OCID from Oracle Web Console
-# Navigate to Identity -> Users
+  - Earlier versions of oci cli did not require entering a passphrase for the private key (including in videos)
+  - Instead of generating a separate key, answer this question with your SSH private key's path
+  - Enter the location of your API Signing private key file: ~/.ssh/id_rsa
 
-# Copy tenancy OCID from Oracle Web Console
-# Navigate to profile (top right) -> Tenancy: <some name>
+  - Copy contents of your SSH's public key in PEM format to clipboard
+    ```sh
+    openssl rsa -in ~/.ssh/id_rsa -pubout
+    ```
 
-# Setup oci CLI with user and tenancy OCID and a default region
-oci setup config
+  - Add key via Oracle Web console
+  - Navigate to Identity -> Users -> <your user> -> API Keys (Bottom left, under Resources) -> Add Public Key -> Paste Public Keys
 
-# Earlier versions of oci cli did not require entering a passphrase for the private key (including in videos)
-# Instead of generating a separate key, answer this question with your SSH private key's path
-# Enter the location of your API Signing private key file: ~/.ssh/id_rsa
+  - Note command's output of config file location for vars file
+    ```sh
+    ls ~/.oci/config
+    ```
 
-# Copy contents of your SSH's public key in PEM format to clipboard
-openssl rsa -in ~/.ssh/id_rsa -pubout
+  - Note command's output of OCI root compartment ID for vars file
+    ```sh
+    oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]"
+    ```
 
-# Add key via Oracle Web console
-# Navigate to Identity -> Users -> <your user> -> API Keys (Bottom left, under Resources) -> Add Public Key -> Paste Public Keys
+### Clone the cloudblock repository
+  - Clone the repository to a local directory.
+  - NOTE: it is recommended to be in your home director when this command is run.
+    ```bash
+    git clone https://github.com/chadgeary/cloudblock
+    ```
 
-# Note command's output of config file location for vars file
-ls ~/.oci/config
+### Customize deployment
+  - See variables section below
 
-# Note command's output of OCI root compartment ID for vars file
-oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]"
-```
+  - Change to the project's oci directory
+    ```sh
+    cd ~/cloudblock/oci/
+    ```
+  - Edit the `oci.tfvars` file and save
+    ```sh
+    vi oci.tfvars
+    ```
 
-Customize the deployment - See variables section below
-```
-# Change to the project's oci directory in powershell
-cd ~/cloudblock/oci/
+- Alternatively in Windows, open File Explorer in a separate window
+- Navigate to oci project directory - change \\`chad`\ to your WSL username
+  ```powershell
+  %HOMEPATH%\ubuntu-2204\rootfs\home\chad\cloudblock\oci
+  ```
 
-# Open File Explorer in a separate window
-# Navigate to oci project directory - change \chad\ to your WSL username
-%HOMEPATH%\ubuntu-2204\rootfs\home\chad\cloudblock\oci
 
-# Edit the oci.tfvars file using notepad and save
-```
+## Variables
+ - Edit the vars file `oci.tfvars` to customize the deployment, especially:
+    ```yaml
+    # ph_password
+    # password to access the pihole webui
 
-Deploy
-```
-# In powershell's WSL window, change to the project's oci directory
-cd ~/cloudblock/oci/
+    # ssh_key
+    # A public SSH key for access to the compute instance via SSH, with user ubuntu.
+    # cat ~/.ssh/id_rsa.pub
 
-# Initialize terraform and the apply the terraform state
-terraform init
-terraform apply -var-file="oci.tfvars"
+    # mgmt_cidr
+    # an IP range granted webUI, instance SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
+    # deploying from home? This should be your public IP address with a /32 suffix.
 
-# If permissions errors appear, fix with the below command and re-run the terraform apply.
-sudo chown $USER oci.tfvars && chmod 600 oci.tfvars
+    # oci_config_profile
+    # The location of the oci config file (created by `oci setup config`)
 
-# Note the outputs from terraform after the apply completes
+    # oci_root_compartment
+    # The OCID of the tenancy id (a.k.a. root compartment)
 
-# Wait for the virtual machine to become ready (Ansible will setup the services for us)
-```
+    # OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
+    # See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-2204/
+    # Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
+    ```
 
-Want to watch Ansible setup the virtual machine? SSH to the cloud instance - see the terraform output.
-```
-# Connect to the virtual machine via ssh
-ssh ubuntu@<some ip address terraform told us about>
+# Deploy
+  - Deploy Cloudblock using Terraform.
+    - In powershell's WSL window, change to the project's oci directory
+      ```sh
+      cd ~/cloudblock/oci/
+      ```
+    - Initialize terraform and the apply the terraform state
+      ```sh
+      terraform init
+      ```
+      ```sh
+      terraform apply -var-file="oci.tfvars"
+      ```
 
-# Tail the cloudblock log file
-tail -F /var/log/cloudblock.log
-```
+    - If permissions errors appear, fix with the below command and re-run the terraform apply.
+      ```sh
+      sudo chown $USER oci.tfvars && chmod 600 oci.tfvars
+      ```
 
-# Variables
-Edit the vars file (oci.tfvars) to customize the deployment, especially:
+    - Note the outputs from terraform after the apply completes
 
-```
-# ph_password
-# password to access the pihole webui
+    - Wait for the virtual machine to become ready (Ansible will set up the services for us).
+    - TIP: Want to watch Ansible set up the virtual machine?
+      - SSH to the cloud instance - see the terraform output.
+      - Connect to the virtual machine via ssh
+        ```sh
+        ssh ubuntu@<some ip address terraform told us about>
+        ```
+      - Tail the cloudblock log file
+        ```sh
+        tail -F /var/log/cloudblock.log
+        ```
 
-# ssh_key
-# A public SSH key for access to the compute instance via SSH, with user ubuntu.
-# cat ~/.ssh/id_rsa.pub
-
-# mgmt_cidr
-# an IP range granted webUI, instance SSH access. Also permitted PiHole DNS if dns_novpn = 1 (default).
-# deploying from home? This should be your public IP address with a /32 suffix.
-
-# oci_config_profile
-# The location of the oci config file (created by `oci setup config`)
-
-# oci_root_compartment
-# The OCID of the tenancy id (a.k.a. root compartment)
-
-# OCI's managed Ubuntu 18.04 Minimal image, might need to be changed in the future as images are updated periodically
-# See https://docs.cloud.oracle.com/en-us/iaas/images/ubuntu-2204/
-# Find Canonical-Ubuntu-18.04-Minimal, click it then use the OCID of the image in your region
-```
-
-# Post-Deployment
+## Post-Deployment
 - See terraform output for VPN Client configuration files link and the Pihole WebUI address.
 
 # Updates
@@ -210,21 +263,29 @@ update path. Cloudblock follows the official pihole (and wireguard) container up
 
 # FAQs
 - Want to reach the PiHole webUI while away?
-  - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output ( by default, its https://172.18.0.5/admin/ - for older installations its http://172.18.0.3/admin/ ).
+  - Connect to the Wireguard VPN and browse to Pihole VPN IP in the terraform output:
+    - default: https://172.18.0.5/admin/
+    - NOTE: for older installs, the default was: http://172.18.0.3/admin/
 
 - Using an ISP with a dynamic IP (DHCP) and the IP address changed? Pihole webUI and SSH access will be blocked until the mgmt_cidr is updated.
   - Follow the steps below to quickly update the cloud firewall using terraform.
 
-```
-# Open Powershell and start WSL
-wsl
+    - Open Powershell and start WSL
+      ```powershell
+      wsl
+      ```
 
-# Change to the project directory
-cd ~/cloudblock/oci/
+    - Change to the project directory
+      ```powershell
+      cd ~/cloudblock/oci/
+      ```
 
-# Update the mgmt_cidr variable - be sure to replace change_me with your public IP address
-sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" oci.tfvars
+    - Update the mgmt_cidr variable - be sure to replace `change_me` with your public IP address
+      ```powershell
+      sed -i -e "s#^mgmt_cidr = .*#mgmt_cidr = \"change_me/32\"#" oci.tfvars
+      ```
 
-# Rerun terraform apply, terraform will update the cloud firewall rules
-terraform apply -var-file="oci.tfvars"
-```
+    - Rerun terraform apply, terraform will update the cloud firewall rules
+      ```powershell
+      terraform apply -var-file="oci.tfvars"
+      ```
