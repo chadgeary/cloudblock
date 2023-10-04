@@ -21,23 +21,23 @@ As these videos have aged a bit, replace references to Ubuntu 18.04 with Ubuntu 
 
 ### Standalone Raspberry Pi or Ubuntu Server
 Step-by-step, follow along with me as I install on a Raspberry Pi.
-- [Raspberry Pi 4+ (Raspbian 10/Buster)](https://youtu.be/9oeQZvltWDc)
+- Raspberry Pi 4+ (Raspbian 10/Buster) -- [video](https://youtu.be/9oeQZvltWDc) - [guide](./playbooks/README.md)
 
 ### Cloud Deployments
-Choosing a cloud provider? [Watch this](https://youtu.be/HB7VwTffdIY) for a mostly un-biased comparison of free options/free trials.
+Choosing a cloud provider? Watch [this video](https://youtu.be/HB7VwTffdIY) for a mostly un-biased comparison of free options/free trials.
 
 Step-by-step, follow along with me as I deploy from a windows desktop - for Cloud deployments.
-- [Prerequisites](https://youtu.be/SJ0hrXPbMNo) (all cloud deployments should watch this first).
+  - All cloud deployments should watch this [prerequisites video](https://youtu.be/SJ0hrXPbMNo) first.
 
 After watching the cloud prerequisites video, follow a guide specific to your cloud provider.
-- [AWS or Lightsail](https://youtu.be/zNElF0iS2bM) (for amazon web services)
-- [Azure](https://youtu.be/eZKptCWW-RI) (for microsoft azure cloud)
-- [DO](https://youtu.be/cYOeJpuEuFo) (for digital ocean cloud)
-- [GCP](https://youtu.be/EZyn6dEdqe0) (for google cloud)
-- [OCI](https://youtu.be/bVoO6XRNhJs) (for oracle cloud)
-- [Scaleway](https://youtu.be/jiyEKAixi0w) (for scaleway cloud)
+  - Amazon Web Services (AWS / Lightsail) - ([video](https://youtu.be/zNElF0iS2bM) - [readme](./azure/README.md))
+  - Microsoft Azure (AZW) - ([video](https://youtu.be/eZKptCWW-RI) - [readme](./azure/README.md))
+  - Digital Ocean (DO) - ([video](https://youtu.be/cYOeJpuEuFo) - [readme](./do/README.md))
+  - Google Cloud Platform (GCP) - ([video](https://youtu.be/EZyn6dEdqe0) - [readme](./gcp/README.md))
+  - Oracle Cloud Infrastructure (OCI) - ([video](https://youtu.be/bVoO6XRNhJs) - [readme](./oci/README.md))
+  - Scaleway Cloud (SCW) ([video](https://youtu.be/jiyEKAixi0w) - [readme](./scw/README.md))
 
-For maintaining the containers running your cloudblock services, see the README (or terraform output) specific to your deployment.
+For maintaining the containers running your cloudblock services, see the README (or terraform output) specific to your deployment. For Cloud deployments, [this video](https://youtu.be/jWDMsXy_-6Q) describes maintenance steps.
 
 # Discussion
 [Discord Room](https://discord.gg/zmu6GVnPnj)
