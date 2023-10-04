@@ -5,6 +5,21 @@
   become: true
   tasks:
 
+    - name: Custom facts
+      ansible.builtin.set_fact:
+        url_from_doh_provider:
+          adguard: https://dns.adguard.com/dns-query
+          cloudflare: https://cloudflare-dns.com/dns-query
+          cloudflare-security: https://security.cloudflare-dns.com/dns-query
+          cloudflare-family: https://family.cloudflare-dns.com/dns-query
+          applied-privacy: https://doh.applied-privacy.net/query
+          google: https://dns.google/dns-query
+          hurricane-electric: https://ordns.he.net/dns-query
+          pi-dns: https://doh.pi-dns.com/dns-query
+          quad9-recommended: https://dns.quad9.net/dns-query
+          libre-dns: https://doh.libredns.gr/dns-query
+          opendns: https://doh.opendns.com/dns-query
+
     - name: Docker apt key
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -85,9 +100,9 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: root
-        group: root
-        mode: '0600'
+        owner: "999"
+        group: "999"
+        mode: '0750'
       with_items:
         - /opt/cloudflared
         - /opt/pihole
@@ -113,44 +128,29 @@
         - httpd-ssl.conf
         - httpd.conf
 
-    - name: DoH Endpoints
-      ansible.builtin.blockinfile:
-        create: true
-        mode: '0644'
-        path: /opt/cloudflared/endpoints
-        block: |
-          adguard https://dns.adguard.com/dns-query
-          cloudflare https://cloudflare-dns.com/dns-query
-          cloudflare-security https://security.cloudflare-dns.com/dns-query
-          cloudflare-family https://family.cloudflare-dns.com/dns-query
-          applied-privacy https://doh.applied-privacy.net/query
-          google https://dns.google/dns-query
-          hurricane-electric https://ordns.he.net/dns-query
-          pi-dns https://doh.pi-dns.com/dns-query
-          quad9-recommended https://dns.quad9.net/dns-query
-          libre-dns https://doh.libredns.gr/dns-query
-          opendns https://doh.opendns.com/dns-query
-
-    - name: Set DoH URL from DoH provider var
-      ansible.builtin.shell: |
-        awk '/{{ doh_provider }}/ { print $2 }' /opt/cloudflared/endpoints
-      register: doh_url
-
     - name: Cloudflared Dockerfile
       ansible.builtin.blockinfile:
         create: true
         mode: '0644'
         path: /opt/cloudflared/Dockerfile
         block: |
-          FROM arm64v8/ubuntu:bionic
+          FROM ubuntu:22.04
           EXPOSE 53/tcp
           EXPOSE 53/udp
           RUN apt-get update && \
               apt-get install -y wget && \
               wget https://github.com/cloudflare/cloudflared/releases/download/2023.6.1/cloudflared-linux-arm64 --directory-prefix=/usr/local/bin/ && \
               chmod 555 /usr/local/bin/cloudflared-linux-arm64
-              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+          ENTRYPOINT ["/usr/local/bin/cloudflared-linux-arm64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ url_from_doh_provider[doh_provider] }}"]
       register: cloudflared_doh_dockerfile
+
+    - name: Check cloudflared image exists
+      community.docker.docker_image:
+        name: cloudflared_doh
+        state: present
+        source: local
+      register: cloudflared_image_check
+      ignore_errors: true
 
     - name: Cloudflared image
       community.docker.docker_image:
@@ -159,56 +159,56 @@
           path: /opt/cloudflared
         source: build
         state: present
-        force_source: "{{ cloudflared_doh_dockerfile.changed }}"
+        force_source: "{{ cloudflared_doh_dockerfile.changed or cloudflared_image_check.failed }}"
 
     - name: Get SSM parameter ph_password
       ansible.builtin.set_fact:
         ph_password: "{{ lookup('aws_ssm', name_prefix + '-pihole-web-password', decrypt=True, region=aws_region) }}"
       no_log: true
 
-    - name: get wireguard backup from s3 if exists
-      aws_s3:
+    - name: Get wireguard backup from s3 if exists
+      amazon.aws.aws_s3:
         mode: get
         bucket: "{{ s3_bucket }}"
         object: "/wireguard/wireguard_backup.tar.gz"
         dest: "/opt/wireguard_backup.tar.gz"
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Determine wireguard state
       ansible.builtin.stat:
         path: /opt/wireguard/server
       register: wireguard_state
 
-    - name: unarchive wireguard backup if dir not exists
-      unarchive:
+    - name: Unarchive wireguard backup if dir not exists
+      ansible.builtin.unarchive:
         src: /opt/wireguard_backup.tar.gz
         dest: /opt/
-        remote_src: yes
+        remote_src: true
         owner: 1000
-      when: wireguard_state.stat.exists|bool == False
-      ignore_errors: True
+      when: not wireguard_state.stat.exists
+      ignore_errors: true
 
-    - name: get pihole backup from s3 if exists
-      aws_s3:
+    - name: Get pihole backup from s3 if exists
+      amazon.aws.aws_s3:
         mode: get
         bucket: "{{ s3_bucket }}"
         object: "/pihole/pihole_backup.tar.gz"
         dest: "/opt/pihole_backup.tar.gz"
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Determine pihole state
       ansible.builtin.stat:
         path: /opt/pihole/etc/pihole-FTL.db
       register: pihole_state
 
-    - name: unarchive pihole backup if pulled from s3
-      unarchive:
+    - name: Unarchive pihole backup if pulled from s3
+      ansible.builtin.unarchive:
         src: /opt/pihole_backup.tar.gz
         dest: /opt/
-        remote_src: yes
+        remote_src: true
         owner: 1000
       when: pihole_state.stat.exists|bool == false
-      ignore_errors: True
+      ignore_errors: true
 
 # cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
 # a lower mtu fixes the problem
@@ -322,7 +322,7 @@
 
     - name: Set peer count list
       ansible.builtin.set_fact:
-        peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
+        peer_count: "{{ range(1, wireguard_peers | int + 1) | list }}"
 
     - name: Wait for final peer conf (Wireguard)
       ansible.builtin.wait_for:
@@ -337,7 +337,7 @@
         - "peer{{ wireguard_peers }}.png"
 
     - name: Upload peer confs to s3 (Wireguard) - publickey
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/publickey-peer{{ item }}"
@@ -349,7 +349,7 @@
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - privatekey
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/privatekey-peer{{ item }}"
@@ -361,7 +361,7 @@
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - conf
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.conf"
@@ -373,7 +373,7 @@
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - png
-      aws_s3:
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.png"
@@ -384,8 +384,8 @@
       with_items:
         - "{{ peer_count }}"
 
-    - name: archive wireguard
-      archive: 
+    - name: Archive wireguard
+      community.general.archive: 
         path: /opt/wireguard
         dest: /opt/wireguard_backup.tar.gz
         format: gz
@@ -393,8 +393,8 @@
         group: root
         mode: '0640'
 
-    - name: upload wireguard archive to s3
-      aws_s3:
+    - name: Upload wireguard archive to s3
+      amazon.aws.aws_s3:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/wireguard_backup.tar.gz"
@@ -423,8 +423,8 @@
         - "  gather_facts: false"
         - "  tasks:"
         - "  "
-        - "    - name: archive pihole locally"
-        - "      archive:"
+        - "    - name: Archive pihole locally"
+        - "      community.general.archive:"
         - "        path: /opt/pihole"
         - "        dest: /opt/pihole_backup.tar.gz"
         - "        format: gz"
@@ -433,7 +433,7 @@
         - "        mode: '0640'"
         - "     "
         - "    - name: upload pihole archive to s3"
-        - "      aws_s3:"
+        - "      amazon.aws.aws_s3:"
         - "        mode: put"
         - "        bucket: {{ s3_bucket }}"
         - "        object: pihole/pihole_backup.tar.gz"

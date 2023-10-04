@@ -6,13 +6,13 @@
   become_user: root
   tasks:
 
-    - name: ubuntu user
+    - name: Ubuntu user
       user:
         name: ubuntu
         shell: /bin/bash
         create_home: True
 
-    - name: ubuntu ssh dir
+    - name: Ubuntu ssh dir
       ansible.builtin.file:
         path: /home/ubuntu/.ssh
         state: directory
@@ -20,7 +20,7 @@
         group: ubuntu
         mode: '0755'
 
-    - name: ubuntu ssh key from root key
+    - name: Ubuntu ssh key from root key
       copy:
         src: /root/.ssh/authorized_keys
         dest: /home/ubuntu/.ssh/authorized_keys
@@ -33,7 +33,7 @@
         path: /root/.ssh/authorized_keys
         state: absent
 
-    - name: ubuntu gets sudo nopasswd
+    - name: Ubuntu gets sudo nopasswd
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
         state: present

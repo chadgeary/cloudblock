@@ -5,6 +5,21 @@
   become: true
   tasks:
 
+    - name: Custom facts
+      ansible.builtin.set_fact:
+        url_from_doh_provider:
+          adguard: https://dns.adguard.com/dns-query
+          cloudflare: https://cloudflare-dns.com/dns-query
+          cloudflare-security: https://security.cloudflare-dns.com/dns-query
+          cloudflare-family: https://family.cloudflare-dns.com/dns-query
+          applied-privacy: https://doh.applied-privacy.net/query
+          google: https://dns.google/dns-query
+          hurricane-electric: https://ordns.he.net/dns-query
+          pi-dns: https://doh.pi-dns.com/dns-query
+          quad9-recommended: https://dns.quad9.net/dns-query
+          libre-dns: https://doh.libredns.gr/dns-query
+          opendns: https://doh.opendns.com/dns-query
+
     - name: Docker apt key
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -82,9 +97,9 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: root
-        group: root
-        mode: '0600'
+        owner: "999"
+        group: "999"
+        mode: '0750'
       with_items:
         - /opt/cloudflared
         - /opt/pihole
@@ -110,29 +125,6 @@
         - httpd-ssl.conf
         - httpd.conf
 
-    - name: DoH Endpoints
-      ansible.builtin.blockinfile:
-        create: true
-        mode: '0644'
-        path: /opt/cloudflared/endpoints
-        block: |
-          adguard https://dns.adguard.com/dns-query
-          cloudflare https://cloudflare-dns.com/dns-query
-          cloudflare-security https://security.cloudflare-dns.com/dns-query
-          cloudflare-family https://family.cloudflare-dns.com/dns-query
-          applied-privacy https://doh.applied-privacy.net/query
-          google https://dns.google/dns-query
-          hurricane-electric https://ordns.he.net/dns-query
-          pi-dns https://doh.pi-dns.com/dns-query
-          quad9-recommended https://dns.quad9.net/dns-query
-          libre-dns https://doh.libredns.gr/dns-query
-          opendns https://doh.opendns.com/dns-query
-
-    - name: Set DoH URL from DoH provider var
-      ansible.builtin.shell: |
-        awk '/{{ doh_provider }}/ { print $2 }' /opt/cloudflared/endpoints
-      register: doh_url
-
     - name: Retrieve GCS Token
       uri:
         url: http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token
@@ -146,7 +138,7 @@
       uri:
         url: https://secretmanager.googleapis.com/v1/projects/{{ gcp_project_prefix }}-project-{{ gcp_project_suffix }}/secrets/{{ gcp_project_prefix }}-web-password/versions/latest:access
         method: GET
-        remote_src: yes
+        remote_src: true
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
@@ -164,7 +156,7 @@
         dest: /opt/wireguard_backup.tar.gz
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Determine wireguard state
       ansible.builtin.stat:
@@ -172,13 +164,13 @@
       register: wireguard_state
 
     - name: Unarchive wireguard backup if local not exists
-      unarchive:
+      ansible.builtin.unarchive:
         src: /opt/wireguard_backup.tar.gz
         dest: /opt/
-        remote_src: yes
+        remote_src: true
         owner: '1000'
-      when: wireguard_state.stat.exists|bool == False
-      ignore_errors: True
+      when: not wireguard_state.stat.exists
+      ignore_errors: true
 
     - name: Get pihole backup from storage if exists
       get_url:
@@ -191,7 +183,7 @@
         dest: /opt/pihole_backup.tar.gz
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Determine pihole directory state
       ansible.builtin.stat:
@@ -199,13 +191,13 @@
       register: pihole_state
 
     - name: Unarchive pihole backup if local not exists
-      unarchive:
+      ansible.builtin.unarchive:
         src: /opt/pihole_backup.tar.gz
         dest: /opt/
-        remote_src: yes
+        remote_src: true
         owner: '1000'
-      when: pihole_state.stat.exists|bool == False
-      ignore_errors: True
+      when: not pihole_state.stat.exists
+      ignore_errors: true
 
     - name: Cloudflared Dockerfile
       ansible.builtin.blockinfile:
@@ -220,8 +212,16 @@
               apt-get install -y wget && \
               wget https://github.com/cloudflare/cloudflared/releases/download/2023.6.1/cloudflared-linux-amd64 --directory-prefix=/usr/local/bin/ && \
               chmod 555 /usr/local/bin/cloudflared-linux-amd64
-              ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+          ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ url_from_doh_provider[doh_provider] }}"]
       register: cloudflared_doh_dockerfile
+
+    - name: Check cloudflared image exists
+      community.docker.docker_image:
+        name: cloudflared_doh
+        state: present
+        source: local
+      register: cloudflared_image_check
+      ignore_errors: true
 
     - name: Cloudflared image
       community.docker.docker_image:
@@ -230,7 +230,7 @@
           path: /opt/cloudflared
         source: build
         state: present
-        force_source: "{{ cloudflared_doh_dockerfile.changed }}"
+        force_source: "{{ cloudflared_doh_dockerfile.changed or cloudflared_image_check.failed }}"
 
 # cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
 # a lower mtu fixes the problem
@@ -345,7 +345,7 @@
 
     - name: Set peer count list
       ansible.builtin.set_fact:
-        peer_count: "{{range(1, wireguard_peers|int + 1) | list }}"
+        peer_count: "{{ range(1, wireguard_peers | int + 1) | list }}"
 
     - name: Wait for final peer conf (Wireguard)
       ansible.builtin.wait_for:
@@ -365,7 +365,7 @@
         timeout: 720
         method: POST
         src: /opt/wireguard/peer{{ item }}/publickey-peer{{ item }}
-        remote_src: yes
+        remote_src: true
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
@@ -379,7 +379,7 @@
         timeout: 720
         method: POST
         src: /opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}
-        remote_src: yes
+        remote_src: true
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
@@ -393,7 +393,7 @@
         timeout: 720
         method: POST
         src: /opt/wireguard/peer{{ item }}/peer{{ item }}.conf
-        remote_src: yes
+        remote_src: true
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
@@ -407,7 +407,7 @@
         timeout: 720
         method: POST
         src: /opt/wireguard/peer{{ item }}/peer{{ item }}.png
-        remote_src: yes
+        remote_src: true
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
@@ -415,8 +415,8 @@
       with_items:
         - "{{ peer_count }}"
 
-    - name: archive wireguard
-      archive:
+    - name: Archive wireguard
+      community.general.archive:
         path: /opt/wireguard
         dest: /opt/wireguard_backup.tar.gz
         format: gz
@@ -430,7 +430,7 @@
         timeout: 720
         method: POST
         src: /opt/wireguard_backup.tar.gz
-        remote_src: yes
+        remote_src: true
         return_content: yes
         headers:
           Authorization: Bearer {{ gcs_token_resp.json.access_token }}
@@ -456,8 +456,8 @@
         - "  gather_facts: false"
         - "  tasks:"
         - "  "
-        - "    - name: archive pihole locally"
-        - "      archive:"
+        - "    - name: Archive pihole locally"
+        - "      community.general.archive:"
         - "        path: /opt/pihole"
         - "        dest: /opt/pihole_backup.tar.gz"
         - "        format: gz"
@@ -480,7 +480,7 @@
         - "        timeout: 720"
         - "        method: POST"
         - "        src: /opt/pihole_backup.tar.gz"
-        - "        remote_src: yes"
+        - "        remote_src: true"
         - "        return_content: yes "
         - "        headers: "
         - "          Authorization: Bearer {{ '{{' }} gcs_token_response.json.access_token {{ '}}' }}"
