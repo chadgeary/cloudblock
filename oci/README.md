@@ -85,7 +85,7 @@ sudo apt-get update && sudo apt-get -y install terraform git
 git clone https://github.com/chadgeary/cloudblock
 
 # Create SSH key pair (RETURN for defaults)
-ssh-keygen
+ssh-keygen -t rsa -m pem
 ```
 
 Install the Oracle CLI and authenticate. An [OCI account](https://signup.oraclecloud.com/) is required to continue.
