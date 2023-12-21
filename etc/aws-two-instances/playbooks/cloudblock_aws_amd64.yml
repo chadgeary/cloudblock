@@ -24,6 +24,7 @@
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
+        mode: '0640'
 
     - name: Dpkg Architecture
       ansible.builtin.shell: |
@@ -52,23 +53,17 @@
       ansible.builtin.apt:
         pkg:
           - ca-certificates
+          - containerd.io
           - curl
+          - docker-buildx-plugin
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose-plugin
           - gnupg
           - libcap2-bin
           - python3-pip
           - ssl-cert
-        state: latest
-        update_cache: true
-
-    - name: Docker packages
-      ansible.builtin.apt:
-        pkg:
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
-          - docker-ce
-          - docker-ce-cli
-        state: latest
+        state: present
         update_cache: true
 
     - name: Docker and boto python packages
@@ -79,10 +74,10 @@
           - boto3
           - botocore
         executable: /usr/bin/pip3
-        state: latest
+        state: present
 
     - name: IP Forwarding enable/persist
-      ansible.builtin.sysctl:
+      ansible.posix.sysctl:
         name: net.ipv4.ip_forward
         value: '1'
         state: present
@@ -116,6 +111,7 @@
         state: directory
         owner: ubuntu
         group: ubuntu
+        mode: '0640'
 
     - name: Secure proxy to pihole confs
       ansible.builtin.template:
@@ -123,7 +119,7 @@
         dest: "/opt/webproxy/{{ item }}"
         owner: root
         group: root
-        mode: 0444
+        mode: '0444'
       with_items:
         - httpd-ssl.conf
         - httpd.conf
@@ -295,48 +291,48 @@
       register: instance_id_from_metadata
 
     - name: Upload peer confs to s3 (Wireguard) - publickey
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/publickey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/publickey-peer{{ item }}"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - privatekey
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/privatekey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - conf
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/peer{{ item }}.conf"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.conf"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - png
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/{{ instance_id_from_metadata }}/peer{{ item }}/peer{{ item }}.png"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:

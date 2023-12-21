@@ -80,7 +80,7 @@
           - python3-pip
           - raspberrypi-kernel-headers
           - ssl-cert
-        state: latest
+        state: present
         update_cache: true
 
     - name: Ansible docker system python
@@ -89,10 +89,10 @@
           - ansible
           - docker
         executable: /usr/bin/pip3
-        state: latest
+        state: present
 
     - name: IP Forwarding enable/persist
-      ansible.builtin.sysctl:
+      ansible.posix.sysctl:
         name: net.ipv4.ip_forward
         value: '1'
         state: present
@@ -160,7 +160,7 @@
         dest: "/opt/webproxy/{{ item }}"
         owner: root
         group: root
-        mode: 0444
+        mode: '0444'
       with_items:
         - httpd-ssl.conf
         - httpd.conf

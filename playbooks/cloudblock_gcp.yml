@@ -24,6 +24,7 @@
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
+        mode: '0640'
 
     - name: Dpkg Architecture
       ansible.builtin.shell: |
@@ -52,23 +53,17 @@
       ansible.builtin.apt:
         pkg:
           - ca-certificates
+          - containerd.io
           - curl
+          - docker-buildx-plugin
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose-plugin
           - gnupg
           - libcap2-bin
           - python3-pip
           - ssl-cert
-        state: latest
-        update_cache: true
-
-    - name: Docker packages
-      ansible.builtin.apt:
-        pkg:
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
-          - docker-ce
-          - docker-ce-cli
-        state: latest
+        state: present
         update_cache: true
 
     - name: Docker python packages
@@ -76,10 +71,10 @@
         name:
           - docker
         executable: /usr/bin/pip3
-        state: latest
+        state: present
 
     - name: IP Forwarding enable/persist
-      ansible.builtin.sysctl:
+      ansible.posix.sysctl:
         name: net.ipv4.ip_forward
         value: '1'
         state: present
@@ -113,6 +108,7 @@
         state: directory
         owner: ubuntu
         group: ubuntu
+        mode: '0640'
 
     - name: Secure proxy to pihole confs
       ansible.builtin.template:
@@ -120,7 +116,7 @@
         dest: "/opt/webproxy/{{ item }}"
         owner: root
         group: root
-        mode: 0444
+        mode: '0444'
       with_items:
         - httpd-ssl.conf
         - httpd.conf
@@ -527,9 +523,9 @@
     - name: Pihole to backup systemd start/enable
       ansible.builtin.systemd:
         name: "pihole-to-backup.{{ item }}"
-        daemon_reload: yes
+        daemon_reload: true
         state: started
-        enabled: yes
+        enabled: true
       with_items:
         - service
         - timer
