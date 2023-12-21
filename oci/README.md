@@ -31,7 +31,7 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 
   - Verify the three are installed
     ```sh
-    which terraform git gcloud oci-cli
+    which terraform git oci-cli
     ```
 - After the Mac steps are done, skip down to the [git clone](#clone-the-cloudblock-repository) section below.
 
@@ -108,7 +108,7 @@ End-to-end DNS encryption with DNS-based ad-blocking. Combines wireguard (DNS VP
 
     - Create SSH key pair (RETURN for defaults)
     ```bash
-    ssh-keygen
+    ssh-keygen -t rsa -m pem
     ```
 
 ### Oracle CLI setup
