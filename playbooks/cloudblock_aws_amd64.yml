@@ -24,6 +24,7 @@
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
+        mode: '0640'
 
     - name: Dpkg Architecture
       ansible.builtin.shell: |
@@ -52,23 +53,17 @@
       ansible.builtin.apt:
         pkg:
           - ca-certificates
+          - containerd.io
           - curl
+          - docker-buildx-plugin
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose-plugin
           - gnupg
           - libcap2-bin
           - python3-pip
           - ssl-cert
-        state: latest
-        update_cache: true
-
-    - name: Docker packages
-      ansible.builtin.apt:
-        pkg:
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
-          - docker-ce
-          - docker-ce-cli
-        state: latest
+        state: present
         update_cache: true
 
     - name: Docker and boto python packages
@@ -79,10 +74,10 @@
           - boto3
           - botocore
         executable: /usr/bin/pip3
-        state: latest
+        state: present
 
     - name: IP Forwarding enable/persist
-      ansible.builtin.sysctl:
+      ansible.posix.sysctl:
         name: net.ipv4.ip_forward
         value: '1'
         state: present
@@ -116,6 +111,7 @@
         state: directory
         owner: ubuntu
         group: ubuntu
+        mode: '0640'
 
     - name: Secure proxy to pihole confs
       ansible.builtin.template:
@@ -123,7 +119,7 @@
         dest: "/opt/webproxy/{{ item }}"
         owner: root
         group: root
-        mode: 0444
+        mode: '0444'
       with_items:
         - httpd-ssl.conf
         - httpd.conf
@@ -167,7 +163,7 @@
       no_log: true
 
     - name: Get wireguard backup from s3 if exists
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: get
         bucket: "{{ s3_bucket }}"
         object: "/wireguard/wireguard_backup.tar.gz"
@@ -189,7 +185,7 @@
       ignore_errors: true
 
     - name: Get pihole backup from s3 if exists
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: get
         bucket: "{{ s3_bucket }}"
         object: "/pihole/pihole_backup.tar.gz"
@@ -207,7 +203,7 @@
         dest: /opt/
         remote_src: true
         owner: 1000
-      when: pihole_state.stat.exists|bool == false
+      when: not pihole_state.stat.exists
       ignore_errors: true
 
 # cloud + vpn = mtu restrictions that cause failures for sites like google.com or the play store
@@ -337,55 +333,55 @@
         - "peer{{ wireguard_peers }}.png"
 
     - name: Upload peer confs to s3 (Wireguard) - publickey
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/publickey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/publickey-peer{{ item }}"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - privatekey
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/privatekey-peer{{ item }}"
         src: "/opt/wireguard/peer{{ item }}/privatekey-peer{{ item }}"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - conf
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.conf"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.conf"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:
         - "{{ peer_count }}"
 
     - name: Upload peer confs to s3 (Wireguard) - png
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/peer{{ item }}/peer{{ item }}.png"
         src: "/opt/wireguard/peer{{ item }}/peer{{ item }}.png"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
       with_items:
         - "{{ peer_count }}"
 
     - name: Archive wireguard
-      community.general.archive: 
+      community.general.archive:
         path: /opt/wireguard
         dest: /opt/wireguard_backup.tar.gz
         format: gz
@@ -394,12 +390,12 @@
         mode: '0640'
 
     - name: Upload wireguard archive to s3
-      amazon.aws.aws_s3:
+      amazon.aws.s3_object:
         mode: put
         bucket: "{{ s3_bucket }}"
         object: "wireguard/wireguard_backup.tar.gz"
         src: "/opt/wireguard_backup.tar.gz"
-        encrypt: yes
+        encrypt: true
         encryption_mode: "aws:kms"
         encryption_kms_key_id: "{{ kms_key_id }}"
 
@@ -433,12 +429,12 @@
         - "        mode: '0640'"
         - "     "
         - "    - name: upload pihole archive to s3"
-        - "      amazon.aws.aws_s3:"
+        - "      amazon.aws.s3_object:"
         - "        mode: put"
         - "        bucket: {{ s3_bucket }}"
         - "        object: pihole/pihole_backup.tar.gz"
         - "        src: /opt/pihole_backup.tar.gz"
-        - "        encrypt: yes"
+        - "        encrypt: true"
         - "        encryption_mode: aws:kms"
         - "        encryption_kms_key_id: {{ kms_key_id }}"
 
@@ -452,11 +448,11 @@
         block: |
           [Unit]
           Description=Archives and copies pihole to S3
-          
+
           [Timer]
           OnUnitActiveSec=12h
           Unit=pihole-to-s3-backup.service
-          
+
           [Install]
           WantedBy=multi-user.target
 
@@ -471,21 +467,21 @@
           [Unit]
           Description=Archives and copies pihole to S3
           After=network.target
-          
+
           [Service]
           ExecStart=/usr/local/bin/ansible-playbook /opt/pihole-to-s3-backup.yml
           Type=simple
           Restart=no
-          
+
           [Install]
           WantedBy=multi-user.target
 
     - name: Pihole to s3 backup systemd start/enable
       ansible.builtin.systemd:
         name: "pihole-to-s3-backup.{{ item }}"
-        daemon_reload: yes
+        daemon_reload: true
         state: started
-        enabled: yes
+        enabled: true
       with_items:
         - service
         - timer

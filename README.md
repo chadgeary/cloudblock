@@ -30,7 +30,7 @@ Step-by-step, follow along with me as I deploy from a windows desktop - for Clou
   - All cloud deployments should watch this [prerequisites video](https://youtu.be/SJ0hrXPbMNo) first.
 
 After watching the cloud prerequisites video, follow a guide specific to your cloud provider.
-  - Amazon Web Services (AWS / Lightsail) - ([video](https://youtu.be/zNElF0iS2bM) - [readme](./azure/README.md))
+  - Amazon Web Services (AWS / Lightsail) - ([video](https://youtu.be/zNElF0iS2bM) - [readme](./aws/README.md))
   - Microsoft Azure (AZW) - ([video](https://youtu.be/eZKptCWW-RI) - [readme](./azure/README.md))
   - Digital Ocean (DO) - ([video](https://youtu.be/cYOeJpuEuFo) - [readme](./do/README.md))
   - Google Cloud Platform (GCP) - ([video](https://youtu.be/EZyn6dEdqe0) - [readme](./gcp/README.md))
