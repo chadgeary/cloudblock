@@ -30,11 +30,13 @@ brew install terraform git
 curl -o ~/scw -L "https://github.com/scaleway/scaleway-cli/releases/download/v2.3.0/scw-2.3.0-darwin-x86_64"
 chmod +x ~/scw
 
-# Add alias
+# Add alias (bash)
 echo "alias scw ~/scw" >> ~/.bash_profile && source ~/.bash_profile
+# ...or zsh
+echo "alias scw=\"~/scw\"" >> ~/.zshrc && source ~/.zshrc
 
 # Verify the three are installed
-which terraform git gcloud scw
+which terraform git scw
 
 # Skip down to 'git clone' below
 ```
