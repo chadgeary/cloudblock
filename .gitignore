@@ -6,3 +6,4 @@
 *-init-*.yml
 *.swp
 .DS_Store
+.vscode

@@ -5,6 +5,21 @@
   become: true
   tasks:
 
+    - name: Custom facts
+      ansible.builtin.set_fact:
+        url_from_doh_provider:
+          adguard: https://dns.adguard.com/dns-query
+          cloudflare: https://cloudflare-dns.com/dns-query
+          cloudflare-security: https://security.cloudflare-dns.com/dns-query
+          cloudflare-family: https://family.cloudflare-dns.com/dns-query
+          applied-privacy: https://doh.applied-privacy.net/query
+          google: https://dns.google/dns-query
+          hurricane-electric: https://ordns.he.net/dns-query
+          pi-dns: https://doh.pi-dns.com/dns-query
+          quad9-recommended: https://dns.quad9.net/dns-query
+          libre-dns: https://doh.libredns.gr/dns-query
+          opendns: https://doh.opendns.com/dns-query
+
     - name: Docker apt key
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -107,29 +122,6 @@
         - httpd-ssl.conf
         - httpd.conf
 
-    - name: DoH Endpoints
-      ansible.builtin.blockinfile:
-        create: true
-        mode: '0644'
-        path: /opt/cloudflared/endpoints
-        block: |
-          adguard https://dns.adguard.com/dns-query
-          cloudflare https://cloudflare-dns.com/dns-query
-          cloudflare-security https://security.cloudflare-dns.com/dns-query
-          cloudflare-family https://family.cloudflare-dns.com/dns-query
-          applied-privacy https://doh.applied-privacy.net/query
-          google https://dns.google/dns-query
-          hurricane-electric https://ordns.he.net/dns-query
-          pi-dns https://doh.pi-dns.com/dns-query
-          quad9-recommended https://dns.quad9.net/dns-query
-          libre-dns https://doh.libredns.gr/dns-query
-          opendns https://doh.opendns.com/dns-query
-
-    - name: Set DoH URL from DoH provider var
-      ansible.builtin.shell: |
-        awk '/{{ doh_provider }}/ { print $2 }' /opt/cloudflared/endpoints
-      register: doh_url
-
     - name: Determine wireguard state
       ansible.builtin.stat:
         path: /opt/wireguard/server
@@ -200,7 +192,7 @@
               apt-get install -y wget && \
               wget https://github.com/cloudflare/cloudflared/releases/download/2023.6.1/cloudflared-linux-amd64 --directory-prefix=/usr/local/bin/ && \
               chmod 555 /usr/local/bin/cloudflared-linux-amd64
-          ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ doh_url.stdout }}"]
+          ENTRYPOINT ["/usr/local/bin/cloudflared-linux-amd64", "proxy-dns","--address", "{{ docker_doh }}", "--port", "53", "--upstream", "{{ url_from_doh_provider[doh_provider] }}"]
       register: cloudflared_doh_dockerfile
 
     - name: Check cloudflared image exists
