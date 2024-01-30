@@ -21,14 +21,14 @@
           opendns: https://doh.opendns.com/dns-query
 
     - name: Add repo using key from URL
-          deb822_repository:
-            name: docker
-            types: deb
-            uris: https://download.docker.com/linux/ubuntu
-            suites: '{{ ansible_distribution_release }}'
-            components: stable
-            architectures: amd64
-            signed_by: https://download.docker.com/linux/ubuntu/gpg
+      deb822_repository:
+        name: docker
+        types: deb
+        uris: https://download.docker.com/linux/ubuntu
+        suites: '{{ ansible_distribution_release }}'
+        components: stable
+        architectures: amd64
+        signed_by: https://download.docker.com/linux/ubuntu/gpg
 
     - name: Dpkg Architecture
       ansible.builtin.shell: |
