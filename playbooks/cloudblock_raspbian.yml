@@ -46,17 +46,15 @@
         dpkg --print-architecture
       register: dpkg_arch
 
-    - name: Add docker apt key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/raspbian/gpg
-        state: present
-
-    - name: Add docker apt repo
-      ansible.builtin.apt_repository:
-        repo: "deb [arch={{ dpkg_arch.stdout }}] https://download.docker.com/linux/raspbian {{ ansible_distribution_release }} stable"
-        state: present
-      when:
-        - dpkg_arch.stdout != "arm64"
+    - name: Add repo using key from URL
+      deb822_repository:
+        name: docker
+        types: deb
+        uris: https://download.docker.com/linux/ubuntu
+        suites: '{{ ansible_distribution_release }}'
+        components: stable
+        architectures: arm64
+        signed_by: https://download.docker.com/linux/ubuntu/gpg
 
     - name: Absent packages
       ansible.builtin.apt:
