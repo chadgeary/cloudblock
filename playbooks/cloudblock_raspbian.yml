@@ -50,11 +50,11 @@
       deb822_repository:
         name: docker
         types: deb
-        uris: https://download.docker.com/linux/ubuntu
+        uris: https://download.docker.com/linux/raspbian
         suites: '{{ ansible_distribution_release }}'
         components: stable
         architectures: arm64
-        signed_by: https://download.docker.com/linux/ubuntu/gpg
+        signed_by: https://download.docker.com/linux/raspbian/gpg
 
     - name: Absent packages
       ansible.builtin.apt:
