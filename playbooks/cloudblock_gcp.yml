@@ -20,23 +20,20 @@
           libre-dns: https://doh.libredns.gr/dns-query
           opendns: https://doh.opendns.com/dns-query
 
-    - name: Docker apt key
-      ansible.builtin.get_url:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        dest: /etc/apt/keyrings/docker.asc
-        mode: '0640'
+    - name: Add repo using key from URL
+          deb822_repository:
+            name: docker
+            types: deb
+            uris: https://download.docker.com/linux/ubuntu
+            suites: '{{ ansible_distribution_release }}'
+            components: stable
+            architectures: amd64
+            signed_by: https://download.docker.com/linux/ubuntu/gpg
 
     - name: Dpkg Architecture
       ansible.builtin.shell: |
         dpkg --print-architecture
       register: dpkg_arch
-
-    - name: Docker apt repo
-      ansible.builtin.apt_repository:
-        repo: >
-          deb [arch={{ dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/docker.asc]
-          https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-        state: present
 
     - name: Absent packages
       ansible.builtin.apt:
