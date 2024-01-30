@@ -27,7 +27,7 @@
         uris: https://download.docker.com/linux/ubuntu
         suites: '{{ ansible_distribution_release }}'
         components: stable
-        architectures: amd64
+        architectures: arm64
         signed_by: https://download.docker.com/linux/ubuntu/gpg
 
     - name: Dpkg Architecture
